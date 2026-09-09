@@ -1,5 +1,8 @@
 /* Lumen Terminal — dark operations theme. */
 :root {
+  /* This terminal commits to one dark visual world by design; say so explicitly so it holds
+     on any host ground rather than inheriting a light one. */
+  color-scheme: dark;
   --bg:#080a0e; --panel:#0d1117; --panel2:#111823; --line:#1e2836; --grid:#161e29;
   --txt:#d7dee8; --dim:#7d8896; --dim2:#59646f;
   --accent:#4c9aff; --accent2:#2f6dd0;
@@ -9,7 +12,8 @@
   --r:4px;
 }
 * { box-sizing:border-box; }
-html,body { height:100%; }
+html { height:100%; background:#080a0e; }
+body { height:100%; }
 body {
   margin:0; background:var(--bg); color:var(--txt);
   font:12px/1.45 var(--sans); overflow:hidden;

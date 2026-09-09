@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumen Terminal</title>
+<meta name="description" content="Geopolitical, macro and market intelligence terminal: situation map, contagion modelling, link analysis and an FVG backtest lab.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%230b0e13'/><path d='M28 72V28h10v34h24v10z' fill='%234c9aff'/></svg>">
+<link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body>
+
+<header id="top">
+  <div class="brand">
+    <span class="logo">◧</span>
+    <div>
+      <b>LUMEN</b>
+      <small>situation terminal</small>
+    </div>
+  </div>
+
+  <div class="cmd-wrap">
+    <span class="cmd-p">›</span>
+    <input id="cmd" type="text" autocomplete="off" spellcheck="false"
+           placeholder="link tsla to crudeoil · bt nvda 15m 3m · what if iran closes hormuz · map iran   (press /)">
+    <div id="cmd-drop" class="cmd-drop"></div>
+  </div>
+
+  <nav id="nav"></nav>
+
+  <div class="top-actions">
+    <button id="btn-refresh" class="icon-b" title="Regenerate the demo world with a new seed">⟳</button>
+    <button id="btn-help" class="icon-b" title="Command reference">?</button>
+    <button id="btn-settings" class="icon-b" title="Settings, API keys and data mode">⚙</button>
+  </div>
+</header>
+
+<div id="status"></div>
+
+<main id="view"></main>
+
+<footer id="foot">
+  <span>Lumen is an analysis tool, not investment advice. In demo mode every story, price, wallet and flow is simulated.</span>
+  <span class="sp"></span>
+  <span>Country outlines: Natural Earth via world-atlas · Robinson projection</span>
+</footer>
+
+<div id="toasts"></div>
+
+<script src="assets/js/core.js"></script>
+<script src="assets/js/data/world.js"></script>
+<script src="assets/js/data/universe.js"></script>
+<script src="assets/js/data/feed.js"></script>
+<script src="assets/js/data/market.js"></script>
+<script src="assets/js/cascade.js"></script>
+<script src="assets/js/linker.js"></script>
+<script src="assets/js/backtest.js"></script>
+<script src="assets/js/whales.js"></script>
+<script src="assets/js/risk.js"></script>
+<script src="assets/js/providers.js"></script>
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/map.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/terminal.js"></script>
+<script src="assets/js/view-desk.js"></script>
+<script src="assets/js/view-cascade.js"></script>
+<script src="assets/js/view-backtest.js"></script>
+<script src="assets/js/view-links.js"></script>
+<script src="assets/js/view-whales.js"></script>
+<script src="assets/js/view-book.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

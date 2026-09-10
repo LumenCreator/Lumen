@@ -182,7 +182,7 @@
   var defaults = {
     mode: 'demo',                 // 'demo' | 'live'
     proxyBase: '',                // e.g. /.netlify/functions/proxy
-    keys: { alpaca: '', alpacaSecret: '', finnhub: '', marketaux: '', etherscan: '', fmp: '' },
+    keys: { finnhub: '', marketaux: '', etherscan: '', fmp: '' },
     account: { equity: 100000, riskPerTrade: 1.0, maxPositions: 8, maxSectorPct: 30 },
     watchlist: ['SPY', 'NVDA', 'TSLA', 'XOM', 'LMT', 'GC=F', 'CL=F', 'BTC'],
     filters: { region: 'ALL', sector: 'ALL', minImpact: 2 },

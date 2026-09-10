@@ -6,26 +6,26 @@
   var st = { hours: 24, chain: 'ALL', kind: 'ALL', asset: null, tab: 'onchain' };
   var bodyEl = null;
 
-  function mount(world, params) {
-    if (params.asset) st.asset = params.asset;
-    var root = el('div', { class: 'whales' });
-    root.appendChild(UIx.panel('Flows', {
-      icon: '🐋', class: 'p-wtabs',
-      actions: [UIx.toggleRow([{ v: 'onchain', n: 'On-chain' }, { v: 'inst', n: 'Institutional' }, { v: 'wallets', n: 'Tracked wallets' }], st.tab,
-        function (v) { st.tab = v; render(world); })]
-    }, [
-      el('div', { class: 'w-filters' }, [
-        UIx.toggleRow([{ v: 24, n: '24h' }, { v: 72, n: '3d' }, { v: 168, n: '7d' }, { v: 720, n: '30d' }], st.hours, function (v) { st.hours = +v; render(world); }),
-        UIx.toggleRow([{ v: 'ALL', n: 'all chains' }].concat(W.CHAINS.map(function (c) { return { v: c, n: c }; })), st.chain, function (v) { st.chain = v; render(world); }),
-        UIx.toggleRow([{ v: 'ALL', n: 'all flows' }, { v: 'inflow', n: 'to exchange' }, { v: 'outflow', n: 'off exchange' }, { v: 'transfer', n: 'wallet↔wallet' }], st.kind,
-          function (v) { st.kind = v; render(world); }),
-        st.asset ? el('button', { class: 'chip on', text: st.asset + ' ✕', onclick: function () { st.asset = null; render(world); } }) : null
-      ])
+  function configure(p) {
+    if (!p) return;
+    if (p.asset) st.asset = p.asset;
+    if (p.tab) st.tab = p.tab;
+  }
+  function renderInto(host, world, tab) {
+    if (tab) st.tab = tab;
+    L.clear(host);
+    host.appendChild(el('div', { class: 'w-filters' }, [
+      UIx.toggleRow([{ v: 24, n: '24h' }, { v: 72, n: '3d' }, { v: 168, n: '7d' }, { v: 720, n: '30d' }], st.hours,
+        function (v) { st.hours = +v; render(world); }),
+      UIx.toggleRow([{ v: 'ALL', n: 'all chains' }].concat(W.CHAINS.map(function (c) { return { v: c, n: c }; })), st.chain,
+        function (v) { st.chain = v; render(world); }),
+      UIx.toggleRow([{ v: 'ALL', n: 'all flows' }, { v: 'inflow', n: 'to exchange' }, { v: 'outflow', n: 'off exchange' }, { v: 'transfer', n: 'wallet↔wallet' }], st.kind,
+        function (v) { st.kind = v; render(world); }),
+      st.asset ? el('button', { class: 'chip on', text: st.asset + ' ✕', onclick: function () { st.asset = null; render(world); } }) : null
     ]));
     bodyEl = el('div', { id: 'w-body' });
-    root.appendChild(bodyEl);
-    setTimeout(function () { render(world); }, 0);
-    return root;
+    host.appendChild(bodyEl);
+    render(world);
   }
 
   function flows(world) {
@@ -192,5 +192,5 @@
     ], { class: 'wide' });
   }
 
-  UIx.register('whales', { mount: mount });
+  global.SEC_WHALES = { state: st, configure: configure, render: renderInto };
 })(window);

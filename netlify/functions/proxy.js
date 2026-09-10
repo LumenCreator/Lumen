@@ -11,8 +11,7 @@
  *     so a key is never exposed to the page or to anyone who finds the function URL
  *
  * Environment variables to set in Netlify (Site settings → Environment variables):
- *   ALPACA_KEY, ALPACA_SECRET   — use PAPER keys
- *   MARKETAUX_TOKEN
+  *   MARKETAUX_TOKEN
  *   ETHERSCAN_KEY
  *   FMP_KEY
  *   FINNHUB_KEY                 — optional; Finnhub also works direct from the browser
@@ -22,19 +21,6 @@
  */
 
 const ALLOW = {
-  alpaca: {
-    hosts: { trading: 'https://paper-api.alpaca.markets', data: 'https://data.alpaca.markets' },
-    // /v2/account, /v2/positions, /v2/orders[/id], /v2/stocks/SYM/bars
-    path: /^\/v2\/(account|positions|orders(\/[A-Za-z0-9-]+)?|stocks\/[A-Za-z0-9.:-]+\/bars)$/,
-    methods: ['GET', 'POST', 'DELETE'],
-    auth: (h) => {
-      if (!process.env.ALPACA_KEY || !process.env.ALPACA_SECRET) return false;
-      h['APCA-API-KEY-ID'] = process.env.ALPACA_KEY;
-      h['APCA-API-SECRET-KEY'] = process.env.ALPACA_SECRET;
-      return true;
-    },
-    hostFor: (path) => (path.indexOf('/v2/stocks/') === 0 ? 'data' : 'trading')
-  },
   marketaux: {
     hosts: { trading: 'https://api.marketaux.com/v1' },
     path: /^\/news\/(all|similar)$/,

@@ -9,19 +9,31 @@
     imported: null, importName: null, period: 'month'
   };
   var cache = { bars: null, gaps: null, stats: null, res: null };
-  var bodyEl = null;
+  var bodyEl = null, curTab = 'gaps', curWorld = null;
 
-  function mount(world, params) {
-    if (params.sym) { st.sym = params.sym; st.imported = null; st.importName = null; }
-    if (params.tf) st.tf = params.tf;
-    if (params.days) st.days = params.days;
-    var root = el('div', { class: 'bt' });
-    root.appendChild(controls(world));
-    bodyEl = el('div', { class: 'bt-body', id: 'bt-body' });
-    root.appendChild(bodyEl);
-    recompute(world);
-    return root;
+  /* Section of the Analysis view: the host owns symbol, timeframe and period. */
+  function configure(p) {
+    if (!p) return;
+    if (p.sym && p.sym !== st.sym) { st.sym = p.sym; st.imported = null; st.importName = null; }
+    if (p.tf) st.tf = p.tf;
+    if (p.days) st.days = p.days;
   }
+  function renderInto(host, world, tab) {
+    curWorld = world;
+    curTab = tab || curTab;
+    bodyEl = host;
+    recompute(world);
+  }
+  function importCSV(bars, name) {
+    st.imported = bars; st.importName = name;
+    if (curWorld) recompute(curWorld);
+  }
+  function clearCSV() {
+    st.imported = null; st.importName = null;
+    if (curWorld) recompute(curWorld);
+  }
+  function opts() { return st.opts; }
+  function importedName() { return st.importName; }
 
   function bars(world) {
     if (st.imported) return st.imported;
@@ -37,79 +49,6 @@
     render(world);
   }
 
-  /* ---------- controls ---------- */
-  function controls(world) {
-    var symIn = el('input', {
-      class: 'sym-in', value: st.sym, spellcheck: 'false',
-      onkeydown: function (e) { if (e.key === 'Enter') { st.sym = symIn.value.trim().toUpperCase(); st.imported = null; st.importName = null; recompute(world); } }
-    });
-
-    var o = st.opts;
-    function numOpt(k, label, opts, hint) {
-      return UIx.field(label, UIx.number(o[k], function (v) { o[k] = v; recompute(world); }, opts), hint);
-    }
-
-    var file = el('input', {
-      type: 'file', accept: '.csv,text/csv', style: { display: 'none' },
-      onchange: function (e) {
-        var f = e.target.files[0];
-        if (!f) return;
-        var rd = new FileReader();
-        rd.onload = function () {
-          try {
-            st.imported = B.parseCSV(String(rd.result));
-            st.importName = f.name;
-            UIx.toast('Loaded ' + st.imported.length + ' bars from ' + f.name, 'up', 5000);
-            recompute(world);
-          } catch (err) { UIx.toast(err.message, 'warn', 7000); }
-        };
-        rd.readAsText(f);
-      }
-    });
-
-    return UIx.panel('Setup', { icon: '🔬', class: 'p-btset' }, [
-      el('div', { class: 'bt-row1' }, [
-        UIx.field('Symbol', symIn),
-        UIx.field('Timeframe', UIx.toggleRow(global.TERMINAL.TFS, st.tf, function (v) { st.tf = v; recompute(world); })),
-        UIx.field('Period', UIx.toggleRow([
-          { v: 30, n: '1m' }, { v: 90, n: '3m' }, { v: 180, n: '6m' }, { v: 365, n: '1y' }
-        ], st.days, function (v) { st.days = +v; recompute(world); })),
-        el('div', { class: 'bt-import' }, [
-          el('button', { class: 'btn', text: '⭳ Import TradingView CSV', onclick: function () { file.click(); } }),
-          file,
-          st.importName ? el('span', { class: 'imp-name' }, [
-            UIx.badge('CSV: ' + st.importName, 'up'),
-            el('button', { class: 'mini', text: 'clear', onclick: function () { st.imported = null; st.importName = null; recompute(world); } })
-          ]) : null
-        ])
-      ]),
-      el('details', { class: 'bt-adv' }, [
-        el('summary', { text: 'Detection & strategy parameters' }),
-        el('div', { class: 'bt-grid' }, [
-          numOpt('minGapAtr', 'Min gap (× ATR)', { step: 0.05, min: 0 }, 'Ignore gaps smaller than this fraction of ATR.'),
-          numOpt('displacementAtr', 'Displacement (× ATR)', { step: 0.1, min: 0 }, 'Middle candle body must exceed this.'),
-          UIx.field('Require displacement', UIx.toggleRow([{ v: 'y', n: 'yes' }, { v: 'n', n: 'no' }], o.requireDisplacement ? 'y' : 'n',
-            function (v) { o.requireDisplacement = v === 'y'; recompute(world); })),
-          UIx.field('Fill rule', UIx.toggleRow([{ v: 'touch', n: 'touch' }, { v: 'half', n: '50%' }, { v: 'full', n: 'full' }], o.fillRule,
-            function (v) { o.fillRule = v; recompute(world); }), 'What counts as the gap being mitigated.'),
-          UIx.field('Trend filter', UIx.toggleRow([{ v: 'none', n: 'none' }, { v: 'ema50', n: 'EMA50' }, { v: 'ema200', n: 'EMA200' }], o.trendFilter,
-            function (v) { o.trendFilter = v; recompute(world); })),
-          UIx.field('Entry', UIx.toggleRow([{ v: 'edge', n: 'near edge' }, { v: 'mid', n: 'mid' }, { v: 'far', n: 'far edge' }], o.entry,
-            function (v) { o.entry = v; recompute(world); })),
-          numOpt('stopBufferAtr', 'Stop buffer (× ATR)', { step: 0.05, min: 0 }),
-          numOpt('rr', 'Target (R multiple)', { step: 0.25, min: 0.25 }),
-          numOpt('riskPct', 'Risk per trade (%)', { step: 0.1, min: 0.05 }),
-          numOpt('maxBarsInTrade', 'Max bars in trade', { step: 5, min: 3 }),
-          numOpt('maxAge', 'Gap lifespan (bars)', { step: 10, min: 5 }),
-          UIx.field('Session', UIx.toggleRow([{ v: 'all', n: 'all' }, { v: 'rth', n: 'RTH' }, { v: 'first2h', n: 'first 2h' }], o.sessionFilter,
-            function (v) { o.sessionFilter = v; recompute(world); })),
-          UIx.field('Shorts', UIx.toggleRow([{ v: 'y', n: 'on' }, { v: 'n', n: 'off' }], o.allowShorts ? 'y' : 'n',
-            function (v) { o.allowShorts = v === 'y'; recompute(world); }))
-        ])
-      ])
-    ]);
-  }
-
   /* ---------- render ---------- */
   function render(world) {
     var host = bodyEl;
@@ -120,12 +59,18 @@
       return;
     }
     host.appendChild(dataBanner());
-    host.appendChild(chartPanel(world));
-    host.appendChild(el('div', { class: 'bt-cols' }, [gapStatsPanel(), whenPanel()]));
-    host.appendChild(strategyPanel(world));
-    host.appendChild(periodicPanel(world));
-    host.appendChild(sweepPanel(world));
-    host.appendChild(tradesPanel());
+    if (curTab === 'gaps') {
+      host.appendChild(chartPanel(world));
+      host.appendChild(el('div', { class: 'bt-cols' }, [gapStatsPanel(), whenPanel()]));
+    } else if (curTab === 'strategy') {
+      host.appendChild(chartPanel(world));
+      host.appendChild(strategyPanel(world));
+      host.appendChild(tradesPanel());
+    } else if (curTab === 'periodic') {
+      host.appendChild(periodicPanel(world));
+    } else if (curTab === 'sweep') {
+      host.appendChild(sweepPanel(world));
+    }
   }
 
   function dataBanner() {
@@ -434,5 +379,9 @@
     ]);
   }
 
-  UIx.register('backtest', { mount: mount });
+  global.SEC_BACKTEST = {
+    state: st, configure: configure, render: renderInto,
+    importCSV: importCSV, clearCSV: clearCSV, opts: opts, importedName: importedName,
+    recompute: function (world) { recompute(world); }
+  };
 })(window);

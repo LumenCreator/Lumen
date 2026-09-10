@@ -5,50 +5,34 @@
       UIx = global.UI, el = L.el, F = L.F, M = L.M;
 
   var st = { sym: 'CL=F', tf: '1d', days: 400, eventClass: 'oilspike', tab: 'read' };
-  var bodyEl = null, cache = null;
+  var bodyEl = null, cache = null, curWorld = null;
 
-  function mount(world, params) {
-    if (params.sym) st.sym = params.sym;
-    if (params.tab) st.tab = params.tab;
-    var root = el('div', { class: 'sig' });
-    root.appendChild(controls(world));
-    bodyEl = el('div', { id: 'sig-body' });
-    root.appendChild(bodyEl);
-    recompute(world);
-    return root;
+  /* This module is a section of the Analysis view rather than a view of its own: the host
+     supplies the symbol, the timeframe and the element to render into. */
+  function configure(p) {
+    if (!p) return;
+    if (p.sym) st.sym = p.sym;
+    if (p.tf) st.tf = p.tf;
+    if (p.days) st.days = p.days;
+    if (p.tab) st.tab = p.tab;
+  }
+  function renderInto(host, world, tab) {
+    curWorld = world;
+    if (tab) st.tab = tab;
+    bodyEl = host;
+    if (!cache || cache.key !== st.sym + '|' + st.tf + '|' + st.days) recompute(world);
+    else render(world);
   }
 
   function recompute(world) {
     var bars = global.MARKET.bars(st.sym, st.tf, st.days, world);
     cache = {
+      key: st.sym + '|' + st.tf + '|' + st.days,
       bars: bars,
       assess: MI.assess(st.sym, bars, world),
       study: MI.eventStudy(bars, world, st.eventClass)
     };
     render(world);
-  }
-
-  function controls(world) {
-    var symIn = el('input', { class: 'sym-in', value: st.sym, spellcheck: 'false' });
-    symIn.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') { st.sym = symIn.value.trim().toUpperCase(); recompute(world); }
-    });
-    return UIx.panel('Behaviour scan', { icon: '🔍', class: 'p-sigset' }, [
-      el('div', { class: 'sig-ctl' }, [
-        UIx.field('Symbol', symIn),
-        UIx.field('Timeframe', UIx.toggleRow(['15m', '1h', '4h', '1d'], st.tf, function (v) { st.tf = v; recompute(world); })),
-        UIx.field('History', UIx.toggleRow([
-          { v: 120, n: '4m' }, { v: 250, n: '8m' }, { v: 400, n: '13m' }, { v: 730, n: '2y' }
-        ], st.days, function (v) { st.days = +v; recompute(world); })),
-        UIx.field('View', UIx.toggleRow([
-          { v: 'read', n: 'Read' }, { v: 'anomalies', n: 'Anomalies' },
-          { v: 'events', n: 'Event studies' }, { v: 'alerts', n: 'Alerts' }
-        ], st.tab, function (v) { st.tab = v; render(world); }))
-      ]),
-      el('div', { class: 'presets' }, ['CL=F', 'NVDA', 'SPY', 'GC=F', 'BTC', 'XOM', 'TSLA', 'BKW.AX'].map(function (t) {
-        return el('button', { class: 'chip' + (t === st.sym ? ' on' : ''), text: t, onclick: function () { st.sym = t; symIn.value = t; recompute(world); } });
-      }))
-    ]);
   }
 
   function render(world) {
@@ -266,8 +250,8 @@
         ? el('div', { class: 'alog' }, log.slice(0, 40).map(function (e) {
             return el('div', { class: 'al t-' + e.tone, onclick: function () {
               if (!e.action) return;
-              if (e.action.view === 'signals' && e.action.sym) { st.sym = e.action.sym; recompute(world); }
-              else if (e.action.view === 'mainstreet') global.APP.go('mainstreet', e.action);
+              if (e.action.view === 'analysis' && e.action.sym) global.APP.go('analysis', { sym: e.action.sym, tab: 'read' });
+              else if (e.action.view === 'flows') global.APP.go('flows', e.action);
               else global.APP.go(e.action.view || 'desk');
             } }, [
               el('div', { class: 'al-h' }, [
@@ -317,5 +301,9 @@
     return wrap;
   }
 
-  UIx.register('signals', { mount: mount });
+  global.SEC_SIGNALS = {
+    state: st, configure: configure, render: renderInto,
+    recompute: function (world) { recompute(world); },
+    invalidate: function () { cache = null; }
+  };
 })(window);

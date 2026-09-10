@@ -38,23 +38,23 @@ Switch to **LIVE** in Settings (⚙) after adding keys. Providers:
 
 | Provider | Gives you | Key | Callable from the browser? |
 |---|---|---|---|
+| GDELT 2.0 | global event stream **and archive search back to 2017** | no | **yes** — no key, no proxy |
 | Finnhub | quotes, candles, company news | yes | **yes** — works with no proxy |
-| GDELT 2.0 | global event stream with country tags | no | **yes** |
-| Alpaca (paper) | paper trading, positions, orders, bars | yes | no — needs the proxy |
 | Marketaux | entity-tagged financial news | yes | no — needs the proxy |
 | Etherscan | wallet balances and transfers | yes | no — needs the proxy |
 | FMP | 13F holdings, insider trades | yes | no — needs the proxy |
 
 ### Why the proxy exists
 
-Alpaca, Marketaux, Etherscan and FMP send no CORS headers. A browser cannot call them, no
-matter how valid your key is — this is a property of those APIs, not something the page can work
-around. `netlify/functions/proxy.js` is the server side that can.
+Marketaux, Etherscan and FMP send no CORS headers. A browser cannot call them, no matter how
+valid your key is — this is a property of those APIs, not something the page can work around.
+`netlify/functions/proxy.js` is the server side that can. GDELT and Finnhub do send them, so
+archive search and quotes work with nothing configured.
 
 1. Deploy the site to Netlify.
 2. Set the keys as **environment variables** on the site (Site settings → Environment variables):
-   `ALPACA_KEY`, `ALPACA_SECRET` (use *paper* keys), `MARKETAUX_TOKEN`, `ETHERSCAN_KEY`,
-   `FMP_KEY`, `FINNHUB_KEY`. Optionally set `LUMEN_ALLOWED_ORIGIN` to your site's origin.
+   `MARKETAUX_TOKEN`, `ETHERSCAN_KEY`, `FMP_KEY`, `FINNHUB_KEY`. Optionally set
+   `LUMEN_ALLOWED_ORIGIN` to your site's origin.
 3. In the app: Settings → Proxy → `/.netlify/functions/proxy`.
 
 The proxy only reaches an allowlist of providers and, per provider, an allowlist of paths. It
@@ -94,9 +94,9 @@ help                           the full list
 
 ## The views
 
-Top-level navigation is Desk, Signals, Backtest Lab, Main Street, Flows and Book & Risk.
-Cascade and Link Analysis have no nav slot: they open from a story's roll-down on the Desk, or
-from the command bar (`cascade me_conflict 0.8`, `link tsla to crudeoil`).
+Top-level navigation is **Desk**, **Analysis** and **Money Flows**. Cascade and Link Analysis
+have no nav slot: they open from a story's roll-down on the Desk, or from the command bar
+(`cascade me_conflict 0.8`, `link tsla to crudeoil`).
 
 **Desk** — the world map (Robinson projection over Natural Earth outlines), coloured by where
 the wire is concentrated, pinned with high-impact events and chokepoints, with arcs joining
@@ -104,14 +104,35 @@ countries that appear in the same story. Click a country and the wire, the brief
 focus on it. The wire carries macro only: trade, capital flows, energy, policy, conflict,
 supply chains. Local crime and civic news is filtered out by design.
 
-Each headline leads with the country of main interest and carries nothing else. Click it and it
-rolls down in place — no modal, no new page — to show what it touches, the cascade it implies
-(the chain with per-link probabilities, plus which industries gain and which get hurt), and how
-its two main entities connect (link strength, channel agreement, correlation and the shortest
-mechanical path). Both blocks have a button through to the full view when you want depth.
+The wire groups by country. A country with five stories is one folder that opens to five, not
+five rows repeating the country name — click Japan and everything Japanese is inside it. Opening
+a folder highlights that country on the map, and clicking a country on the map opens its folder
+and scrolls to it.
 
-**Signals** — the behaviour layer, and the one place where being precise about limits matters
-most. Four things:
+Inside a folder, each headline rolls down in place — no modal, no new page — to show what it
+touches, the cascade it implies (the chain with per-link probabilities, plus which industries
+gain and which get hurt), and how its two main entities connect (link strength, channel
+agreement, correlation and the shortest mechanical path). Both blocks have a button through to
+the full view when you want depth.
+
+**Archive search.** Type in the wire's search box to filter what is on screen; press Enter and it
+searches the GDELT archive, which indexes worldwide coverage back to 2017, needs no key and
+sends CORS headers — so it is the one live provider that works from a plain page with nothing
+configured. Results come back in exactly the same country-grouped format as the live wire, with
+each story tagged `archive` and dated. The lookback selector next to the timeframe toggles sets
+how far back to search.
+
+If the host blocks outbound requests — a sandboxed page does — the search falls back to the
+built-in corpus and says so, naming the reason, rather than silently returning nothing.
+
+**Analysis** — one symbol, one setup bar, eight tabs. Behaviour, Anomalies, Event studies and
+Alerts come from the behaviour engine; Gaps, Strategy, Periodic and Sweep come from the
+backtester. They were previously two views asking the same question — "what is this instrument
+doing" — with two symbol pickers, so they are now one. Switching between the two families
+resets the history length to what that family actually needs (400 daily bars for a behaviour
+scan, 90 days of 15-minute bars for gap work).
+
+The behaviour half is where being precise about limits matters most. Four things:
 
 *Exhaustion* answers the "who is left to buy" question directly. Given where price sits in its
 own distribution and how long it has been stretched, it pulls every historical instance from a
@@ -146,7 +167,8 @@ Treat every flag as "look at this", never "this happened". Genuine market survei
 full order-book and participant data that no retail API sells. The app says this in the view
 itself, not just here.
 
-**Main Street** — the household layer. A cost-of-living basket (mortgage, energy, fuel,
+**Money Flows** — where money goes, at three scales: household, rebuild, and investor. The
+household layer: A cost-of-living basket (mortgage, energy, fuel,
 groceries, insurance, repairs, health, telco, vehicle, discretionary) ranked by how hard each
 line is squeezing right now, each with the listed companies on the receiving end and the ones
 paying for it.
@@ -203,15 +225,9 @@ and policy items called out separately). The verdict reports how many of the thr
 because that is the part that matters: mechanism without correlation is a dormant link,
 correlation without mechanism is usually shared market beta and will break when the regime does.
 
-**Flows** — large-holder tracking. On-chain: a transfer ledger across chains, net exchange
-flow read as accumulation or distribution, and a ranked accumulating/distributing list.
-Institutional: 13F-style position changes and insider activity aggregated by industry.
-
-**Book & Risk** — a local paper book (browser-only, nothing leaves the page), position sizing
-from your risk settings, exposure by industry and country, concentration warnings, parametric
-VaR, what each scenario does to the book with hedge suggestions, and a probability × impact
-matrix across every scenario. Connect Alpaca and a paper account panel appears alongside it with
-positions, open orders and an order ticket.
+And the investor layer: an on-chain transfer ledger across chains with net exchange flow read as
+accumulation or distribution, a ranked accumulating/distributing list, 13F-style position
+changes and insider activity aggregated by industry, and the tracked-wallet table.
 
 ---
 
@@ -239,7 +255,10 @@ assets/js/
   map.js           Robinson projection, SVG map, heat/pins/arcs
   ui.js            shared components and the view registry
   terminal.js      command parsing and autocomplete
-  view-*.js        the eight views
+  view-analysis.js  Signals + Backtest Lab, sharing one symbol
+  view-flows.js     Main Street + large-holder flows
+  view-*.js         Desk, Cascade, Link Analysis, and the section modules the two merged
+                    views compose
   app.js           shell, routing, settings
 tools/build-world.js  regenerates the country outlines
 netlify/functions/proxy.js
@@ -276,10 +295,13 @@ opened straight off disk. `node build-single-file.js` inlines everything into on
   the price, which after a widely reported catastrophe it usually partly is.
 - **Household budget shares are approximations** of the shape of expenditure surveys, not a
   specific ABS/ONS/BLS release. They order the categories sensibly; do not quote them.
+- **Archive search depends on GDELT's index**, which starts in 2017, is English-weighted here,
+  and covers what its crawler saw rather than everything published. Absence of a result is not
+  evidence the event was not reported.
 - **Alerts only run while the tab is open.** There is no server. Overnight alerting would need
   the check to run somewhere that stays up.
-- **Nothing here is investment advice.** Trading goes to Alpaca *paper* accounts. Do not point
-  this at a live brokerage without reading the order path in `providers.js` yourself.
+- **Nothing here is investment advice.** There is no order path in this app at all — it reads
+  and analyses, it does not trade.
 
 ## Map geometry
 

@@ -3,7 +3,12 @@
   'use strict';
   var L = global.Lumen, U = global.UNIVERSE, UIx = global.UI, el = L.el, F = L.F, M = L.M;
 
-  var state = { hours: 72, kind: 'ALL', region: 'ALL', minImp: 1, focus: null, overlay: 'news', query: '', open: {} };
+  var state = {
+    hours: 72, kind: 'ALL', region: 'ALL', minImp: 1, focus: null, overlay: 'news',
+    query: '', open: {}, openCountry: {},
+    archive: null,            /* {q, stories, source, note, loading, range} */
+    archiveDays: 365
+  };
   var map = null;
 
   function mount(world, params) {
@@ -40,7 +45,6 @@
         var ok = (s.countries || []).some(function (c) { return U.COUNTRIES[c] && U.COUNTRIES[c].r === state.region; });
         if (!ok) return false;
       }
-      if (state.focus && (s.countries || []).indexOf(state.focus) < 0) return false;
       if (q) {
         var hay = (s.h + ' ' + s.src + ' ' + (s.sectors || []).join(' ') + ' ' + (s.tickers || []).join(' ')).toLowerCase();
         if (hay.indexOf(q) < 0) return false;
@@ -50,61 +54,166 @@
   }
 
   /* ---------- news wire ---------- */
+  /* Stories live inside their country. A country with five stories is one entry that opens to
+     five, not five entries repeating the country name. */
   function wirePanel(world) {
     var listHost = el('div', { class: 'wire' });
-    var countEl = el('span', { class: 'pnl-n' });
+    var searchNote = el('div', { class: 'wire-note' });
 
-    function render() {
-      var items = filtered(world);
-      countEl.textContent = items.length;
-      L.clear(listHost);
-      if (!items.length) {
-        listHost.appendChild(UIx.empty('Nothing matches these filters', 'Widen the window or clear the country focus.'));
-        return;
-      }
-      items.slice(0, 120).forEach(function (s) {
-        listHost.appendChild(storyRow(s, world));
+    function groupsFor(stories, isArchive) {
+      var byCountry = {};
+      stories.forEach(function (st2) {
+        var iso = (st2.countries || []).filter(function (c) { return U.COUNTRIES[c]; })[0] || '__';
+        var g = byCountry[iso] || (byCountry[iso] = { iso: iso, items: [], score: 0, last: 0, maxImp: 0 });
+        g.items.push(st2);
+        var recency = 1 + (Date.now() - st2.t < 24 * 3600e3 ? 0.8 : 0);
+        g.score += (st2.imp / 5) * recency;
+        g.last = Math.max(g.last, st2.t);
+        g.maxImp = Math.max(g.maxImp, st2.imp);
       });
-      if (items.length > 120) listHost.appendChild(el('div', { class: 'more', text: '+' + (items.length - 120) + ' more in window' }));
+      return Object.keys(byCountry).map(function (k) { return byCountry[k]; })
+        .sort(function (a, b) { return (b.score - a.score) || (b.last - a.last); })
+        .map(function (g) {
+          g.items.sort(function (a, b) { return b.t - a.t; });
+          g.archive = isArchive;
+          return g;
+        });
     }
 
-    var filters = el('div', { class: 'wire-f' }, [
-      UIx.toggleRow([{ v: 24, n: '24h' }, { v: 72, n: '3d' }, { v: 168, n: '7d' }, { v: 720, n: '30d' }], state.hours, function (v) {
-        state.hours = +v; refreshAll(world);
-      })
-    ]);
+    function render() {
+      L.clear(listHost);
+      L.clear(searchNote);
+
+      /* archive results, when a search has been run */
+      if (state.archive) {
+        var a = state.archive;
+        var head = el('div', { class: 'arch-head' }, [
+          el('b', { text: 'Archive: “' + a.q + '”' }),
+          a.loading ? el('span', { class: 'arch-load', text: 'searching…' })
+            : el('span', { text: a.stories.length + ' result' + (a.stories.length === 1 ? '' : 's') +
+                ' · ' + (a.source === 'gdelt' ? 'GDELT archive' : 'built-in corpus') }),
+          el('button', { class: 'mini', text: 'clear', onclick: function () { state.archive = null; render(); } })
+        ]);
+        listHost.appendChild(head);
+        if (a.note) listHost.appendChild(el('div', { class: 'arch-note', text: a.note }));
+        if (!a.loading) {
+          groupsFor(a.stories, true).forEach(function (g) { listHost.appendChild(countryGroup(g, world)); });
+        }
+        listHost.appendChild(el('div', { class: 'arch-div', text: 'live wire' }));
+      }
+
+      var items = filtered(world);
+      if (!items.length) {
+        listHost.appendChild(UIx.empty('Nothing in this window', 'Widen the time range.'));
+        return;
+      }
+      groupsFor(items, false).forEach(function (g) { listHost.appendChild(countryGroup(g, world)); });
+    }
+
     var search = el('input', {
-      class: 'wire-s', type: 'search', placeholder: 'filter the wire…', value: state.query,
+      class: 'wire-s', type: 'search', placeholder: 'filter, or press Enter to search the archive…',
+      value: state.query,
       oninput: L.debounce(function (e) { state.query = e.target.value; render(); }, 200)
     });
+    search.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter') return;
+      var q = search.value.trim();
+      if (!q) return;
+      runArchive(q, world, render);
+    });
 
-    var p = UIx.panel('Macro Wire', {
-      icon: '📡', class: 'p-wire',
+    var p = UIx.panel('', {
+      class: 'p-wire bare',
       actions: [
-        el('button', { class: 'mini', text: 'clear focus', onclick: function () { state.focus = null; refreshAll(world); } })
+        UIx.toggleRow([{ v: 24, n: '24h' }, { v: 72, n: '3d' }, { v: 168, n: '7d' }, { v: 720, n: '30d' }], state.hours, function (v) {
+          state.hours = +v; refreshAll(world);
+        }),
+        UIx.select([
+          { v: 90, n: 'back 3m' }, { v: 365, n: 'back 1y' }, { v: 1095, n: 'back 3y' }, { v: 2920, n: 'back 8y' }
+        ], state.archiveDays, function (v) { state.archiveDays = +v; }, 'arch-range')
       ]
-    }, [filters, search, listHost]);
-    p.querySelector('.pnl-t').appendChild(countEl);
+    }, [search, searchNote, listHost]);
     p._render = render;
     render();
     return p;
   }
 
+  /* Archive search. GDELT is the only provider that works with no key and no proxy, and it
+     indexes back to 2017. When the host blocks outbound requests — a sandboxed page does — we
+     fall back to the built-in corpus and say which one answered. */
+  function runArchive(q, world, render) {
+    state.archive = { q: q, stories: [], loading: true, source: null, note: null };
+    render();
+    var P = global.PROVIDERS;
+    P.searchArchive(q, { days: state.archiveDays })
+      .then(function (res) {
+        if (!res.stories.length) {
+          var loc = P.searchLocal(q, world, { days: state.archiveDays });
+          state.archive = {
+            q: q, stories: loc.stories, loading: false, source: 'local',
+            note: 'The archive returned nothing for that query, so this is the built-in corpus instead.'
+          };
+        } else {
+          state.archive = { q: q, stories: res.stories, loading: false, source: 'gdelt', note: null };
+        }
+        render();
+      })
+      .catch(function (err) {
+        var loc = P.searchLocal(q, world, { days: state.archiveDays });
+        state.archive = {
+          q: q, stories: loc.stories, loading: false, source: 'local',
+          note: 'Could not reach the GDELT archive (' + String(err.message || err).slice(0, 90) +
+            '). Showing matches from the built-in corpus instead. Live archive search needs a host that allows outbound requests — it works from the local file and from a Netlify deploy, but not inside a sandboxed page.'
+        };
+        render();
+      });
+  }
+
+  function countryGroup(g, world) {
+    var meta = U.COUNTRIES[g.iso];
+    var name = meta ? meta.n : 'Unattributed';
+    var open = !!state.openCountry[g.iso + (g.archive ? ':a' : '')];
+    var key = g.iso + (g.archive ? ':a' : '');
+
+    var wrap = el('section', { class: 'cgrp' + (open ? ' open' : ''), 'data-iso': g.iso });
+    var head = el('div', { class: 'cgrp-h' }, [
+      el('i', { class: 'cgrp-caret', text: '▸' }),
+      el('b', { class: 'cgrp-n', text: name }),
+      el('span', { class: 'cgrp-c', text: String(g.items.length) }),
+      g.maxImp >= 5 ? el('span', { class: 'cgrp-hot', title: 'carries an impact-5 story', text: '●' }) : null,
+      el('span', { class: 'cgrp-t', text: F.ago(g.last) })
+    ]);
+    var body = el('div', { class: 'cgrp-b' });
+
+    head.addEventListener('click', function () {
+      var nowOpen = !state.openCountry[key];
+      state.openCountry[key] = nowOpen;
+      wrap.classList.toggle('open', nowOpen);
+      if (nowOpen && !body.childNodes.length) {
+        g.items.forEach(function (item) { body.appendChild(storyRow(item, world)); });
+      }
+      if (nowOpen && meta) {
+        state.focus = g.iso;
+        if (map) map.highlight([g.iso]);
+        var fp = L.$('.p-focus');
+        if (fp && fp._render) fp._render();
+      }
+    });
+    if (open) g.items.forEach(function (item) { body.appendChild(storyRow(item, world)); });
+
+    wrap.appendChild(head);
+    wrap.appendChild(body);
+    return wrap;
+  }
+
   function storyRow(s, world) {
     var row = el('article', { class: 'st k-' + s.k + (s.imp >= 5 ? ' hot' : '') });
-    var primary = (s.countries || [])[0];
-    var cname = U.COUNTRIES[primary] ? U.COUNTRIES[primary].n : null;
-
-    var head = el('div', { class: 'st-line' }, [
-      /* the country of main interest leads the headline rather than sitting in a chip below it */
-      cname ? el('span', { class: 'st-ctry', text: cname }) : null,
-      el('h4', { class: 'st-h', text: s.h })
-    ]);
-    row.appendChild(head);
+    row.appendChild(el('div', { class: 'st-line' }, [el('h4', { class: 'st-h', text: s.h })]));
     row.appendChild(el('div', { class: 'st-foot' }, [
       el('span', { class: 'st-src', text: s.src }),
       UIx.simBadge(s),
-      el('span', { class: 'st-ago', text: F.ago(s.t) }),
+      s.archive ? UIx.badge('archive', 'i') : null,
+      el('span', { class: 'st-ago', text: s.archive ? F.date(new Date(s.t)) : F.ago(s.t) }),
       el('i', { class: 'st-caret', text: '▾' })
     ]));
 
@@ -112,13 +221,11 @@
     row.appendChild(panel);
 
     row.addEventListener('click', function (e) {
+      e.stopPropagation();
       if (e.target.closest('.chip') || e.target.closest('button') || e.target.closest('a')) return;
       var isOpen = row.classList.toggle('open');
       state.open[s.id] = isOpen;
       if (isOpen && !panel.childNodes.length) buildRoll(panel, s, world);
-      if (isOpen) {
-        map && map.highlight((s.countries || []).filter(function (c) { return U.COUNTRIES[c]; }));
-      }
     });
     if (state.open[s.id]) {
       row.classList.add('open');
@@ -386,8 +493,20 @@
   }
 
   function setFocus(iso, world) {
-    state.focus = state.focus === iso ? null : iso;
-    refreshAll(world);
+    var same = state.focus === iso;
+    state.focus = same ? null : iso;
+    /* opening a country on the map opens the same country's group in the wire */
+    if (!same) {
+      state.openCountry[iso] = true;
+      refreshAll(world);
+      setTimeout(function () {
+        var g = L.$('.cgrp[data-iso="' + iso + '"]');
+        if (g && g.scrollIntoView) g.scrollIntoView({ block: 'nearest' });
+      }, 30);
+    } else {
+      state.openCountry[iso] = false;
+      refreshAll(world);
+    }
     if (map) {
       map.highlight(state.focus ? [state.focus] : null);
       if (state.focus) map.focusCountry(state.focus); else map.reset();

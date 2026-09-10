@@ -7,31 +7,28 @@
   var st = { tab: 'costs', country: 'AU', playbook: 'flood', day: 7 };
   var bodyEl = null;
 
-  function mount(world, params) {
-    if (params.playbook) { st.playbook = params.playbook; st.tab = 'disaster'; }
-    if (params.country) st.country = params.country;
-    if (params.tab) st.tab = params.tab;
-    var root = el('div', { class: 'ms' });
-    root.appendChild(controls(world));
-    bodyEl = el('div', { id: 'ms-body' });
-    root.appendChild(bodyEl);
-    render(world);
-    return root;
+  function configure(p) {
+    if (!p) return;
+    if (p.playbook) { st.playbook = p.playbook; st.tab = 'disaster'; }
+    if (p.country) st.country = p.country;
+    if (p.tab) st.tab = p.tab;
   }
-
-  function controls(world) {
-    return UIx.panel('Main Street', {
-      icon: '🏘', class: 'p-msset',
-      actions: [UIx.toggleRow([
-        { v: 'costs', n: 'Cost of living' }, { v: 'disaster', n: 'Disaster response' }
-      ], st.tab, function (v) { st.tab = v; render(world); })]
-    }, [
-      el('div', { class: 'ms-ctl' }, [
-        UIx.field('Market', UIx.toggleRow([
-          { v: 'AU', n: 'Australia' }, { v: 'US', n: 'United States' }
-        ], st.country, function (v) { st.country = v; render(world); }),
-          'Picks resolve to the companies listed in that market. Australia is covered in depth because the building-materials and insurance chain there is unusually concentrated in a few listed names.')
-      ])
+  function renderInto(host, world, tab) {
+    if (tab) st.tab = tab;
+    bodyEl = host;
+    L.clear(host);
+    host.appendChild(marketPicker(world));
+    var body = el('div', {});
+    host.appendChild(body);
+    bodyEl = body;
+    render(world);
+  }
+  function marketPicker(world) {
+    return el('div', { class: 'ms-ctl' }, [
+      UIx.field('Market', UIx.toggleRow([
+        { v: 'AU', n: 'Australia' }, { v: 'US', n: 'United States' }
+      ], st.country, function (v) { st.country = v; render(world); }),
+        'Picks resolve to the companies listed in that market. Australia is covered in depth because the building-materials and insurance chain there is unusually concentrated in a few listed names.')
     ]);
   }
 
@@ -254,5 +251,5 @@
     return f(d[0]) + ' – ' + f(d[1]);
   }
 
-  UIx.register('mainstreet', { mount: mount });
+  global.SEC_MAINSTREET = { state: st, configure: configure, render: renderInto };
 })(window);

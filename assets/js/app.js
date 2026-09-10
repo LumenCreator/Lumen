@@ -5,11 +5,11 @@
 
   var App = {
     world: null,
-    views: ['desk', 'signals', 'backtest', 'mainstreet', 'whales', 'book'],
+    views: ['desk', 'analysis', 'flows'],
     /* cascade and links are still routable (and reached from a story roll-down or the
        command bar) — they just no longer occupy a slot in the top nav. */
     routable: ['cascade', 'links'],
-    viewNames: { desk: 'Desk', signals: 'Signals', cascade: 'Cascade', backtest: 'Backtest Lab', links: 'Link Analysis', mainstreet: 'Main Street', whales: 'Flows', book: 'Book & Risk' },
+    viewNames: { desk: 'Desk', analysis: 'Analysis', flows: 'Money Flows', cascade: 'Cascade', links: 'Link Analysis' },
     positions: [],
     scenario: null
   };
@@ -54,7 +54,7 @@
     } catch (e) { console.error('[alerts]', e); }
   }
   function updateAlertBadge() {
-    var b = L.$('.nav-b[data-view="signals"]');
+    var b = L.$('.nav-b[data-view="analysis"]');
     if (!b || !global.ALERTS) return;
     var recent = global.ALERTS.history().filter(function (h) { return Date.now() - h.t < 6 * 3600e3; });
     var dot = b.querySelector('.nav-dot');
@@ -87,7 +87,7 @@
     switch (cmd.k) {
       case 'link': go('links', { a: cmd.a, b: cmd.b }); break;
       case 'scan': go('links', { scan: cmd.a }); break;
-      case 'backtest': go('backtest', { sym: cmd.sym, tf: cmd.tf, days: cmd.days }); break;
+      case 'backtest': go('analysis', { sym: cmd.sym, tf: cmd.tf, days: cmd.days, tab: 'gaps' }); break;
       case 'cascade': go('cascade', { seed: cmd.seed, sev: cmd.sev }); break;
       case 'map': {
         var ent = global.LINKER.resolve(cmd.q);
@@ -95,7 +95,7 @@
         else UIx.toast('No country matched "' + cmd.q + '"', 'warn');
         break;
       }
-      case 'chart': go('backtest', { sym: cmd.sym, tf: cmd.tf || '1h', days: 90 }); break;
+      case 'chart': go('analysis', { sym: cmd.sym, tf: cmd.tf || '1h', days: 90, tab: 'gaps' }); break;
       case 'watch': {
         var wl = L.state.settings.watchlist;
         if (wl.indexOf(cmd.sym) < 0) { wl.push(cmd.sym); L.saveSettings(); UIx.toast(cmd.sym + ' added to watchlist', 'up'); L.bus.emit('watchlist'); }
@@ -108,11 +108,11 @@
         break;
       }
       case 'sector': go('desk', { sector: cmd.id }); break;
-      case 'signals': go('signals', { sym: cmd.sym, tab: cmd.tab }); break;
-      case 'rebuild': go('mainstreet', { tab: 'disaster', playbook: cmd.playbook, country: cmd.country }); break;
-      case 'costs': go('mainstreet', { tab: 'costs', country: cmd.country }); break;
-      case 'alerts': go('signals', { tab: 'alerts' }); break;
-      case 'whales': go('whales', { asset: cmd.asset }); break;
+      case 'signals': go('analysis', { sym: cmd.sym, tab: 'read' }); break;
+      case 'rebuild': go('flows', { tab: 'disaster', playbook: cmd.playbook, country: cmd.country }); break;
+      case 'costs': go('flows', { tab: 'costs', country: cmd.country }); break;
+      case 'alerts': go('analysis', { tab: 'alerts' }); break;
+      case 'whales': go('flows', { tab: 'onchain', asset: cmd.asset }); break;
       case 'news': go('desk', { newsQuery: cmd.q }); break;
       case 'goto': go(cmd.view); break;
       case 'risk': showRisk(cmd); break;
@@ -120,7 +120,7 @@
         if (cmd.ent.type === 'country') go('desk', { focus: cmd.ent.id });
         else if (cmd.ent.type === 'sector') go('desk', { sector: cmd.ent.id });
         else if (cmd.ent.type === 'event') go('cascade', { seed: cmd.ent.id, sev: 0.65 });
-        else go('backtest', { sym: cmd.ent.id, tf: '1h', days: 90 });
+        else go('analysis', { sym: cmd.ent.id, tf: '1h', days: 90, tab: 'gaps' });
         break;
       }
       case 'help': showHelp(); break;
@@ -269,13 +269,11 @@
             oninput: L.debounce(function () { L.setSetting('proxyBase', i.value.trim()); }, 300)
           });
           return i;
-        })(), 'Alpaca, Marketaux, Etherscan and FMP block direct browser calls. Deploy netlify/functions/proxy.js from this repo, set the keys as environment variables there, and put the function path here.')
+        })(), 'Marketaux, Etherscan and FMP block direct browser calls. Deploy netlify/functions/proxy.js from this repo, set the keys as environment variables there, and put the function path here. Finnhub and the GDELT archive work without it.')
       ]),
       el('div', { class: 'set-sec' }, [
         el('h4', { text: 'API keys (stored in this browser only)' }),
         keyField('finnhub', 'Finnhub key', 'Quotes + candles. Works without a proxy.'),
-        keyField('alpaca', 'Alpaca key ID', 'Paper trading. Needs the proxy.'),
-        keyField('alpacaSecret', 'Alpaca secret', ''),
         keyField('marketaux', 'Marketaux token', 'Entity-tagged news. Needs the proxy.'),
         keyField('etherscan', 'Etherscan key', 'On-chain balances. Needs the proxy.'),
         keyField('fmp', 'FMP key', '13F and insider data. Needs the proxy.')

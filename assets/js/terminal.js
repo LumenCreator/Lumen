@@ -25,7 +25,7 @@
     { c: 'whales [asset]', d: 'Large-holder flow ledger', ex: 'whales btc' },
     { c: 'risk <sym> <entry> <stop>', d: 'Position size from your account risk settings', ex: 'risk nvda 178 172' },
     { c: 'news [country|sector]', d: 'Filter the wire', ex: 'news energy' },
-    { c: 'go <view>', d: 'desk | cascade | backtest | links | whales | book', ex: 'go cascade' },
+    { c: 'go <view>', d: 'desk | analysis | flows | cascade | links', ex: 'go analysis' },
     { c: 'help', d: 'This list', ex: 'help' }
   ];
 

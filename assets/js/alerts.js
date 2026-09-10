@@ -169,7 +169,7 @@
         title: sym + ' crossed ' + F.num(r.price, 2) + ' (' + r.dir + ')',
         body: 'Now at the ' + (ex.rank * 100).toFixed(0) + 'th percentile of its ' + ex.lookback + '-bar range. ' + (ex.read[0] || ''),
         tone: r.dir === 'above' ? 'warn' : 'i',
-        action: { view: 'signals', sym: sym }, data: { rank: ex.rank }
+        action: { view: 'analysis', sym: sym }, data: { rank: ex.rank }
       };
     }
 
@@ -185,7 +185,7 @@
           (mid && mid.n >= 12 ? 'From comparable levels it was lower ' + ((1 - mid.pUp) * 100).toFixed(0) + '% of the time over ' + mid.h + ' bars (n=' + mid.n + ').'
             : 'Too few comparable instances to give a base rate.'),
         tone: 'warn',
-        action: { view: 'signals', sym: sym }, data: { rank: e.rank, extendedBars: e.extendedBars }
+        action: { view: 'analysis', sym: sym }, data: { rank: e.rank, extendedBars: e.extendedBars }
       };
     }
 
@@ -201,7 +201,7 @@
         title: sym + ': ' + ev.n + ' ' + ev.icon,
         body: ev.note + ' — a pattern consistent with this behaviour, not proof of it.',
         tone: 'warn',
-        action: { view: 'signals', sym: sym }, data: { kind: ev.kind, severity: ev.severity }
+        action: { view: 'analysis', sym: sym }, data: { kind: ev.kind, severity: ev.severity }
       };
     }
 
@@ -212,7 +212,7 @@
         title: sym + ': ' + cr.label.toLowerCase(),
         body: cr.read,
         tone: cr.score > 0 ? 'warn' : 'i',
-        action: { view: 'signals', sym: sym }, data: { score: cr.score }
+        action: { view: 'analysis', sym: sym }, data: { score: cr.score }
       };
     }
     return null;
@@ -245,7 +245,7 @@
       title: 'Response trigger — ' + ((global.UNIVERSE.COUNTRIES[country] || {}).n || country),
       body: hit.h + ' — opening the ' + pbId + ' response playbook and its phased buy list.',
       tone: 'down',
-      action: { view: 'mainstreet', playbook: pbId, country: country },
+      action: { view: 'flows', tab: 'disaster', playbook: pbId, country: country },
       data: { storyId: hit.id }
     };
   }

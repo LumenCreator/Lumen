@@ -15,8 +15,6 @@
   var SPECS = {
     finnhub: { n: 'Finnhub', needsKey: true, cors: true, url: 'https://finnhub.io/api/v1', signup: 'https://finnhub.io/register',
       gives: 'quotes, candles, company news' },
-    alpaca: { n: 'Alpaca (paper)', needsKey: true, cors: false, url: 'https://paper-api.alpaca.markets', data: 'https://data.alpaca.markets',
-      signup: 'https://alpaca.markets/', gives: 'paper trading, positions, orders, bars' },
     marketaux: { n: 'Marketaux', needsKey: true, cors: false, url: 'https://api.marketaux.com/v1', signup: 'https://www.marketaux.com/',
       gives: 'entity-tagged financial news' },
     gdelt: { n: 'GDELT 2.0', needsKey: false, cors: true, url: 'https://api.gdeltproject.org/api/v2/doc/doc',
@@ -97,25 +95,11 @@
 
   /* ---------- bars ---------- */
   var TF_FINNHUB = { '5m': '5', '15m': '15', '30m': '30', '1h': '60', '4h': '60', '1d': 'D' };
-  var TF_ALPACA = { '5m': '5Min', '15m': '15Min', '30m': '30Min', '1h': '1Hour', '4h': '4Hour', '1d': '1Day' };
 
   function bars(sym, tf, lookbackDays, world) {
     if (!isLive()) return Promise.resolve(global.MARKET.bars(sym, tf, lookbackDays, world));
     var to = Math.floor(Date.now() / 1000), from = to - lookbackDays * 86400;
 
-    if (proxy() && key('alpaca')) {
-      return call('alpaca', '/v2/stocks/' + encodeURIComponent(sym) + '/bars', {
-        timeframe: TF_ALPACA[tf] || '1Hour',
-        start: new Date(from * 1000).toISOString(),
-        limit: 10000, adjustment: 'raw', feed: 'iex'
-      }, { dataHost: true }).then(function (j) {
-        var arr = (j.bars || []).map(function (b) {
-          return { t: Date.parse(b.t), o: b.o, h: b.h, l: b.l, c: b.c, v: b.v, imp: 0, ev: 0 };
-        });
-        if (!arr.length) throw new Error('no bars returned');
-        return arr;
-      }).catch(function () { return global.MARKET.bars(sym, tf, lookbackDays, world); });
-    }
     if (key('finnhub')) {
       return call('finnhub', '/stock/candle', { symbol: sym, resolution: TF_FINNHUB[tf] || '60', from: from, to: to })
         .then(function (j) {
@@ -239,6 +223,96 @@
     };
   }
 
+  /* ---------- archive search ----------
+     GDELT DOC 2.0 indexes worldwide coverage back to 2017, needs no key and sends CORS
+     headers, so this is the one provider that works from a plain page with nothing configured.
+     Results are normalised into the same story shape the rest of the app uses, which means the
+     Desk can group them by country exactly like the live wire.
+
+     Where it will not work: a sandboxed host that blocks outbound requests (a published
+     artifact does). The caller falls back to searching the built-in corpus and says so rather
+     than silently returning nothing. */
+  function searchArchive(query, opts) {
+    opts = opts || {};
+    var q = String(query || '').trim();
+    if (!q) return Promise.resolve({ stories: [], source: 'none', note: 'Empty query.' });
+
+    function stamp(d) {
+      return d.getUTCFullYear() +
+        String(d.getUTCMonth() + 1).padStart(2, '0') +
+        String(d.getUTCDate()).padStart(2, '0') +
+        String(d.getUTCHours()).padStart(2, '0') +
+        String(d.getUTCMinutes()).padStart(2, '0') + '00';
+    }
+    var end = opts.end ? new Date(opts.end) : new Date();
+    var start = opts.start ? new Date(opts.start) : new Date(end.getTime() - (opts.days || 365) * 86400e3);
+
+    /* GDELT needs a bare term list; quote multi-word phrases so they stay together */
+    var terms = q.indexOf('"') >= 0 ? q : (q.split(/\s+/).length > 1 ? '"' + q + '"' : q);
+
+    return call('gdelt', '', {
+      query: terms + ' sourcelang:english',
+      mode: 'ArtList', maxrecords: opts.limit || 75, format: 'json', sort: 'DateDesc',
+      startdatetime: stamp(start), enddatetime: stamp(end)
+    }, { timeout: 20000 }).then(function (j) {
+      var arts = (j && j.articles) || [];
+      var stories = arts.map(function (a) {
+        var t = Date.now();
+        if (a.seendate) {
+          var m = String(a.seendate).match(/(\d{4})(\d{2})(\d{2})T?(\d{2})(\d{2})(\d{2})/);
+          if (m) t = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]);
+        }
+        return normaliseArticle({
+          id: 'ar_' + L.hash(a.url || (a.title + t)),
+          t: t, h: a.title, summary: '', src: a.domain || 'GDELT', url: a.url,
+          countries: a.sourcecountry ? [iso2From(a.sourcecountry)].filter(Boolean) : [],
+          tickers: []
+        });
+      }).filter(function (x) { return x && x.h; });
+
+      /* de-duplicate on headline; wire services republish the same story many times */
+      var seen = {}, out = [];
+      stories.forEach(function (x) {
+        var k = x.h.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 55);
+        if (seen[k]) return;
+        seen[k] = 1;
+        x.archive = true;
+        out.push(x);
+      });
+      out.sort(function (a, b) { return b.t - a.t; });
+      return {
+        stories: out, source: 'gdelt', total: arts.length,
+        range: [start.getTime(), end.getTime()],
+        note: out.length ? null : 'GDELT returned nothing for that query in this window.'
+      };
+    });
+  }
+
+  /* Search the built-in corpus — the fallback when the archive is unreachable, and what
+     DEMO mode searches by default. */
+  function searchLocal(query, world, opts) {
+    opts = opts || {};
+    var q = String(query || '').toLowerCase().trim();
+    if (!q) return { stories: [], source: 'local' };
+    var terms = q.split(/\s+/).filter(Boolean);
+    var end = opts.end || Date.now();
+    var start = opts.start || (end - (opts.days || 365) * 86400e3);
+    var out = ((world && world.stories) || []).filter(function (s) {
+      if (s.t < start || s.t > end) return false;
+      var hay = (s.h + ' ' + s.src + ' ' + (s.sectors || []).join(' ') + ' ' +
+        (s.tickers || []).join(' ') + ' ' + (s.countries || []).map(function (c) {
+          return (global.UNIVERSE.COUNTRIES[c] || {}).n || c;
+        }).join(' ')).toLowerCase();
+      return terms.every(function (t) { return hay.indexOf(t) >= 0; });
+    }).map(function (s) {
+      var c = Object.assign({}, s);
+      c.archive = true;
+      return c;
+    });
+    out.sort(function (a, b) { return b.t - a.t; });
+    return { stories: out.slice(0, opts.limit || 80), source: 'local' };
+  }
+
   /* ---------- on-chain ---------- */
   function onchain(address) {
     if (!isLive() || !key('etherscan')) return Promise.reject(new Error('Etherscan key + proxy required for live on-chain data'));
@@ -246,28 +320,10 @@
       .then(function (j) { return { address: address, balanceWei: j.result, balanceEth: Number(j.result) / 1e18 }; });
   }
 
-  /* ---------- Alpaca paper trading ---------- */
-  var alpaca = {
-    ready: function () { return !!(proxy() && key('alpaca') && key('alpacaSecret')); },
-    why: function () {
-      if (!key('alpaca') || !key('alpacaSecret')) return 'Add your Alpaca paper key and secret in Settings.';
-      if (!proxy()) return 'Alpaca blocks direct browser calls (no CORS). Deploy the bundled proxy function and set its path in Settings.';
-      return null;
-    },
-    account: function () { return call('alpaca', '/v2/account', {}); },
-    positions: function () { return call('alpaca', '/v2/positions', {}); },
-    orders: function (status) { return call('alpaca', '/v2/orders', { status: status || 'all', limit: 50 }); },
-    submit: function (order) {
-      return call('alpaca', '/v2/orders', {}, {
-        method: 'POST', body: JSON.stringify(order)
-      });
-    },
-    cancel: function (id) { return call('alpaca', '/v2/orders/' + id, {}, { method: 'DELETE' }); }
-  };
-
   global.PROVIDERS = {
     SPECS: SPECS, isLive: isLive, statuses: statuses, proxy: proxy, key: key,
-    quote: quote, bars: bars, news: news, onchain: onchain, alpaca: alpaca,
+    quote: quote, bars: bars, news: news, onchain: onchain,
+    searchArchive: searchArchive, searchLocal: searchLocal,
     isMacro: isMacro, normaliseArticle: normaliseArticle, call: call
   };
 })(window);

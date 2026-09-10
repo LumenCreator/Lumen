@@ -593,6 +593,61 @@ input[type=range] { width:100%; accent-color:var(--accent); }
 .ph-picks { display:flex; gap:4px; flex-wrap:wrap; margin-top:6px; }
 .tbl tr.muted td { color:var(--dim2); }
 
+/* ---------- wire: country groups + archive ---------- */
+.pnl.bare > .pnl-h { padding:6px 10px; }
+.pnl.bare .pnl-t { display:none; }
+.pnl.bare .pnl-a { margin-left:0; width:100%; justify-content:space-between; }
+select.arch-range { width:auto; min-width:96px; font-size:10.5px; padding:4px 6px; }
+
+.wire-note:empty { display:none; }
+.cgrp { border-bottom:1px solid var(--line); }
+.cgrp-h {
+  display:flex; align-items:center; gap:7px; padding:8px 10px; cursor:pointer;
+  border-left:2px solid transparent;
+}
+.cgrp-h:hover { background:var(--hover); }
+.cgrp.open > .cgrp-h { background:var(--sel); border-left-color:var(--accent); }
+.cgrp-caret { font-style:normal; color:var(--dim2); font-size:9px; transition:transform .16s; }
+.cgrp.open .cgrp-caret { transform:rotate(90deg); }
+.cgrp-n { flex:1; font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.045em; }
+.cgrp-c {
+  font-family:var(--mono); font-size:10px; color:var(--dim); background:var(--panel2);
+  border:1px solid var(--line); border-radius:9px; padding:1px 7px;
+}
+.cgrp-hot { color:var(--down); font-size:8px; }
+.cgrp-t { font-family:var(--mono); font-size:9.5px; color:var(--dim2); }
+.cgrp-b { display:none; background:var(--panel); }
+.cgrp.open > .cgrp-b { display:block; }
+.cgrp-b .st { padding-left:20px; }
+
+.arch-head {
+  display:flex; align-items:center; gap:8px; padding:7px 10px;
+  background:var(--info-bg); border-bottom:1px solid var(--info-bd); font-size:10.5px;
+}
+.arch-head b { flex:1; font-size:11px; }
+.arch-head span { color:var(--dim); font-size:9.5px; }
+.arch-load { color:var(--accent); }
+.arch-note { padding:7px 10px; font-size:10px; color:var(--dim); background:var(--warn-bg); border-bottom:1px solid var(--warn-bd); line-height:1.5; }
+.arch-div {
+  padding:5px 10px; font-size:9px; text-transform:uppercase; letter-spacing:.08em;
+  color:var(--dim2); background:var(--panel2); border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+}
+
+/* ---------- merged view tabs ---------- */
+.anl-ctl { display:grid; grid-template-columns:130px auto auto; gap:14px; align-items:end; }
+@media (max-width:1000px){ .anl-ctl { grid-template-columns:1fr; } }
+.anl-tabs { display:flex; align-items:center; gap:2px; flex-wrap:wrap; margin-top:10px;
+  border-top:1px solid var(--line); padding-top:8px; }
+.anl-tab {
+  background:none; border:1px solid transparent; color:var(--dim); cursor:pointer;
+  padding:5px 11px; border-radius:var(--r); font:inherit; font-size:11.5px; white-space:nowrap;
+}
+.anl-tab:hover { background:var(--hover); color:var(--txt); }
+.anl-tab.on { background:var(--accent); color:var(--on-accent); }
+.tab-sep { width:1px; height:18px; background:var(--line2); margin:0 8px; display:inline-block; }
+.p-flwset .pnl-b { padding-top:4px; }
+.p-flwset .anl-tabs { margin-top:0; border-top:none; padding-top:0; }
+
 </style>
 </head>
 <body>
@@ -818,7 +873,7 @@ input[type=range] { width:100%; accent-color:var(--accent); }
   var defaults = {
     mode: 'demo',                 // 'demo' | 'live'
     proxyBase: '',                // e.g. /.netlify/functions/proxy
-    keys: { alpaca: '', alpacaSecret: '', finnhub: '', marketaux: '', etherscan: '', fmp: '' },
+    keys: { finnhub: '', marketaux: '', etherscan: '', fmp: '' },
     account: { equity: 100000, riskPerTrade: 1.0, maxPositions: 8, maxSectorPct: 30 },
     watchlist: ['SPY', 'NVDA', 'TSLA', 'XOM', 'LMT', 'GC=F', 'CL=F', 'BTC'],
     filters: { region: 'ALL', sector: 'ALL', minImpact: 2 },
@@ -4354,7 +4409,7 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
         title: sym + ' crossed ' + F.num(r.price, 2) + ' (' + r.dir + ')',
         body: 'Now at the ' + (ex.rank * 100).toFixed(0) + 'th percentile of its ' + ex.lookback + '-bar range. ' + (ex.read[0] || ''),
         tone: r.dir === 'above' ? 'warn' : 'i',
-        action: { view: 'signals', sym: sym }, data: { rank: ex.rank }
+        action: { view: 'analysis', sym: sym }, data: { rank: ex.rank }
       };
     }
 
@@ -4370,7 +4425,7 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
           (mid && mid.n >= 12 ? 'From comparable levels it was lower ' + ((1 - mid.pUp) * 100).toFixed(0) + '% of the time over ' + mid.h + ' bars (n=' + mid.n + ').'
             : 'Too few comparable instances to give a base rate.'),
         tone: 'warn',
-        action: { view: 'signals', sym: sym }, data: { rank: e.rank, extendedBars: e.extendedBars }
+        action: { view: 'analysis', sym: sym }, data: { rank: e.rank, extendedBars: e.extendedBars }
       };
     }
 
@@ -4386,7 +4441,7 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
         title: sym + ': ' + ev.n + ' ' + ev.icon,
         body: ev.note + ' — a pattern consistent with this behaviour, not proof of it.',
         tone: 'warn',
-        action: { view: 'signals', sym: sym }, data: { kind: ev.kind, severity: ev.severity }
+        action: { view: 'analysis', sym: sym }, data: { kind: ev.kind, severity: ev.severity }
       };
     }
 
@@ -4397,7 +4452,7 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
         title: sym + ': ' + cr.label.toLowerCase(),
         body: cr.read,
         tone: cr.score > 0 ? 'warn' : 'i',
-        action: { view: 'signals', sym: sym }, data: { score: cr.score }
+        action: { view: 'analysis', sym: sym }, data: { score: cr.score }
       };
     }
     return null;
@@ -4430,7 +4485,7 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
       title: 'Response trigger — ' + ((global.UNIVERSE.COUNTRIES[country] || {}).n || country),
       body: hit.h + ' — opening the ' + pbId + ' response playbook and its phased buy list.',
       tone: 'down',
-      action: { view: 'mainstreet', playbook: pbId, country: country },
+      action: { view: 'flows', tab: 'disaster', playbook: pbId, country: country },
       data: { storyId: hit.id }
     };
   }
@@ -4850,8 +4905,6 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
   var SPECS = {
     finnhub: { n: 'Finnhub', needsKey: true, cors: true, url: 'https://finnhub.io/api/v1', signup: 'https://finnhub.io/register',
       gives: 'quotes, candles, company news' },
-    alpaca: { n: 'Alpaca (paper)', needsKey: true, cors: false, url: 'https://paper-api.alpaca.markets', data: 'https://data.alpaca.markets',
-      signup: 'https://alpaca.markets/', gives: 'paper trading, positions, orders, bars' },
     marketaux: { n: 'Marketaux', needsKey: true, cors: false, url: 'https://api.marketaux.com/v1', signup: 'https://www.marketaux.com/',
       gives: 'entity-tagged financial news' },
     gdelt: { n: 'GDELT 2.0', needsKey: false, cors: true, url: 'https://api.gdeltproject.org/api/v2/doc/doc',
@@ -4932,25 +4985,11 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
 
   /* ---------- bars ---------- */
   var TF_FINNHUB = { '5m': '5', '15m': '15', '30m': '30', '1h': '60', '4h': '60', '1d': 'D' };
-  var TF_ALPACA = { '5m': '5Min', '15m': '15Min', '30m': '30Min', '1h': '1Hour', '4h': '4Hour', '1d': '1Day' };
 
   function bars(sym, tf, lookbackDays, world) {
     if (!isLive()) return Promise.resolve(global.MARKET.bars(sym, tf, lookbackDays, world));
     var to = Math.floor(Date.now() / 1000), from = to - lookbackDays * 86400;
 
-    if (proxy() && key('alpaca')) {
-      return call('alpaca', '/v2/stocks/' + encodeURIComponent(sym) + '/bars', {
-        timeframe: TF_ALPACA[tf] || '1Hour',
-        start: new Date(from * 1000).toISOString(),
-        limit: 10000, adjustment: 'raw', feed: 'iex'
-      }, { dataHost: true }).then(function (j) {
-        var arr = (j.bars || []).map(function (b) {
-          return { t: Date.parse(b.t), o: b.o, h: b.h, l: b.l, c: b.c, v: b.v, imp: 0, ev: 0 };
-        });
-        if (!arr.length) throw new Error('no bars returned');
-        return arr;
-      }).catch(function () { return global.MARKET.bars(sym, tf, lookbackDays, world); });
-    }
     if (key('finnhub')) {
       return call('finnhub', '/stock/candle', { symbol: sym, resolution: TF_FINNHUB[tf] || '60', from: from, to: to })
         .then(function (j) {
@@ -5074,6 +5113,96 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
     };
   }
 
+  /* ---------- archive search ----------
+     GDELT DOC 2.0 indexes worldwide coverage back to 2017, needs no key and sends CORS
+     headers, so this is the one provider that works from a plain page with nothing configured.
+     Results are normalised into the same story shape the rest of the app uses, which means the
+     Desk can group them by country exactly like the live wire.
+
+     Where it will not work: a sandboxed host that blocks outbound requests (a published
+     artifact does). The caller falls back to searching the built-in corpus and says so rather
+     than silently returning nothing. */
+  function searchArchive(query, opts) {
+    opts = opts || {};
+    var q = String(query || '').trim();
+    if (!q) return Promise.resolve({ stories: [], source: 'none', note: 'Empty query.' });
+
+    function stamp(d) {
+      return d.getUTCFullYear() +
+        String(d.getUTCMonth() + 1).padStart(2, '0') +
+        String(d.getUTCDate()).padStart(2, '0') +
+        String(d.getUTCHours()).padStart(2, '0') +
+        String(d.getUTCMinutes()).padStart(2, '0') + '00';
+    }
+    var end = opts.end ? new Date(opts.end) : new Date();
+    var start = opts.start ? new Date(opts.start) : new Date(end.getTime() - (opts.days || 365) * 86400e3);
+
+    /* GDELT needs a bare term list; quote multi-word phrases so they stay together */
+    var terms = q.indexOf('"') >= 0 ? q : (q.split(/\s+/).length > 1 ? '"' + q + '"' : q);
+
+    return call('gdelt', '', {
+      query: terms + ' sourcelang:english',
+      mode: 'ArtList', maxrecords: opts.limit || 75, format: 'json', sort: 'DateDesc',
+      startdatetime: stamp(start), enddatetime: stamp(end)
+    }, { timeout: 20000 }).then(function (j) {
+      var arts = (j && j.articles) || [];
+      var stories = arts.map(function (a) {
+        var t = Date.now();
+        if (a.seendate) {
+          var m = String(a.seendate).match(/(\d{4})(\d{2})(\d{2})T?(\d{2})(\d{2})(\d{2})/);
+          if (m) t = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]);
+        }
+        return normaliseArticle({
+          id: 'ar_' + L.hash(a.url || (a.title + t)),
+          t: t, h: a.title, summary: '', src: a.domain || 'GDELT', url: a.url,
+          countries: a.sourcecountry ? [iso2From(a.sourcecountry)].filter(Boolean) : [],
+          tickers: []
+        });
+      }).filter(function (x) { return x && x.h; });
+
+      /* de-duplicate on headline; wire services republish the same story many times */
+      var seen = {}, out = [];
+      stories.forEach(function (x) {
+        var k = x.h.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 55);
+        if (seen[k]) return;
+        seen[k] = 1;
+        x.archive = true;
+        out.push(x);
+      });
+      out.sort(function (a, b) { return b.t - a.t; });
+      return {
+        stories: out, source: 'gdelt', total: arts.length,
+        range: [start.getTime(), end.getTime()],
+        note: out.length ? null : 'GDELT returned nothing for that query in this window.'
+      };
+    });
+  }
+
+  /* Search the built-in corpus — the fallback when the archive is unreachable, and what
+     DEMO mode searches by default. */
+  function searchLocal(query, world, opts) {
+    opts = opts || {};
+    var q = String(query || '').toLowerCase().trim();
+    if (!q) return { stories: [], source: 'local' };
+    var terms = q.split(/\s+/).filter(Boolean);
+    var end = opts.end || Date.now();
+    var start = opts.start || (end - (opts.days || 365) * 86400e3);
+    var out = ((world && world.stories) || []).filter(function (s) {
+      if (s.t < start || s.t > end) return false;
+      var hay = (s.h + ' ' + s.src + ' ' + (s.sectors || []).join(' ') + ' ' +
+        (s.tickers || []).join(' ') + ' ' + (s.countries || []).map(function (c) {
+          return (global.UNIVERSE.COUNTRIES[c] || {}).n || c;
+        }).join(' ')).toLowerCase();
+      return terms.every(function (t) { return hay.indexOf(t) >= 0; });
+    }).map(function (s) {
+      var c = Object.assign({}, s);
+      c.archive = true;
+      return c;
+    });
+    out.sort(function (a, b) { return b.t - a.t; });
+    return { stories: out.slice(0, opts.limit || 80), source: 'local' };
+  }
+
   /* ---------- on-chain ---------- */
   function onchain(address) {
     if (!isLive() || !key('etherscan')) return Promise.reject(new Error('Etherscan key + proxy required for live on-chain data'));
@@ -5081,28 +5210,10 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
       .then(function (j) { return { address: address, balanceWei: j.result, balanceEth: Number(j.result) / 1e18 }; });
   }
 
-  /* ---------- Alpaca paper trading ---------- */
-  var alpaca = {
-    ready: function () { return !!(proxy() && key('alpaca') && key('alpacaSecret')); },
-    why: function () {
-      if (!key('alpaca') || !key('alpacaSecret')) return 'Add your Alpaca paper key and secret in Settings.';
-      if (!proxy()) return 'Alpaca blocks direct browser calls (no CORS). Deploy the bundled proxy function and set its path in Settings.';
-      return null;
-    },
-    account: function () { return call('alpaca', '/v2/account', {}); },
-    positions: function () { return call('alpaca', '/v2/positions', {}); },
-    orders: function (status) { return call('alpaca', '/v2/orders', { status: status || 'all', limit: 50 }); },
-    submit: function (order) {
-      return call('alpaca', '/v2/orders', {}, {
-        method: 'POST', body: JSON.stringify(order)
-      });
-    },
-    cancel: function (id) { return call('alpaca', '/v2/orders/' + id, {}, { method: 'DELETE' }); }
-  };
-
   global.PROVIDERS = {
     SPECS: SPECS, isLive: isLive, statuses: statuses, proxy: proxy, key: key,
-    quote: quote, bars: bars, news: news, onchain: onchain, alpaca: alpaca,
+    quote: quote, bars: bars, news: news, onchain: onchain,
+    searchArchive: searchArchive, searchLocal: searchLocal,
     isMacro: isMacro, normaliseArticle: normaliseArticle, call: call
   };
 })(window);
@@ -6105,7 +6216,7 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
     { c: 'whales [asset]', d: 'Large-holder flow ledger', ex: 'whales btc' },
     { c: 'risk <sym> <entry> <stop>', d: 'Position size from your account risk settings', ex: 'risk nvda 178 172' },
     { c: 'news [country|sector]', d: 'Filter the wire', ex: 'news energy' },
-    { c: 'go <view>', d: 'desk | cascade | backtest | links | whales | book', ex: 'go cascade' },
+    { c: 'go <view>', d: 'desk | analysis | flows | cascade | links', ex: 'go analysis' },
     { c: 'help', d: 'This list', ex: 'help' }
   ];
 
@@ -6275,7 +6386,12 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
   'use strict';
   var L = global.Lumen, U = global.UNIVERSE, UIx = global.UI, el = L.el, F = L.F, M = L.M;
 
-  var state = { hours: 72, kind: 'ALL', region: 'ALL', minImp: 1, focus: null, overlay: 'news', query: '', open: {} };
+  var state = {
+    hours: 72, kind: 'ALL', region: 'ALL', minImp: 1, focus: null, overlay: 'news',
+    query: '', open: {}, openCountry: {},
+    archive: null,            /* {q, stories, source, note, loading, range} */
+    archiveDays: 365
+  };
   var map = null;
 
   function mount(world, params) {
@@ -6312,7 +6428,6 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
         var ok = (s.countries || []).some(function (c) { return U.COUNTRIES[c] && U.COUNTRIES[c].r === state.region; });
         if (!ok) return false;
       }
-      if (state.focus && (s.countries || []).indexOf(state.focus) < 0) return false;
       if (q) {
         var hay = (s.h + ' ' + s.src + ' ' + (s.sectors || []).join(' ') + ' ' + (s.tickers || []).join(' ')).toLowerCase();
         if (hay.indexOf(q) < 0) return false;
@@ -6322,61 +6437,166 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
   }
 
   /* ---------- news wire ---------- */
+  /* Stories live inside their country. A country with five stories is one entry that opens to
+     five, not five entries repeating the country name. */
   function wirePanel(world) {
     var listHost = el('div', { class: 'wire' });
-    var countEl = el('span', { class: 'pnl-n' });
+    var searchNote = el('div', { class: 'wire-note' });
 
-    function render() {
-      var items = filtered(world);
-      countEl.textContent = items.length;
-      L.clear(listHost);
-      if (!items.length) {
-        listHost.appendChild(UIx.empty('Nothing matches these filters', 'Widen the window or clear the country focus.'));
-        return;
-      }
-      items.slice(0, 120).forEach(function (s) {
-        listHost.appendChild(storyRow(s, world));
+    function groupsFor(stories, isArchive) {
+      var byCountry = {};
+      stories.forEach(function (st2) {
+        var iso = (st2.countries || []).filter(function (c) { return U.COUNTRIES[c]; })[0] || '__';
+        var g = byCountry[iso] || (byCountry[iso] = { iso: iso, items: [], score: 0, last: 0, maxImp: 0 });
+        g.items.push(st2);
+        var recency = 1 + (Date.now() - st2.t < 24 * 3600e3 ? 0.8 : 0);
+        g.score += (st2.imp / 5) * recency;
+        g.last = Math.max(g.last, st2.t);
+        g.maxImp = Math.max(g.maxImp, st2.imp);
       });
-      if (items.length > 120) listHost.appendChild(el('div', { class: 'more', text: '+' + (items.length - 120) + ' more in window' }));
+      return Object.keys(byCountry).map(function (k) { return byCountry[k]; })
+        .sort(function (a, b) { return (b.score - a.score) || (b.last - a.last); })
+        .map(function (g) {
+          g.items.sort(function (a, b) { return b.t - a.t; });
+          g.archive = isArchive;
+          return g;
+        });
     }
 
-    var filters = el('div', { class: 'wire-f' }, [
-      UIx.toggleRow([{ v: 24, n: '24h' }, { v: 72, n: '3d' }, { v: 168, n: '7d' }, { v: 720, n: '30d' }], state.hours, function (v) {
-        state.hours = +v; refreshAll(world);
-      })
-    ]);
+    function render() {
+      L.clear(listHost);
+      L.clear(searchNote);
+
+      /* archive results, when a search has been run */
+      if (state.archive) {
+        var a = state.archive;
+        var head = el('div', { class: 'arch-head' }, [
+          el('b', { text: 'Archive: “' + a.q + '”' }),
+          a.loading ? el('span', { class: 'arch-load', text: 'searching…' })
+            : el('span', { text: a.stories.length + ' result' + (a.stories.length === 1 ? '' : 's') +
+                ' · ' + (a.source === 'gdelt' ? 'GDELT archive' : 'built-in corpus') }),
+          el('button', { class: 'mini', text: 'clear', onclick: function () { state.archive = null; render(); } })
+        ]);
+        listHost.appendChild(head);
+        if (a.note) listHost.appendChild(el('div', { class: 'arch-note', text: a.note }));
+        if (!a.loading) {
+          groupsFor(a.stories, true).forEach(function (g) { listHost.appendChild(countryGroup(g, world)); });
+        }
+        listHost.appendChild(el('div', { class: 'arch-div', text: 'live wire' }));
+      }
+
+      var items = filtered(world);
+      if (!items.length) {
+        listHost.appendChild(UIx.empty('Nothing in this window', 'Widen the time range.'));
+        return;
+      }
+      groupsFor(items, false).forEach(function (g) { listHost.appendChild(countryGroup(g, world)); });
+    }
+
     var search = el('input', {
-      class: 'wire-s', type: 'search', placeholder: 'filter the wire…', value: state.query,
+      class: 'wire-s', type: 'search', placeholder: 'filter, or press Enter to search the archive…',
+      value: state.query,
       oninput: L.debounce(function (e) { state.query = e.target.value; render(); }, 200)
     });
+    search.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter') return;
+      var q = search.value.trim();
+      if (!q) return;
+      runArchive(q, world, render);
+    });
 
-    var p = UIx.panel('Macro Wire', {
-      icon: '📡', class: 'p-wire',
+    var p = UIx.panel('', {
+      class: 'p-wire bare',
       actions: [
-        el('button', { class: 'mini', text: 'clear focus', onclick: function () { state.focus = null; refreshAll(world); } })
+        UIx.toggleRow([{ v: 24, n: '24h' }, { v: 72, n: '3d' }, { v: 168, n: '7d' }, { v: 720, n: '30d' }], state.hours, function (v) {
+          state.hours = +v; refreshAll(world);
+        }),
+        UIx.select([
+          { v: 90, n: 'back 3m' }, { v: 365, n: 'back 1y' }, { v: 1095, n: 'back 3y' }, { v: 2920, n: 'back 8y' }
+        ], state.archiveDays, function (v) { state.archiveDays = +v; }, 'arch-range')
       ]
-    }, [filters, search, listHost]);
-    p.querySelector('.pnl-t').appendChild(countEl);
+    }, [search, searchNote, listHost]);
     p._render = render;
     render();
     return p;
   }
 
+  /* Archive search. GDELT is the only provider that works with no key and no proxy, and it
+     indexes back to 2017. When the host blocks outbound requests — a sandboxed page does — we
+     fall back to the built-in corpus and say which one answered. */
+  function runArchive(q, world, render) {
+    state.archive = { q: q, stories: [], loading: true, source: null, note: null };
+    render();
+    var P = global.PROVIDERS;
+    P.searchArchive(q, { days: state.archiveDays })
+      .then(function (res) {
+        if (!res.stories.length) {
+          var loc = P.searchLocal(q, world, { days: state.archiveDays });
+          state.archive = {
+            q: q, stories: loc.stories, loading: false, source: 'local',
+            note: 'The archive returned nothing for that query, so this is the built-in corpus instead.'
+          };
+        } else {
+          state.archive = { q: q, stories: res.stories, loading: false, source: 'gdelt', note: null };
+        }
+        render();
+      })
+      .catch(function (err) {
+        var loc = P.searchLocal(q, world, { days: state.archiveDays });
+        state.archive = {
+          q: q, stories: loc.stories, loading: false, source: 'local',
+          note: 'Could not reach the GDELT archive (' + String(err.message || err).slice(0, 90) +
+            '). Showing matches from the built-in corpus instead. Live archive search needs a host that allows outbound requests — it works from the local file and from a Netlify deploy, but not inside a sandboxed page.'
+        };
+        render();
+      });
+  }
+
+  function countryGroup(g, world) {
+    var meta = U.COUNTRIES[g.iso];
+    var name = meta ? meta.n : 'Unattributed';
+    var open = !!state.openCountry[g.iso + (g.archive ? ':a' : '')];
+    var key = g.iso + (g.archive ? ':a' : '');
+
+    var wrap = el('section', { class: 'cgrp' + (open ? ' open' : ''), 'data-iso': g.iso });
+    var head = el('div', { class: 'cgrp-h' }, [
+      el('i', { class: 'cgrp-caret', text: '▸' }),
+      el('b', { class: 'cgrp-n', text: name }),
+      el('span', { class: 'cgrp-c', text: String(g.items.length) }),
+      g.maxImp >= 5 ? el('span', { class: 'cgrp-hot', title: 'carries an impact-5 story', text: '●' }) : null,
+      el('span', { class: 'cgrp-t', text: F.ago(g.last) })
+    ]);
+    var body = el('div', { class: 'cgrp-b' });
+
+    head.addEventListener('click', function () {
+      var nowOpen = !state.openCountry[key];
+      state.openCountry[key] = nowOpen;
+      wrap.classList.toggle('open', nowOpen);
+      if (nowOpen && !body.childNodes.length) {
+        g.items.forEach(function (item) { body.appendChild(storyRow(item, world)); });
+      }
+      if (nowOpen && meta) {
+        state.focus = g.iso;
+        if (map) map.highlight([g.iso]);
+        var fp = L.$('.p-focus');
+        if (fp && fp._render) fp._render();
+      }
+    });
+    if (open) g.items.forEach(function (item) { body.appendChild(storyRow(item, world)); });
+
+    wrap.appendChild(head);
+    wrap.appendChild(body);
+    return wrap;
+  }
+
   function storyRow(s, world) {
     var row = el('article', { class: 'st k-' + s.k + (s.imp >= 5 ? ' hot' : '') });
-    var primary = (s.countries || [])[0];
-    var cname = U.COUNTRIES[primary] ? U.COUNTRIES[primary].n : null;
-
-    var head = el('div', { class: 'st-line' }, [
-      /* the country of main interest leads the headline rather than sitting in a chip below it */
-      cname ? el('span', { class: 'st-ctry', text: cname }) : null,
-      el('h4', { class: 'st-h', text: s.h })
-    ]);
-    row.appendChild(head);
+    row.appendChild(el('div', { class: 'st-line' }, [el('h4', { class: 'st-h', text: s.h })]));
     row.appendChild(el('div', { class: 'st-foot' }, [
       el('span', { class: 'st-src', text: s.src }),
       UIx.simBadge(s),
-      el('span', { class: 'st-ago', text: F.ago(s.t) }),
+      s.archive ? UIx.badge('archive', 'i') : null,
+      el('span', { class: 'st-ago', text: s.archive ? F.date(new Date(s.t)) : F.ago(s.t) }),
       el('i', { class: 'st-caret', text: '▾' })
     ]));
 
@@ -6384,13 +6604,11 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
     row.appendChild(panel);
 
     row.addEventListener('click', function (e) {
+      e.stopPropagation();
       if (e.target.closest('.chip') || e.target.closest('button') || e.target.closest('a')) return;
       var isOpen = row.classList.toggle('open');
       state.open[s.id] = isOpen;
       if (isOpen && !panel.childNodes.length) buildRoll(panel, s, world);
-      if (isOpen) {
-        map && map.highlight((s.countries || []).filter(function (c) { return U.COUNTRIES[c]; }));
-      }
     });
     if (state.open[s.id]) {
       row.classList.add('open');
@@ -6658,8 +6876,20 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
   }
 
   function setFocus(iso, world) {
-    state.focus = state.focus === iso ? null : iso;
-    refreshAll(world);
+    var same = state.focus === iso;
+    state.focus = same ? null : iso;
+    /* opening a country on the map opens the same country's group in the wire */
+    if (!same) {
+      state.openCountry[iso] = true;
+      refreshAll(world);
+      setTimeout(function () {
+        var g = L.$('.cgrp[data-iso="' + iso + '"]');
+        if (g && g.scrollIntoView) g.scrollIntoView({ block: 'nearest' });
+      }, 30);
+    } else {
+      state.openCountry[iso] = false;
+      refreshAll(world);
+    }
     if (map) {
       map.highlight(state.focus ? [state.focus] : null);
       if (state.focus) map.focusCountry(state.focus); else map.reset();
@@ -7268,6 +7498,541 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
 })(window);
 
 
+/* ==== assets/js/view-links.js ==== */
+/* Lumen Terminal — Link Analysis. */
+(function (global) {
+  'use strict';
+  var L = global.Lumen, U = global.UNIVERSE, UIx = global.UI, el = L.el, F = L.F, M = L.M;
+
+  var st = { a: 'TSLA', b: 'CL=F', days: 90, mode: 'link', scanQ: 'hormuz' };
+  var bodyEl = null;
+
+  function mount(world, params) {
+    if (params.a) { st.a = params.a; st.mode = 'link'; }
+    if (params.b) st.b = params.b;
+    if (params.scan) { st.scanQ = params.scan; st.mode = 'scan'; }
+    var root = el('div', { class: 'links' });
+    root.appendChild(controls(world));
+    bodyEl = el('div', { class: 'links-body', id: 'links-body' });
+    root.appendChild(bodyEl);
+    run(world);
+    return root;
+  }
+
+  function controls(world) {
+    var ia = el('input', { class: 'ent-in', value: st.a, spellcheck: 'false', placeholder: 'TSLA, Iran, semis, hormuz…' });
+    var ib = el('input', { class: 'ent-in', value: st.b, spellcheck: 'false', placeholder: 'crude oil, US10Y, defense…' });
+    function go() { st.a = ia.value; st.b = ib.value; st.mode = 'link'; run(world); }
+    ia.addEventListener('keydown', function (e) { if (e.key === 'Enter') go(); });
+    ib.addEventListener('keydown', function (e) { if (e.key === 'Enter') go(); });
+
+    var scanIn = el('input', { class: 'ent-in', value: st.scanQ, spellcheck: 'false', placeholder: 'entity to expand' });
+    scanIn.addEventListener('keydown', function (e) { if (e.key === 'Enter') { st.scanQ = scanIn.value; st.mode = 'scan'; run(world); } });
+
+    var presets = [
+      ['TSLA', 'CL=F'], ['NVDA', 'Taiwan'], ['XOM', 'Iran'], ['LMT', 'russia_escalation'],
+      ['BTC', 'US10Y'], ['DAL', 'crude'], ['BHP', 'China'], ['NTR', 'wheat']
+    ];
+
+    return UIx.panel('Link two things', { icon: '🔗', class: 'p-linkset' }, [
+      el('div', { class: 'link-row' }, [
+        UIx.field('A', ia), el('span', { class: 'link-to', text: '↔' }), UIx.field('B', ib),
+        UIx.field('Window', UIx.toggleRow([{ v: 30, n: '30d' }, { v: 60, n: '60d' }, { v: 90, n: '90d' }, { v: 180, n: '180d' }], st.days,
+          function (v) { st.days = +v; run(world); })),
+        el('button', { class: 'btn primary', text: 'Analyse', onclick: go })
+      ]),
+      el('div', { class: 'presets' }, presets.map(function (p) {
+        return el('button', { class: 'chip', text: p[0] + ' ↔ ' + p[1], onclick: function () { ia.value = p[0]; ib.value = p[1]; go(); } });
+      })),
+      el('div', { class: 'link-row scan-row' }, [
+        UIx.field('Expand one entity', scanIn, 'Ranks everything in the graph by how tightly it is wired to this.'),
+        el('button', { class: 'btn', text: 'Scan', onclick: function () { st.scanQ = scanIn.value; st.mode = 'scan'; run(world); } })
+      ])
+    ]);
+  }
+
+  function run(world) {
+    var host = bodyEl;
+    if (!host) return;
+    L.clear(host);
+    if (st.mode === 'scan') { host.appendChild(scanView(world)); return; }
+    var r = global.LINKER.analyse(st.a, st.b, { world: world, days: st.days });
+    if (r.error) { host.appendChild(UIx.empty('Could not run that', r.error)); return; }
+    host.appendChild(verdictPanel(r));
+    host.appendChild(el('div', { class: 'links-cols' }, [pathsPanel(r), statsPanel(r)]));
+    host.appendChild(narrativePanel(r, world));
+  }
+
+  function verdictPanel(r) {
+    var tone = r.strength >= 62 ? 'up' : r.strength >= 38 ? 'warn' : 'n';
+    return UIx.panel('Verdict', { icon: '⚖', class: 'p-verdict' }, [
+      el('div', { class: 'vd-head' }, [
+        el('div', { class: 'vd-score t-' + tone }, [
+          el('b', { text: String(r.strength) }),
+          el('span', { text: '/100' })
+        ]),
+        el('div', { class: 'vd-t' }, [
+          el('h3', { text: r.a.n + '  ↔  ' + r.b.n }),
+          el('div', {}, [
+            UIx.badge(r.verdict, tone),
+            UIx.badge(r.direction + ' correlation', r.direction === 'inverse' ? 'down' : 'up'),
+            UIx.badge(r.agreement + '/3 channels agree', r.agreement >= 2 ? 'up' : 'n')
+          ])
+        ])
+      ]),
+      el('div', { class: 'vd-bars' }, [
+        chanBar('Mechanism', r.scores.mechanism, 'A causal route through supply chains, geography or policy.'),
+        chanBar('Statistics', r.scores.statistical, 'Realised correlation of daily returns over the window.'),
+        chanBar('Narrative', r.scores.narrative, 'How often the wire treats them as one story.')
+      ]),
+      el('ul', { class: 'vd-read' }, r.read.map(function (line) { return el('li', { text: line }); })),
+      el('p', { class: 'note small', text: 'One channel on its own is thin. Mechanism without correlation means the link is dormant; correlation without mechanism is usually shared market beta and will break when the regime changes.' })
+    ]);
+  }
+
+  function chanBar(name, v, hint) {
+    return el('div', { class: 'chan', title: hint }, [
+      el('span', { class: 'chan-n', text: name }),
+      UIx.bar(v * 100, v > 0.55 ? 'up' : v > 0.3 ? 'warn' : 'n'),
+      el('b', { text: Math.round(v * 100) + '' })
+    ]);
+  }
+
+  function pathsPanel(r) {
+    if (!r.paths.length) return UIx.panel('Mechanism', { icon: '🧩' }, [UIx.empty('No route found within 5 hops')]);
+    return UIx.panel('Mechanism — how A reaches B', { icon: '🧩', class: 'p-paths', count: r.paths.length }, [
+      el('div', { class: 'paths' }, r.paths.map(function (p, i) {
+        return el('div', { class: 'path' + (i === 0 ? ' best' : '') }, [
+          el('div', { class: 'path-h' }, [
+            UIx.badge(p.hops + ' hop' + (p.hops === 1 ? '' : 's'), i === 0 ? 'up' : 'n'),
+            el('span', { class: 'path-w', text: 'strength ' + p.w.toFixed(3) })
+          ]),
+          el('div', { class: 'path-n' }, p.nodes.map(function (n, j) {
+            return el('span', { class: 'pn t-' + n.type }, [
+              el('b', { text: n.n }),
+              j < p.nodes.length - 1 ? el('u', { text: '→' }) : null
+            ]);
+          })),
+          el('ol', { class: 'path-why' }, p.edges.map(function (e) {
+            return el('li', {}, [el('i', { class: 'ek', text: e.kind }), ' ', e.why]);
+          }))
+        ]);
+      }))
+    ]);
+  }
+
+  function statsPanel(r) {
+    if (!r.stats) {
+      return UIx.panel('Statistics', { icon: '📈' }, [UIx.empty('No price proxy for one side', 'Countries and events are proxied by their listed leaders or export basket; some have neither.')]);
+    }
+    var s = r.stats;
+    return UIx.panel('Statistics — ' + r.days + ' day window', { icon: '📈', class: 'p-lstats' }, [
+      el('div', { class: 'grid4' }, [
+        UIx.stat('Correlation', s.corr.toFixed(3), { tone: UIx.tone(s.corr) }),
+        UIx.stat('Beta (A on B)', s.beta.toFixed(3)),
+        UIx.stat('Range', s.min.toFixed(2) + ' … ' + s.max.toFixed(2), { sub: s.stable ? 'stable' : 'regime-dependent', tone: s.stable ? 'up' : 'warn' }),
+        UIx.stat('Observations', String(s.n), { sub: s.window + '-day rolling' })
+      ]),
+      el('h4', { class: 'sd-sub', text: 'Rolling correlation' }),
+      UIx.canvasBox('', 150, function (cv) {
+        global.CHART.line(cv, s.rolling.map(function (x) { return x.c; }), { zero: 0, min: -1, max: 1, color: global.CHART.theme().accent });
+      }),
+      el('h4', { class: 'sd-sub', text: 'Lead / lag (correlation at each offset, days)' }),
+      UIx.canvasBox('', s.lags.length * 16 + 10, function (cv) {
+        global.CHART.hbars(cv, s.lags.map(function (x) {
+          return { k: (x.lag > 0 ? '+' : '') + x.lag + 'd', v: x.c };
+        }), { labelW: 44, rowH: 15, fmt: function (v) { return v.toFixed(2); } });
+      }),
+      el('p', { class: 'note small', text: 'Negative offsets mean A\'s move lines up best with B\'s move that many days later — i.e. A leads. With this few observations a small edge in the lag profile is noise; treat anything under about 0.2 as nothing.' })
+    ]);
+  }
+
+  function narrativePanel(r, world) {
+    var n = r.narrative;
+    var body = [
+      el('div', { class: 'grid3' }, [
+        UIx.stat('Stories touching both', String(n.count)),
+        UIx.stat('Co-occurrence lift', n.lift ? n.lift.toFixed(2) + '×' : '—', { tone: n.lift > 1.6 ? 'up' : 'n', sub: 'vs independence' }),
+        UIx.stat('Deal / trade / policy', String(n.deals.length), { tone: n.deals.length ? 'warn' : 'n' })
+      ])
+    ];
+    if (n.deals.length) {
+      body.push(el('h4', { class: 'sd-sub', text: 'Deals, trades and policy items connecting them' }));
+      body.push(el('div', { class: 'wire compact' }, n.deals.slice(0, 6).map(function (x) { return storyMini(x.s, world); })));
+    }
+    if (n.coStories.length) {
+      body.push(el('h4', { class: 'sd-sub', text: 'Everything else in the window' }));
+      body.push(el('div', { class: 'wire compact' }, n.coStories.slice(0, 10).map(function (x) { return storyMini(x.s, world); })));
+    } else {
+      body.push(UIx.empty('No story in the window mentions both'));
+    }
+    return UIx.panel('Narrative — are they being reported together?', { icon: '📰', class: 'p-narr' }, body);
+  }
+
+  function storyMini(s, world) {
+    return el('article', { class: 'st k-' + s.k }, [
+      el('div', { class: 'st-top' }, [
+        UIx.impactDots(s.imp),
+        el('span', { class: 'st-k', text: s.k }),
+        el('span', { class: 'st-src', text: s.src }),
+        UIx.simBadge(s),
+        el('span', { class: 'st-ago', text: F.ago(s.t) })
+      ]),
+      el('h4', { class: 'st-h', text: s.h }),
+      el('div', { class: 'st-tags' }, (s.countries || []).slice(0, 3).map(function (c) {
+        return UIx.countryChip(c, function (iso) { global.APP.go('desk', { focus: iso }); });
+      }))
+    ]);
+  }
+
+  /* ---------- scan ---------- */
+  function scanView(world) {
+    var r = global.LINKER.scan(st.scanQ);
+    if (r.error) return UIx.empty('Could not scan that', r.error);
+    var byType = {};
+    r.ranked.forEach(function (x) {
+      if (!x.node) return;
+      (byType[x.node.type] || (byType[x.node.type] = [])).push(x);
+    });
+    var TYPES = { ticker: 'Instruments', sector: 'Industries', country: 'Countries', factor: 'Macro factors', choke: 'Chokepoints', event: 'Events & mechanisms', macro: 'Macro instruments' };
+    var wrap = el('div', {});
+    wrap.appendChild(UIx.panel('Everything wired to ' + r.a.n, { icon: '🛰', class: 'p-scan' }, [
+      el('p', { class: 'note', text: 'Weighted spread through the structural graph, three hops out. Higher is a tighter link.' }),
+      el('div', { class: 'scan-cols' }, Object.keys(byType).map(function (t) {
+        return el('div', { class: 'scan-col' }, [
+          el('h4', { text: TYPES[t] || t }),
+          UIx.canvasBox('', Math.min(300, byType[t].slice(0, 12).length * 19 + 8), function (cv) {
+            global.CHART.hbars(cv, byType[t].slice(0, 12).map(function (x) { return { k: x.node.n, v: x.w }; }),
+              { labelW: 118, rowH: 18, neutral: true, fmt: function (v) { return v.toFixed(2); } });
+          }),
+          el('div', { class: 'sd-tags' }, byType[t].slice(0, 6).map(function (x) {
+            return el('button', {
+              class: 'chip', text: x.node.n.length > 22 ? x.node.n.slice(0, 21) + '…' : x.node.n,
+              onclick: function () { st.b = x.node.n; st.mode = 'link'; st.a = r.a.n; run(world); }
+            });
+          }))
+        ]);
+      }))
+    ]));
+    return wrap;
+  }
+
+  UIx.register('links', { mount: mount });
+})(window);
+
+
+/* ==== assets/js/view-signals.js ==== */
+/* Lumen Terminal — Signals: behaviour, exhaustion, positioning, event studies and alerts. */
+(function (global) {
+  'use strict';
+  var L = global.Lumen, U = global.UNIVERSE, MI = global.MICRO, A = global.ALERTS,
+      UIx = global.UI, el = L.el, F = L.F, M = L.M;
+
+  var st = { sym: 'CL=F', tf: '1d', days: 400, eventClass: 'oilspike', tab: 'read' };
+  var bodyEl = null, cache = null, curWorld = null;
+
+  /* This module is a section of the Analysis view rather than a view of its own: the host
+     supplies the symbol, the timeframe and the element to render into. */
+  function configure(p) {
+    if (!p) return;
+    if (p.sym) st.sym = p.sym;
+    if (p.tf) st.tf = p.tf;
+    if (p.days) st.days = p.days;
+    if (p.tab) st.tab = p.tab;
+  }
+  function renderInto(host, world, tab) {
+    curWorld = world;
+    if (tab) st.tab = tab;
+    bodyEl = host;
+    if (!cache || cache.key !== st.sym + '|' + st.tf + '|' + st.days) recompute(world);
+    else render(world);
+  }
+
+  function recompute(world) {
+    var bars = global.MARKET.bars(st.sym, st.tf, st.days, world);
+    cache = {
+      key: st.sym + '|' + st.tf + '|' + st.days,
+      bars: bars,
+      assess: MI.assess(st.sym, bars, world),
+      study: MI.eventStudy(bars, world, st.eventClass)
+    };
+    render(world);
+  }
+
+  function render(world) {
+    if (!bodyEl) return;
+    L.clear(bodyEl);
+    bodyEl.appendChild(caveat());
+    if (st.tab === 'read') renderRead(world);
+    else if (st.tab === 'anomalies') renderAnomalies(world);
+    else if (st.tab === 'events') renderEvents(world);
+    else renderAlerts(world);
+  }
+
+  function caveat() {
+    return el('div', { class: 'bt-banner tone-sim' }, [
+      UIx.badge('READ THIS', 'sim'),
+      el('span', {}, [
+        'These are patterns in price and volume. Bars carry no order book, no cancellations and no counterparty identity, so nothing here can establish that manipulation occurred — only that the shape is consistent with it, and most of these shapes also occur for ordinary reasons. Base rates come from overlapping windows on a single price path, so sample sizes overstate confidence. Every number below shows its n for that reason.'
+      ])
+    ]);
+  }
+
+  /* ---------- read ---------- */
+  function renderRead(world) {
+    var a = cache.assess, e = a.exhaustion, c = a.crowding;
+    if (!e) { bodyEl.appendChild(UIx.empty('Not enough history for ' + st.sym)); return; }
+    var q = global.MARKET.quote(st.sym, world);
+
+    bodyEl.appendChild(UIx.panel('Where this is in its own history', { icon: '📍', class: 'p-exh' }, [
+      el('div', { class: 'exh-head' }, [
+        el('div', { class: 'exh-gauge t-' + a.level }, [
+          el('b', { text: (a.risk * 100).toFixed(0) }),
+          el('span', { text: 'late-stage risk' })
+        ]),
+        el('div', { class: 'exh-t' }, [
+          el('h3', {}, [st.sym + ' ', el('i', { class: 'exh-px', text: F.num(e.price, 2) })]),
+          el('div', {}, [
+            UIx.badge((e.rank * 100).toFixed(0) + 'th percentile', e.rank > 0.85 ? 'warn' : 'n'),
+            UIx.badge(c ? c.label : '—', c && Math.abs(c.score) > 0.5 ? 'warn' : 'n'),
+            e.virgin ? UIx.badge('no precedent above', 'down') : null,
+            e.extendedBars >= 3 ? UIx.badge('extended ' + e.extendedBars + ' bars', 'warn') : null
+          ])
+        ])
+      ]),
+      el('div', { class: 'range-bar' }, [
+        el('div', { class: 'rb-track' }, [
+          el('i', { class: 'rb-fill', style: { width: (e.rank * 100) + '%' } }),
+          el('u', { class: 'rb-mark', style: { left: (e.rank * 100) + '%' } }),
+          /* the live price rides the marker so the label always points at where price actually is */
+          el('b', { class: 'rb-now', style: { left: M.clamp(e.rank * 100, 5, 95) + '%' }, text: F.num(e.price, 2) })
+        ]),
+        el('div', { class: 'rb-lbl' }, [
+          el('span', { text: F.num(e.low, 2) + '  low' }),
+          el('span', { text: 'high  ' + F.num(e.high, 2) })
+        ])
+      ]),
+      el('ul', { class: 'vd-read' }, e.read.map(function (line) { return el('li', { text: line }); })),
+      c ? el('p', { class: 'note', text: c.read }) : null
+    ]));
+
+    /* forward base rates */
+    bodyEl.appendChild(UIx.panel('What has happened from levels like this', { icon: '📊', class: 'p-fwd' }, [
+      UIx.table(
+        [{ t: 'Horizon' }, { t: 'n', align: 'r' }, { t: 'Went up', align: 'r' }, { t: 'Base rate', align: 'r' },
+         { t: 'Edge', align: 'r' }, { t: 'Median', align: 'r' }, { t: 'Up when right', align: 'r' }, { t: 'Down when wrong', align: 'r' }, { t: 'Payoff', align: 'r' }],
+        e.horizons.map(function (h) {
+          return [
+            '+' + h.h + ' bars',
+            { t: String(h.n), align: 'r', class: h.n < 15 ? 'thin' : '' },
+            { node: el('span', { class: h.pUp > 0.5 ? 'up' : 'down', text: h.pUp === null ? '—' : (h.pUp * 100).toFixed(0) + '%' }), align: 'r' },
+            { t: (h.baseUp * 100).toFixed(0) + '%', align: 'r' },
+            { node: el('span', { class: (h.edge || 0) > 0 ? 'up' : 'down', text: h.edge === null ? '—' : ((h.edge > 0 ? '+' : '') + (h.edge * 100).toFixed(0) + 'pts') }), align: 'r' },
+            { node: el('span', { class: h.median >= 0 ? 'up' : 'down', text: F.pct(h.median * 100, 2) }), align: 'r' },
+            { t: F.pct(h.medUp * 100, 1), align: 'r' },
+            { t: F.pct(h.medDn * 100, 1), align: 'r' },
+            { t: h.payoff === null ? '—' : h.payoff.toFixed(2) + '×', align: 'r' }
+          ];
+        })),
+      el('p', { class: 'note small', text: 'Rows with a small n are greyed. "Edge" is the conditional hit rate minus the unconditional one — if it is near zero, being at this level tells you nothing that being in this instrument does not already tell you. Payoff is median gain when right divided by median loss when wrong; a high hit rate with a payoff below 1 is still a losing setup.' })
+    ]));
+
+    /* chart with anomalies marked */
+    var marks = a.anomalies.map(function (ev) { return { i: ev.i, kind: ev.kind, dir: ev.dir, sev: ev.severity }; });
+    bodyEl.appendChild(UIx.panel(st.sym + ' with flagged bars', { icon: '📈', class: 'p-sigchart', bodyClass: 'nopad' }, [
+      UIx.canvasBox('big', 320, function (cv) {
+        global.CHART.candles(cv, cache.bars, { window: 200, marks: marks });
+      })
+    ]));
+  }
+
+  /* ---------- anomalies ---------- */
+  function renderAnomalies(world) {
+    var a = cache.assess;
+    var counts = {};
+    a.anomalies.forEach(function (e) { counts[e.kind] = (counts[e.kind] || 0) + 1; });
+
+    bodyEl.appendChild(UIx.panel('Detectors', { icon: '🧬', class: 'p-det' }, [
+      el('div', { class: 'det-grid' }, Object.keys(MI.DETECTORS).map(function (k) {
+        var d = MI.DETECTORS[k];
+        return el('div', { class: 'det' + (counts[k] ? ' hit' : '') }, [
+          el('div', { class: 'det-h' }, [
+            el('span', { class: 'det-i', text: d.icon }),
+            el('b', { text: d.n }),
+            el('span', { class: 'det-n', text: counts[k] ? counts[k] + ' flagged' : 'none' })
+          ]),
+          el('p', { text: d.d })
+        ]);
+      })),
+      a.pin ? el('div', { class: 'pin-note' }, [
+        el('b', { text: a.pin.icon + ' ' + a.pin.n + ': ' }), el('span', { text: a.pin.note })
+      ]) : null
+    ]));
+
+    bodyEl.appendChild(UIx.panel('Flagged bars', { icon: '🚩', class: 'p-flags', count: a.anomalies.length }, [
+      a.anomalies.length
+        ? UIx.table([{ t: 'When' }, { t: 'Pattern' }, { t: 'Bias' }, { t: 'Severity', align: 'r' }, { t: 'Price', align: 'r' }, { t: 'What the bar did' }],
+            a.anomalies.slice(0, 60).map(function (ev) {
+              return {
+                _class: ev.severity > 0.6 ? 'loss' : '',
+                cells: [
+                  new Date(ev.t).toISOString().slice(0, 16).replace('T', ' '),
+                  { node: el('span', {}, [ev.icon + ' ' + ev.n]) },
+                  { node: ev.dir === 0 ? el('span', { text: 'neutral' })
+                      : UIx.badge(ev.dir > 0 ? 'upward' : 'downward', ev.dir > 0 ? 'up' : 'down') },
+                  { node: UIx.bar(ev.severity * 100, ev.severity > 0.6 ? 'down' : 'warn'), align: 'r' },
+                  { t: F.num(ev.price, 2), align: 'r' },
+                  ev.note
+                ]
+              };
+            }))
+        : UIx.empty('Nothing flagged in this window', 'That is a normal result — these patterns are supposed to be rare.')
+    ]));
+  }
+
+  /* ---------- event studies ---------- */
+  function renderEvents(world) {
+    var s = cache.study;
+    var picker = el('div', { class: 'presets' }, Object.keys(MI.EVENT_CLASSES).map(function (k) {
+      return el('button', {
+        class: 'chip' + (k === st.eventClass ? ' on' : ''), text: MI.EVENT_CLASSES[k].n,
+        onclick: function () { st.eventClass = k; recompute(world); }
+      });
+    }));
+
+    bodyEl.appendChild(UIx.panel('After this kind of event, what did ' + st.sym + ' do?', { icon: '⏱', class: 'p-study' }, [
+      picker,
+      !s || !s.events
+        ? UIx.empty('No events of this class in the window')
+        : el('div', {}, [
+            el('div', { class: 'grid4' }, [
+              UIx.stat('Events found', String(s.events)),
+              UIx.stat('Class', s.name),
+              UIx.stat('Window', st.days + ' days'),
+              UIx.stat('Instrument', st.sym)
+            ]),
+            UIx.table([{ t: 'Horizon' }, { t: 'n', align: 'r' }, { t: 'Positive', align: 'r' }, { t: 'Base rate', align: 'r' },
+                       { t: 'Edge', align: 'r' }, { t: 'Median', align: 'r' }, { t: 'Mean', align: 'r' }, { t: 't-stat', align: 'r' },
+                       { t: 'Best', align: 'r' }, { t: 'Worst', align: 'r' }],
+              s.rows.map(function (r) {
+                return [
+                  '+' + r.h + ' bars',
+                  { t: String(r.n), align: 'r', class: r.n < 10 ? 'thin' : '' },
+                  { node: el('span', { class: r.pUp > 0.5 ? 'up' : 'down', text: r.pUp === null ? '—' : (r.pUp * 100).toFixed(0) + '%' }), align: 'r' },
+                  { t: (r.baseUp * 100).toFixed(0) + '%', align: 'r' },
+                  { node: el('span', { class: (r.edge || 0) > 0 ? 'up' : 'down', text: ((r.edge || 0) > 0 ? '+' : '') + ((r.edge || 0) * 100).toFixed(0) + 'pts' }), align: 'r' },
+                  { node: el('span', { class: r.median >= 0 ? 'up' : 'down', text: F.pct(r.median * 100, 2) }), align: 'r' },
+                  { t: F.pct(r.mean * 100, 2), align: 'r' },
+                  { node: el('span', { class: Math.abs(r.t) > 1.8 ? 'warn' : '', text: r.t.toFixed(2) }), align: 'r' },
+                  { t: F.pct(r.best * 100, 1), align: 'r' },
+                  { t: F.pct(r.worst * 100, 1), align: 'r' }
+                ];
+              })),
+            el('ul', { class: 'vd-read' }, (s.read || []).map(function (l) { return el('li', { text: l }); })),
+            el('p', { class: 'note small', text: 'This is the honest version of "people will buy after X". It measures what the instrument actually did after every event of that class in the window, and puts the unconditional rate beside it so a 55% hit rate cannot masquerade as an edge when the instrument rises 54% of the time anyway. The t-statistic assumes independent observations, which overlapping forward windows are not — so treat anything under about 2.5 as noise, not signal.' })
+          ])
+    ]));
+  }
+
+  /* ---------- alerts ---------- */
+  function renderAlerts(world) {
+    var log = A.history();
+
+    var addRow = el('div', { class: 'presets' }, Object.keys(A.KINDS).map(function (k) {
+      return el('button', {
+        class: 'chip', text: '+ ' + A.KINDS[k].n,
+        onclick: function () { A.add(k); render(world); }
+      });
+    }));
+
+    bodyEl.appendChild(UIx.panel('Alert rules', {
+      icon: '🔔', class: 'p-rules', count: A.all().length,
+      actions: [
+        el('button', { class: 'mini', text: A.canNotify() ? 'browser alerts on' : 'enable browser alerts', onclick: function () {
+          A.setNotify(true).then(function (ok) {
+            UIx.toast(ok ? 'Browser notifications enabled' : 'Permission denied — in-app alerts still work', ok ? 'up' : 'warn');
+            render(world);
+          });
+        } }),
+        el('button', { class: 'btn', text: 'Run checks now', onclick: function () {
+          var fired = A.evaluate(world);
+          UIx.toast(fired.length ? fired.length + ' alert(s) fired' : 'Checked every rule — nothing triggered', fired.length ? 'warn' : 'n');
+          render(world);
+        } })
+      ]
+    }, [
+      el('p', { class: 'note', text: 'Rules run whenever the world refreshes and every few minutes while this tab is open. There is no server behind this, so nothing fires while the tab is closed — if you need alerts overnight, the check has to run somewhere that stays up.' }),
+      addRow,
+      el('div', { class: 'rules' }, A.all().map(function (r) { return ruleRow(r, world); }))
+    ]));
+
+    bodyEl.appendChild(UIx.panel('Alert history', {
+      icon: '📜', class: 'p-alog', count: log.length,
+      actions: log.length ? [el('button', { class: 'mini', text: 'clear', onclick: function () { A.clearLog(); render(world); } })] : []
+    }, [
+      log.length
+        ? el('div', { class: 'alog' }, log.slice(0, 40).map(function (e) {
+            return el('div', { class: 'al t-' + e.tone, onclick: function () {
+              if (!e.action) return;
+              if (e.action.view === 'analysis' && e.action.sym) global.APP.go('analysis', { sym: e.action.sym, tab: 'read' });
+              else if (e.action.view === 'flows') global.APP.go('flows', e.action);
+              else global.APP.go(e.action.view || 'desk');
+            } }, [
+              el('div', { class: 'al-h' }, [
+                el('b', { text: e.title }),
+                el('span', { text: F.ago(e.t) + ' ago' })
+              ]),
+              el('p', { text: e.body })
+            ]);
+          }))
+        : UIx.empty('No alerts yet', 'Hit "Run checks now" to evaluate every rule against the current world.')
+    ]));
+  }
+
+  function ruleRow(r, world) {
+    var spec = A.KINDS[r.kind];
+    var wrap = el('div', { class: 'rule' + (r.enabled ? '' : ' off') });
+    wrap.appendChild(el('div', { class: 'rule-h' }, [
+      el('span', { class: 'det-i', text: spec.icon }),
+      el('b', { text: spec.n }),
+      el('label', { class: 'sw-t' }, [
+        el('input', { type: 'checkbox', checked: r.enabled ? 'checked' : null, onchange: function (e) {
+          A.update(r.id, { enabled: e.target.checked }); wrap.classList.toggle('off', !e.target.checked);
+        } }),
+        el('span', { text: 'on' })
+      ]),
+      el('button', { class: 'mini', text: 'remove', onclick: function () { A.remove(r.id); render(world); } })
+    ]));
+    var fields = el('div', { class: 'rule-f' });
+    spec.fields.forEach(function (f) {
+      var ctl;
+      if (f.type === 'num') {
+        ctl = UIx.number(r[f.k], function (v) { A.update(r.id, (function () { var o = {}; o[f.k] = v; return o; })()); }, { min: f.min, max: f.max, step: f.step });
+      } else if (f.type === 'pick') {
+        ctl = UIx.select(f.opts, r[f.k], function (v) { var o = {}; o[f.k] = v; A.update(r.id, o); });
+      } else if (f.type === 'country') {
+        ctl = UIx.select(Object.keys(U.COUNTRIES).map(function (c) { return { v: c, n: U.COUNTRIES[c].n }; }), r[f.k], function (v) { A.update(r.id, { country: v }); });
+      } else {
+        var i = el('input', { value: r[f.k] || '', spellcheck: 'false', onchange: function () { A.update(r.id, (function () { var o = {}; o[f.k] = i.value.trim().toUpperCase(); return o; })()); } });
+        ctl = i;
+      }
+      fields.appendChild(UIx.field(f.n, ctl));
+    });
+    fields.appendChild(UIx.field('Cooldown (h)', UIx.number(r.cooldownH || 12, function (v) { A.update(r.id, { cooldownH: v }); }, { min: 1, max: 168, step: 1 })));
+    wrap.appendChild(fields);
+    wrap.appendChild(el('p', { class: 'note small', text: spec.d }));
+    if (r.lastFired) wrap.appendChild(el('div', { class: 'rule-last', text: 'last fired ' + F.ago(r.lastFired) + ' ago' }));
+    return wrap;
+  }
+
+  global.SEC_SIGNALS = {
+    state: st, configure: configure, render: renderInto,
+    recompute: function (world) { recompute(world); },
+    invalidate: function () { cache = null; }
+  };
+})(window);
+
+
 /* ==== assets/js/view-backtest.js ==== */
 /* Lumen Terminal — Backtest Lab: fair value gaps, their statistics, and a strategy on top. */
 (function (global) {
@@ -7280,19 +8045,31 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
     imported: null, importName: null, period: 'month'
   };
   var cache = { bars: null, gaps: null, stats: null, res: null };
-  var bodyEl = null;
+  var bodyEl = null, curTab = 'gaps', curWorld = null;
 
-  function mount(world, params) {
-    if (params.sym) { st.sym = params.sym; st.imported = null; st.importName = null; }
-    if (params.tf) st.tf = params.tf;
-    if (params.days) st.days = params.days;
-    var root = el('div', { class: 'bt' });
-    root.appendChild(controls(world));
-    bodyEl = el('div', { class: 'bt-body', id: 'bt-body' });
-    root.appendChild(bodyEl);
-    recompute(world);
-    return root;
+  /* Section of the Analysis view: the host owns symbol, timeframe and period. */
+  function configure(p) {
+    if (!p) return;
+    if (p.sym && p.sym !== st.sym) { st.sym = p.sym; st.imported = null; st.importName = null; }
+    if (p.tf) st.tf = p.tf;
+    if (p.days) st.days = p.days;
   }
+  function renderInto(host, world, tab) {
+    curWorld = world;
+    curTab = tab || curTab;
+    bodyEl = host;
+    recompute(world);
+  }
+  function importCSV(bars, name) {
+    st.imported = bars; st.importName = name;
+    if (curWorld) recompute(curWorld);
+  }
+  function clearCSV() {
+    st.imported = null; st.importName = null;
+    if (curWorld) recompute(curWorld);
+  }
+  function opts() { return st.opts; }
+  function importedName() { return st.importName; }
 
   function bars(world) {
     if (st.imported) return st.imported;
@@ -7308,79 +8085,6 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
     render(world);
   }
 
-  /* ---------- controls ---------- */
-  function controls(world) {
-    var symIn = el('input', {
-      class: 'sym-in', value: st.sym, spellcheck: 'false',
-      onkeydown: function (e) { if (e.key === 'Enter') { st.sym = symIn.value.trim().toUpperCase(); st.imported = null; st.importName = null; recompute(world); } }
-    });
-
-    var o = st.opts;
-    function numOpt(k, label, opts, hint) {
-      return UIx.field(label, UIx.number(o[k], function (v) { o[k] = v; recompute(world); }, opts), hint);
-    }
-
-    var file = el('input', {
-      type: 'file', accept: '.csv,text/csv', style: { display: 'none' },
-      onchange: function (e) {
-        var f = e.target.files[0];
-        if (!f) return;
-        var rd = new FileReader();
-        rd.onload = function () {
-          try {
-            st.imported = B.parseCSV(String(rd.result));
-            st.importName = f.name;
-            UIx.toast('Loaded ' + st.imported.length + ' bars from ' + f.name, 'up', 5000);
-            recompute(world);
-          } catch (err) { UIx.toast(err.message, 'warn', 7000); }
-        };
-        rd.readAsText(f);
-      }
-    });
-
-    return UIx.panel('Setup', { icon: '🔬', class: 'p-btset' }, [
-      el('div', { class: 'bt-row1' }, [
-        UIx.field('Symbol', symIn),
-        UIx.field('Timeframe', UIx.toggleRow(global.TERMINAL.TFS, st.tf, function (v) { st.tf = v; recompute(world); })),
-        UIx.field('Period', UIx.toggleRow([
-          { v: 30, n: '1m' }, { v: 90, n: '3m' }, { v: 180, n: '6m' }, { v: 365, n: '1y' }
-        ], st.days, function (v) { st.days = +v; recompute(world); })),
-        el('div', { class: 'bt-import' }, [
-          el('button', { class: 'btn', text: '⭳ Import TradingView CSV', onclick: function () { file.click(); } }),
-          file,
-          st.importName ? el('span', { class: 'imp-name' }, [
-            UIx.badge('CSV: ' + st.importName, 'up'),
-            el('button', { class: 'mini', text: 'clear', onclick: function () { st.imported = null; st.importName = null; recompute(world); } })
-          ]) : null
-        ])
-      ]),
-      el('details', { class: 'bt-adv' }, [
-        el('summary', { text: 'Detection & strategy parameters' }),
-        el('div', { class: 'bt-grid' }, [
-          numOpt('minGapAtr', 'Min gap (× ATR)', { step: 0.05, min: 0 }, 'Ignore gaps smaller than this fraction of ATR.'),
-          numOpt('displacementAtr', 'Displacement (× ATR)', { step: 0.1, min: 0 }, 'Middle candle body must exceed this.'),
-          UIx.field('Require displacement', UIx.toggleRow([{ v: 'y', n: 'yes' }, { v: 'n', n: 'no' }], o.requireDisplacement ? 'y' : 'n',
-            function (v) { o.requireDisplacement = v === 'y'; recompute(world); })),
-          UIx.field('Fill rule', UIx.toggleRow([{ v: 'touch', n: 'touch' }, { v: 'half', n: '50%' }, { v: 'full', n: 'full' }], o.fillRule,
-            function (v) { o.fillRule = v; recompute(world); }), 'What counts as the gap being mitigated.'),
-          UIx.field('Trend filter', UIx.toggleRow([{ v: 'none', n: 'none' }, { v: 'ema50', n: 'EMA50' }, { v: 'ema200', n: 'EMA200' }], o.trendFilter,
-            function (v) { o.trendFilter = v; recompute(world); })),
-          UIx.field('Entry', UIx.toggleRow([{ v: 'edge', n: 'near edge' }, { v: 'mid', n: 'mid' }, { v: 'far', n: 'far edge' }], o.entry,
-            function (v) { o.entry = v; recompute(world); })),
-          numOpt('stopBufferAtr', 'Stop buffer (× ATR)', { step: 0.05, min: 0 }),
-          numOpt('rr', 'Target (R multiple)', { step: 0.25, min: 0.25 }),
-          numOpt('riskPct', 'Risk per trade (%)', { step: 0.1, min: 0.05 }),
-          numOpt('maxBarsInTrade', 'Max bars in trade', { step: 5, min: 3 }),
-          numOpt('maxAge', 'Gap lifespan (bars)', { step: 10, min: 5 }),
-          UIx.field('Session', UIx.toggleRow([{ v: 'all', n: 'all' }, { v: 'rth', n: 'RTH' }, { v: 'first2h', n: 'first 2h' }], o.sessionFilter,
-            function (v) { o.sessionFilter = v; recompute(world); })),
-          UIx.field('Shorts', UIx.toggleRow([{ v: 'y', n: 'on' }, { v: 'n', n: 'off' }], o.allowShorts ? 'y' : 'n',
-            function (v) { o.allowShorts = v === 'y'; recompute(world); }))
-        ])
-      ])
-    ]);
-  }
-
   /* ---------- render ---------- */
   function render(world) {
     var host = bodyEl;
@@ -7391,12 +8095,18 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
       return;
     }
     host.appendChild(dataBanner());
-    host.appendChild(chartPanel(world));
-    host.appendChild(el('div', { class: 'bt-cols' }, [gapStatsPanel(), whenPanel()]));
-    host.appendChild(strategyPanel(world));
-    host.appendChild(periodicPanel(world));
-    host.appendChild(sweepPanel(world));
-    host.appendChild(tradesPanel());
+    if (curTab === 'gaps') {
+      host.appendChild(chartPanel(world));
+      host.appendChild(el('div', { class: 'bt-cols' }, [gapStatsPanel(), whenPanel()]));
+    } else if (curTab === 'strategy') {
+      host.appendChild(chartPanel(world));
+      host.appendChild(strategyPanel(world));
+      host.appendChild(tradesPanel());
+    } else if (curTab === 'periodic') {
+      host.appendChild(periodicPanel(world));
+    } else if (curTab === 'sweep') {
+      host.appendChild(sweepPanel(world));
+    }
   }
 
   function dataBanner() {
@@ -7705,554 +8415,11 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
     ]);
   }
 
-  UIx.register('backtest', { mount: mount });
-})(window);
-
-
-/* ==== assets/js/view-links.js ==== */
-/* Lumen Terminal — Link Analysis. */
-(function (global) {
-  'use strict';
-  var L = global.Lumen, U = global.UNIVERSE, UIx = global.UI, el = L.el, F = L.F, M = L.M;
-
-  var st = { a: 'TSLA', b: 'CL=F', days: 90, mode: 'link', scanQ: 'hormuz' };
-  var bodyEl = null;
-
-  function mount(world, params) {
-    if (params.a) { st.a = params.a; st.mode = 'link'; }
-    if (params.b) st.b = params.b;
-    if (params.scan) { st.scanQ = params.scan; st.mode = 'scan'; }
-    var root = el('div', { class: 'links' });
-    root.appendChild(controls(world));
-    bodyEl = el('div', { class: 'links-body', id: 'links-body' });
-    root.appendChild(bodyEl);
-    run(world);
-    return root;
-  }
-
-  function controls(world) {
-    var ia = el('input', { class: 'ent-in', value: st.a, spellcheck: 'false', placeholder: 'TSLA, Iran, semis, hormuz…' });
-    var ib = el('input', { class: 'ent-in', value: st.b, spellcheck: 'false', placeholder: 'crude oil, US10Y, defense…' });
-    function go() { st.a = ia.value; st.b = ib.value; st.mode = 'link'; run(world); }
-    ia.addEventListener('keydown', function (e) { if (e.key === 'Enter') go(); });
-    ib.addEventListener('keydown', function (e) { if (e.key === 'Enter') go(); });
-
-    var scanIn = el('input', { class: 'ent-in', value: st.scanQ, spellcheck: 'false', placeholder: 'entity to expand' });
-    scanIn.addEventListener('keydown', function (e) { if (e.key === 'Enter') { st.scanQ = scanIn.value; st.mode = 'scan'; run(world); } });
-
-    var presets = [
-      ['TSLA', 'CL=F'], ['NVDA', 'Taiwan'], ['XOM', 'Iran'], ['LMT', 'russia_escalation'],
-      ['BTC', 'US10Y'], ['DAL', 'crude'], ['BHP', 'China'], ['NTR', 'wheat']
-    ];
-
-    return UIx.panel('Link two things', { icon: '🔗', class: 'p-linkset' }, [
-      el('div', { class: 'link-row' }, [
-        UIx.field('A', ia), el('span', { class: 'link-to', text: '↔' }), UIx.field('B', ib),
-        UIx.field('Window', UIx.toggleRow([{ v: 30, n: '30d' }, { v: 60, n: '60d' }, { v: 90, n: '90d' }, { v: 180, n: '180d' }], st.days,
-          function (v) { st.days = +v; run(world); })),
-        el('button', { class: 'btn primary', text: 'Analyse', onclick: go })
-      ]),
-      el('div', { class: 'presets' }, presets.map(function (p) {
-        return el('button', { class: 'chip', text: p[0] + ' ↔ ' + p[1], onclick: function () { ia.value = p[0]; ib.value = p[1]; go(); } });
-      })),
-      el('div', { class: 'link-row scan-row' }, [
-        UIx.field('Expand one entity', scanIn, 'Ranks everything in the graph by how tightly it is wired to this.'),
-        el('button', { class: 'btn', text: 'Scan', onclick: function () { st.scanQ = scanIn.value; st.mode = 'scan'; run(world); } })
-      ])
-    ]);
-  }
-
-  function run(world) {
-    var host = bodyEl;
-    if (!host) return;
-    L.clear(host);
-    if (st.mode === 'scan') { host.appendChild(scanView(world)); return; }
-    var r = global.LINKER.analyse(st.a, st.b, { world: world, days: st.days });
-    if (r.error) { host.appendChild(UIx.empty('Could not run that', r.error)); return; }
-    host.appendChild(verdictPanel(r));
-    host.appendChild(el('div', { class: 'links-cols' }, [pathsPanel(r), statsPanel(r)]));
-    host.appendChild(narrativePanel(r, world));
-  }
-
-  function verdictPanel(r) {
-    var tone = r.strength >= 62 ? 'up' : r.strength >= 38 ? 'warn' : 'n';
-    return UIx.panel('Verdict', { icon: '⚖', class: 'p-verdict' }, [
-      el('div', { class: 'vd-head' }, [
-        el('div', { class: 'vd-score t-' + tone }, [
-          el('b', { text: String(r.strength) }),
-          el('span', { text: '/100' })
-        ]),
-        el('div', { class: 'vd-t' }, [
-          el('h3', { text: r.a.n + '  ↔  ' + r.b.n }),
-          el('div', {}, [
-            UIx.badge(r.verdict, tone),
-            UIx.badge(r.direction + ' correlation', r.direction === 'inverse' ? 'down' : 'up'),
-            UIx.badge(r.agreement + '/3 channels agree', r.agreement >= 2 ? 'up' : 'n')
-          ])
-        ])
-      ]),
-      el('div', { class: 'vd-bars' }, [
-        chanBar('Mechanism', r.scores.mechanism, 'A causal route through supply chains, geography or policy.'),
-        chanBar('Statistics', r.scores.statistical, 'Realised correlation of daily returns over the window.'),
-        chanBar('Narrative', r.scores.narrative, 'How often the wire treats them as one story.')
-      ]),
-      el('ul', { class: 'vd-read' }, r.read.map(function (line) { return el('li', { text: line }); })),
-      el('p', { class: 'note small', text: 'One channel on its own is thin. Mechanism without correlation means the link is dormant; correlation without mechanism is usually shared market beta and will break when the regime changes.' })
-    ]);
-  }
-
-  function chanBar(name, v, hint) {
-    return el('div', { class: 'chan', title: hint }, [
-      el('span', { class: 'chan-n', text: name }),
-      UIx.bar(v * 100, v > 0.55 ? 'up' : v > 0.3 ? 'warn' : 'n'),
-      el('b', { text: Math.round(v * 100) + '' })
-    ]);
-  }
-
-  function pathsPanel(r) {
-    if (!r.paths.length) return UIx.panel('Mechanism', { icon: '🧩' }, [UIx.empty('No route found within 5 hops')]);
-    return UIx.panel('Mechanism — how A reaches B', { icon: '🧩', class: 'p-paths', count: r.paths.length }, [
-      el('div', { class: 'paths' }, r.paths.map(function (p, i) {
-        return el('div', { class: 'path' + (i === 0 ? ' best' : '') }, [
-          el('div', { class: 'path-h' }, [
-            UIx.badge(p.hops + ' hop' + (p.hops === 1 ? '' : 's'), i === 0 ? 'up' : 'n'),
-            el('span', { class: 'path-w', text: 'strength ' + p.w.toFixed(3) })
-          ]),
-          el('div', { class: 'path-n' }, p.nodes.map(function (n, j) {
-            return el('span', { class: 'pn t-' + n.type }, [
-              el('b', { text: n.n }),
-              j < p.nodes.length - 1 ? el('u', { text: '→' }) : null
-            ]);
-          })),
-          el('ol', { class: 'path-why' }, p.edges.map(function (e) {
-            return el('li', {}, [el('i', { class: 'ek', text: e.kind }), ' ', e.why]);
-          }))
-        ]);
-      }))
-    ]);
-  }
-
-  function statsPanel(r) {
-    if (!r.stats) {
-      return UIx.panel('Statistics', { icon: '📈' }, [UIx.empty('No price proxy for one side', 'Countries and events are proxied by their listed leaders or export basket; some have neither.')]);
-    }
-    var s = r.stats;
-    return UIx.panel('Statistics — ' + r.days + ' day window', { icon: '📈', class: 'p-lstats' }, [
-      el('div', { class: 'grid4' }, [
-        UIx.stat('Correlation', s.corr.toFixed(3), { tone: UIx.tone(s.corr) }),
-        UIx.stat('Beta (A on B)', s.beta.toFixed(3)),
-        UIx.stat('Range', s.min.toFixed(2) + ' … ' + s.max.toFixed(2), { sub: s.stable ? 'stable' : 'regime-dependent', tone: s.stable ? 'up' : 'warn' }),
-        UIx.stat('Observations', String(s.n), { sub: s.window + '-day rolling' })
-      ]),
-      el('h4', { class: 'sd-sub', text: 'Rolling correlation' }),
-      UIx.canvasBox('', 150, function (cv) {
-        global.CHART.line(cv, s.rolling.map(function (x) { return x.c; }), { zero: 0, min: -1, max: 1, color: global.CHART.theme().accent });
-      }),
-      el('h4', { class: 'sd-sub', text: 'Lead / lag (correlation at each offset, days)' }),
-      UIx.canvasBox('', s.lags.length * 16 + 10, function (cv) {
-        global.CHART.hbars(cv, s.lags.map(function (x) {
-          return { k: (x.lag > 0 ? '+' : '') + x.lag + 'd', v: x.c };
-        }), { labelW: 44, rowH: 15, fmt: function (v) { return v.toFixed(2); } });
-      }),
-      el('p', { class: 'note small', text: 'Negative offsets mean A\'s move lines up best with B\'s move that many days later — i.e. A leads. With this few observations a small edge in the lag profile is noise; treat anything under about 0.2 as nothing.' })
-    ]);
-  }
-
-  function narrativePanel(r, world) {
-    var n = r.narrative;
-    var body = [
-      el('div', { class: 'grid3' }, [
-        UIx.stat('Stories touching both', String(n.count)),
-        UIx.stat('Co-occurrence lift', n.lift ? n.lift.toFixed(2) + '×' : '—', { tone: n.lift > 1.6 ? 'up' : 'n', sub: 'vs independence' }),
-        UIx.stat('Deal / trade / policy', String(n.deals.length), { tone: n.deals.length ? 'warn' : 'n' })
-      ])
-    ];
-    if (n.deals.length) {
-      body.push(el('h4', { class: 'sd-sub', text: 'Deals, trades and policy items connecting them' }));
-      body.push(el('div', { class: 'wire compact' }, n.deals.slice(0, 6).map(function (x) { return storyMini(x.s, world); })));
-    }
-    if (n.coStories.length) {
-      body.push(el('h4', { class: 'sd-sub', text: 'Everything else in the window' }));
-      body.push(el('div', { class: 'wire compact' }, n.coStories.slice(0, 10).map(function (x) { return storyMini(x.s, world); })));
-    } else {
-      body.push(UIx.empty('No story in the window mentions both'));
-    }
-    return UIx.panel('Narrative — are they being reported together?', { icon: '📰', class: 'p-narr' }, body);
-  }
-
-  function storyMini(s, world) {
-    return el('article', { class: 'st k-' + s.k }, [
-      el('div', { class: 'st-top' }, [
-        UIx.impactDots(s.imp),
-        el('span', { class: 'st-k', text: s.k }),
-        el('span', { class: 'st-src', text: s.src }),
-        UIx.simBadge(s),
-        el('span', { class: 'st-ago', text: F.ago(s.t) })
-      ]),
-      el('h4', { class: 'st-h', text: s.h }),
-      el('div', { class: 'st-tags' }, (s.countries || []).slice(0, 3).map(function (c) {
-        return UIx.countryChip(c, function (iso) { global.APP.go('desk', { focus: iso }); });
-      }))
-    ]);
-  }
-
-  /* ---------- scan ---------- */
-  function scanView(world) {
-    var r = global.LINKER.scan(st.scanQ);
-    if (r.error) return UIx.empty('Could not scan that', r.error);
-    var byType = {};
-    r.ranked.forEach(function (x) {
-      if (!x.node) return;
-      (byType[x.node.type] || (byType[x.node.type] = [])).push(x);
-    });
-    var TYPES = { ticker: 'Instruments', sector: 'Industries', country: 'Countries', factor: 'Macro factors', choke: 'Chokepoints', event: 'Events & mechanisms', macro: 'Macro instruments' };
-    var wrap = el('div', {});
-    wrap.appendChild(UIx.panel('Everything wired to ' + r.a.n, { icon: '🛰', class: 'p-scan' }, [
-      el('p', { class: 'note', text: 'Weighted spread through the structural graph, three hops out. Higher is a tighter link.' }),
-      el('div', { class: 'scan-cols' }, Object.keys(byType).map(function (t) {
-        return el('div', { class: 'scan-col' }, [
-          el('h4', { text: TYPES[t] || t }),
-          UIx.canvasBox('', Math.min(300, byType[t].slice(0, 12).length * 19 + 8), function (cv) {
-            global.CHART.hbars(cv, byType[t].slice(0, 12).map(function (x) { return { k: x.node.n, v: x.w }; }),
-              { labelW: 118, rowH: 18, neutral: true, fmt: function (v) { return v.toFixed(2); } });
-          }),
-          el('div', { class: 'sd-tags' }, byType[t].slice(0, 6).map(function (x) {
-            return el('button', {
-              class: 'chip', text: x.node.n.length > 22 ? x.node.n.slice(0, 21) + '…' : x.node.n,
-              onclick: function () { st.b = x.node.n; st.mode = 'link'; st.a = r.a.n; run(world); }
-            });
-          }))
-        ]);
-      }))
-    ]));
-    return wrap;
-  }
-
-  UIx.register('links', { mount: mount });
-})(window);
-
-
-/* ==== assets/js/view-signals.js ==== */
-/* Lumen Terminal — Signals: behaviour, exhaustion, positioning, event studies and alerts. */
-(function (global) {
-  'use strict';
-  var L = global.Lumen, U = global.UNIVERSE, MI = global.MICRO, A = global.ALERTS,
-      UIx = global.UI, el = L.el, F = L.F, M = L.M;
-
-  var st = { sym: 'CL=F', tf: '1d', days: 400, eventClass: 'oilspike', tab: 'read' };
-  var bodyEl = null, cache = null;
-
-  function mount(world, params) {
-    if (params.sym) st.sym = params.sym;
-    if (params.tab) st.tab = params.tab;
-    var root = el('div', { class: 'sig' });
-    root.appendChild(controls(world));
-    bodyEl = el('div', { id: 'sig-body' });
-    root.appendChild(bodyEl);
-    recompute(world);
-    return root;
-  }
-
-  function recompute(world) {
-    var bars = global.MARKET.bars(st.sym, st.tf, st.days, world);
-    cache = {
-      bars: bars,
-      assess: MI.assess(st.sym, bars, world),
-      study: MI.eventStudy(bars, world, st.eventClass)
-    };
-    render(world);
-  }
-
-  function controls(world) {
-    var symIn = el('input', { class: 'sym-in', value: st.sym, spellcheck: 'false' });
-    symIn.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') { st.sym = symIn.value.trim().toUpperCase(); recompute(world); }
-    });
-    return UIx.panel('Behaviour scan', { icon: '🔍', class: 'p-sigset' }, [
-      el('div', { class: 'sig-ctl' }, [
-        UIx.field('Symbol', symIn),
-        UIx.field('Timeframe', UIx.toggleRow(['15m', '1h', '4h', '1d'], st.tf, function (v) { st.tf = v; recompute(world); })),
-        UIx.field('History', UIx.toggleRow([
-          { v: 120, n: '4m' }, { v: 250, n: '8m' }, { v: 400, n: '13m' }, { v: 730, n: '2y' }
-        ], st.days, function (v) { st.days = +v; recompute(world); })),
-        UIx.field('View', UIx.toggleRow([
-          { v: 'read', n: 'Read' }, { v: 'anomalies', n: 'Anomalies' },
-          { v: 'events', n: 'Event studies' }, { v: 'alerts', n: 'Alerts' }
-        ], st.tab, function (v) { st.tab = v; render(world); }))
-      ]),
-      el('div', { class: 'presets' }, ['CL=F', 'NVDA', 'SPY', 'GC=F', 'BTC', 'XOM', 'TSLA', 'BKW.AX'].map(function (t) {
-        return el('button', { class: 'chip' + (t === st.sym ? ' on' : ''), text: t, onclick: function () { st.sym = t; symIn.value = t; recompute(world); } });
-      }))
-    ]);
-  }
-
-  function render(world) {
-    if (!bodyEl) return;
-    L.clear(bodyEl);
-    bodyEl.appendChild(caveat());
-    if (st.tab === 'read') renderRead(world);
-    else if (st.tab === 'anomalies') renderAnomalies(world);
-    else if (st.tab === 'events') renderEvents(world);
-    else renderAlerts(world);
-  }
-
-  function caveat() {
-    return el('div', { class: 'bt-banner tone-sim' }, [
-      UIx.badge('READ THIS', 'sim'),
-      el('span', {}, [
-        'These are patterns in price and volume. Bars carry no order book, no cancellations and no counterparty identity, so nothing here can establish that manipulation occurred — only that the shape is consistent with it, and most of these shapes also occur for ordinary reasons. Base rates come from overlapping windows on a single price path, so sample sizes overstate confidence. Every number below shows its n for that reason.'
-      ])
-    ]);
-  }
-
-  /* ---------- read ---------- */
-  function renderRead(world) {
-    var a = cache.assess, e = a.exhaustion, c = a.crowding;
-    if (!e) { bodyEl.appendChild(UIx.empty('Not enough history for ' + st.sym)); return; }
-    var q = global.MARKET.quote(st.sym, world);
-
-    bodyEl.appendChild(UIx.panel('Where this is in its own history', { icon: '📍', class: 'p-exh' }, [
-      el('div', { class: 'exh-head' }, [
-        el('div', { class: 'exh-gauge t-' + a.level }, [
-          el('b', { text: (a.risk * 100).toFixed(0) }),
-          el('span', { text: 'late-stage risk' })
-        ]),
-        el('div', { class: 'exh-t' }, [
-          el('h3', {}, [st.sym + ' ', el('i', { class: 'exh-px', text: F.num(e.price, 2) })]),
-          el('div', {}, [
-            UIx.badge((e.rank * 100).toFixed(0) + 'th percentile', e.rank > 0.85 ? 'warn' : 'n'),
-            UIx.badge(c ? c.label : '—', c && Math.abs(c.score) > 0.5 ? 'warn' : 'n'),
-            e.virgin ? UIx.badge('no precedent above', 'down') : null,
-            e.extendedBars >= 3 ? UIx.badge('extended ' + e.extendedBars + ' bars', 'warn') : null
-          ])
-        ])
-      ]),
-      el('div', { class: 'range-bar' }, [
-        el('div', { class: 'rb-track' }, [
-          el('i', { class: 'rb-fill', style: { width: (e.rank * 100) + '%' } }),
-          el('u', { class: 'rb-mark', style: { left: (e.rank * 100) + '%' } }),
-          /* the live price rides the marker so the label always points at where price actually is */
-          el('b', { class: 'rb-now', style: { left: M.clamp(e.rank * 100, 5, 95) + '%' }, text: F.num(e.price, 2) })
-        ]),
-        el('div', { class: 'rb-lbl' }, [
-          el('span', { text: F.num(e.low, 2) + '  low' }),
-          el('span', { text: 'high  ' + F.num(e.high, 2) })
-        ])
-      ]),
-      el('ul', { class: 'vd-read' }, e.read.map(function (line) { return el('li', { text: line }); })),
-      c ? el('p', { class: 'note', text: c.read }) : null
-    ]));
-
-    /* forward base rates */
-    bodyEl.appendChild(UIx.panel('What has happened from levels like this', { icon: '📊', class: 'p-fwd' }, [
-      UIx.table(
-        [{ t: 'Horizon' }, { t: 'n', align: 'r' }, { t: 'Went up', align: 'r' }, { t: 'Base rate', align: 'r' },
-         { t: 'Edge', align: 'r' }, { t: 'Median', align: 'r' }, { t: 'Up when right', align: 'r' }, { t: 'Down when wrong', align: 'r' }, { t: 'Payoff', align: 'r' }],
-        e.horizons.map(function (h) {
-          return [
-            '+' + h.h + ' bars',
-            { t: String(h.n), align: 'r', class: h.n < 15 ? 'thin' : '' },
-            { node: el('span', { class: h.pUp > 0.5 ? 'up' : 'down', text: h.pUp === null ? '—' : (h.pUp * 100).toFixed(0) + '%' }), align: 'r' },
-            { t: (h.baseUp * 100).toFixed(0) + '%', align: 'r' },
-            { node: el('span', { class: (h.edge || 0) > 0 ? 'up' : 'down', text: h.edge === null ? '—' : ((h.edge > 0 ? '+' : '') + (h.edge * 100).toFixed(0) + 'pts') }), align: 'r' },
-            { node: el('span', { class: h.median >= 0 ? 'up' : 'down', text: F.pct(h.median * 100, 2) }), align: 'r' },
-            { t: F.pct(h.medUp * 100, 1), align: 'r' },
-            { t: F.pct(h.medDn * 100, 1), align: 'r' },
-            { t: h.payoff === null ? '—' : h.payoff.toFixed(2) + '×', align: 'r' }
-          ];
-        })),
-      el('p', { class: 'note small', text: 'Rows with a small n are greyed. "Edge" is the conditional hit rate minus the unconditional one — if it is near zero, being at this level tells you nothing that being in this instrument does not already tell you. Payoff is median gain when right divided by median loss when wrong; a high hit rate with a payoff below 1 is still a losing setup.' })
-    ]));
-
-    /* chart with anomalies marked */
-    var marks = a.anomalies.map(function (ev) { return { i: ev.i, kind: ev.kind, dir: ev.dir, sev: ev.severity }; });
-    bodyEl.appendChild(UIx.panel(st.sym + ' with flagged bars', { icon: '📈', class: 'p-sigchart', bodyClass: 'nopad' }, [
-      UIx.canvasBox('big', 320, function (cv) {
-        global.CHART.candles(cv, cache.bars, { window: 200, marks: marks });
-      })
-    ]));
-  }
-
-  /* ---------- anomalies ---------- */
-  function renderAnomalies(world) {
-    var a = cache.assess;
-    var counts = {};
-    a.anomalies.forEach(function (e) { counts[e.kind] = (counts[e.kind] || 0) + 1; });
-
-    bodyEl.appendChild(UIx.panel('Detectors', { icon: '🧬', class: 'p-det' }, [
-      el('div', { class: 'det-grid' }, Object.keys(MI.DETECTORS).map(function (k) {
-        var d = MI.DETECTORS[k];
-        return el('div', { class: 'det' + (counts[k] ? ' hit' : '') }, [
-          el('div', { class: 'det-h' }, [
-            el('span', { class: 'det-i', text: d.icon }),
-            el('b', { text: d.n }),
-            el('span', { class: 'det-n', text: counts[k] ? counts[k] + ' flagged' : 'none' })
-          ]),
-          el('p', { text: d.d })
-        ]);
-      })),
-      a.pin ? el('div', { class: 'pin-note' }, [
-        el('b', { text: a.pin.icon + ' ' + a.pin.n + ': ' }), el('span', { text: a.pin.note })
-      ]) : null
-    ]));
-
-    bodyEl.appendChild(UIx.panel('Flagged bars', { icon: '🚩', class: 'p-flags', count: a.anomalies.length }, [
-      a.anomalies.length
-        ? UIx.table([{ t: 'When' }, { t: 'Pattern' }, { t: 'Bias' }, { t: 'Severity', align: 'r' }, { t: 'Price', align: 'r' }, { t: 'What the bar did' }],
-            a.anomalies.slice(0, 60).map(function (ev) {
-              return {
-                _class: ev.severity > 0.6 ? 'loss' : '',
-                cells: [
-                  new Date(ev.t).toISOString().slice(0, 16).replace('T', ' '),
-                  { node: el('span', {}, [ev.icon + ' ' + ev.n]) },
-                  { node: ev.dir === 0 ? el('span', { text: 'neutral' })
-                      : UIx.badge(ev.dir > 0 ? 'upward' : 'downward', ev.dir > 0 ? 'up' : 'down') },
-                  { node: UIx.bar(ev.severity * 100, ev.severity > 0.6 ? 'down' : 'warn'), align: 'r' },
-                  { t: F.num(ev.price, 2), align: 'r' },
-                  ev.note
-                ]
-              };
-            }))
-        : UIx.empty('Nothing flagged in this window', 'That is a normal result — these patterns are supposed to be rare.')
-    ]));
-  }
-
-  /* ---------- event studies ---------- */
-  function renderEvents(world) {
-    var s = cache.study;
-    var picker = el('div', { class: 'presets' }, Object.keys(MI.EVENT_CLASSES).map(function (k) {
-      return el('button', {
-        class: 'chip' + (k === st.eventClass ? ' on' : ''), text: MI.EVENT_CLASSES[k].n,
-        onclick: function () { st.eventClass = k; recompute(world); }
-      });
-    }));
-
-    bodyEl.appendChild(UIx.panel('After this kind of event, what did ' + st.sym + ' do?', { icon: '⏱', class: 'p-study' }, [
-      picker,
-      !s || !s.events
-        ? UIx.empty('No events of this class in the window')
-        : el('div', {}, [
-            el('div', { class: 'grid4' }, [
-              UIx.stat('Events found', String(s.events)),
-              UIx.stat('Class', s.name),
-              UIx.stat('Window', st.days + ' days'),
-              UIx.stat('Instrument', st.sym)
-            ]),
-            UIx.table([{ t: 'Horizon' }, { t: 'n', align: 'r' }, { t: 'Positive', align: 'r' }, { t: 'Base rate', align: 'r' },
-                       { t: 'Edge', align: 'r' }, { t: 'Median', align: 'r' }, { t: 'Mean', align: 'r' }, { t: 't-stat', align: 'r' },
-                       { t: 'Best', align: 'r' }, { t: 'Worst', align: 'r' }],
-              s.rows.map(function (r) {
-                return [
-                  '+' + r.h + ' bars',
-                  { t: String(r.n), align: 'r', class: r.n < 10 ? 'thin' : '' },
-                  { node: el('span', { class: r.pUp > 0.5 ? 'up' : 'down', text: r.pUp === null ? '—' : (r.pUp * 100).toFixed(0) + '%' }), align: 'r' },
-                  { t: (r.baseUp * 100).toFixed(0) + '%', align: 'r' },
-                  { node: el('span', { class: (r.edge || 0) > 0 ? 'up' : 'down', text: ((r.edge || 0) > 0 ? '+' : '') + ((r.edge || 0) * 100).toFixed(0) + 'pts' }), align: 'r' },
-                  { node: el('span', { class: r.median >= 0 ? 'up' : 'down', text: F.pct(r.median * 100, 2) }), align: 'r' },
-                  { t: F.pct(r.mean * 100, 2), align: 'r' },
-                  { node: el('span', { class: Math.abs(r.t) > 1.8 ? 'warn' : '', text: r.t.toFixed(2) }), align: 'r' },
-                  { t: F.pct(r.best * 100, 1), align: 'r' },
-                  { t: F.pct(r.worst * 100, 1), align: 'r' }
-                ];
-              })),
-            el('ul', { class: 'vd-read' }, (s.read || []).map(function (l) { return el('li', { text: l }); })),
-            el('p', { class: 'note small', text: 'This is the honest version of "people will buy after X". It measures what the instrument actually did after every event of that class in the window, and puts the unconditional rate beside it so a 55% hit rate cannot masquerade as an edge when the instrument rises 54% of the time anyway. The t-statistic assumes independent observations, which overlapping forward windows are not — so treat anything under about 2.5 as noise, not signal.' })
-          ])
-    ]));
-  }
-
-  /* ---------- alerts ---------- */
-  function renderAlerts(world) {
-    var log = A.history();
-
-    var addRow = el('div', { class: 'presets' }, Object.keys(A.KINDS).map(function (k) {
-      return el('button', {
-        class: 'chip', text: '+ ' + A.KINDS[k].n,
-        onclick: function () { A.add(k); render(world); }
-      });
-    }));
-
-    bodyEl.appendChild(UIx.panel('Alert rules', {
-      icon: '🔔', class: 'p-rules', count: A.all().length,
-      actions: [
-        el('button', { class: 'mini', text: A.canNotify() ? 'browser alerts on' : 'enable browser alerts', onclick: function () {
-          A.setNotify(true).then(function (ok) {
-            UIx.toast(ok ? 'Browser notifications enabled' : 'Permission denied — in-app alerts still work', ok ? 'up' : 'warn');
-            render(world);
-          });
-        } }),
-        el('button', { class: 'btn', text: 'Run checks now', onclick: function () {
-          var fired = A.evaluate(world);
-          UIx.toast(fired.length ? fired.length + ' alert(s) fired' : 'Checked every rule — nothing triggered', fired.length ? 'warn' : 'n');
-          render(world);
-        } })
-      ]
-    }, [
-      el('p', { class: 'note', text: 'Rules run whenever the world refreshes and every few minutes while this tab is open. There is no server behind this, so nothing fires while the tab is closed — if you need alerts overnight, the check has to run somewhere that stays up.' }),
-      addRow,
-      el('div', { class: 'rules' }, A.all().map(function (r) { return ruleRow(r, world); }))
-    ]));
-
-    bodyEl.appendChild(UIx.panel('Alert history', {
-      icon: '📜', class: 'p-alog', count: log.length,
-      actions: log.length ? [el('button', { class: 'mini', text: 'clear', onclick: function () { A.clearLog(); render(world); } })] : []
-    }, [
-      log.length
-        ? el('div', { class: 'alog' }, log.slice(0, 40).map(function (e) {
-            return el('div', { class: 'al t-' + e.tone, onclick: function () {
-              if (!e.action) return;
-              if (e.action.view === 'signals' && e.action.sym) { st.sym = e.action.sym; recompute(world); }
-              else if (e.action.view === 'mainstreet') global.APP.go('mainstreet', e.action);
-              else global.APP.go(e.action.view || 'desk');
-            } }, [
-              el('div', { class: 'al-h' }, [
-                el('b', { text: e.title }),
-                el('span', { text: F.ago(e.t) + ' ago' })
-              ]),
-              el('p', { text: e.body })
-            ]);
-          }))
-        : UIx.empty('No alerts yet', 'Hit "Run checks now" to evaluate every rule against the current world.')
-    ]));
-  }
-
-  function ruleRow(r, world) {
-    var spec = A.KINDS[r.kind];
-    var wrap = el('div', { class: 'rule' + (r.enabled ? '' : ' off') });
-    wrap.appendChild(el('div', { class: 'rule-h' }, [
-      el('span', { class: 'det-i', text: spec.icon }),
-      el('b', { text: spec.n }),
-      el('label', { class: 'sw-t' }, [
-        el('input', { type: 'checkbox', checked: r.enabled ? 'checked' : null, onchange: function (e) {
-          A.update(r.id, { enabled: e.target.checked }); wrap.classList.toggle('off', !e.target.checked);
-        } }),
-        el('span', { text: 'on' })
-      ]),
-      el('button', { class: 'mini', text: 'remove', onclick: function () { A.remove(r.id); render(world); } })
-    ]));
-    var fields = el('div', { class: 'rule-f' });
-    spec.fields.forEach(function (f) {
-      var ctl;
-      if (f.type === 'num') {
-        ctl = UIx.number(r[f.k], function (v) { A.update(r.id, (function () { var o = {}; o[f.k] = v; return o; })()); }, { min: f.min, max: f.max, step: f.step });
-      } else if (f.type === 'pick') {
-        ctl = UIx.select(f.opts, r[f.k], function (v) { var o = {}; o[f.k] = v; A.update(r.id, o); });
-      } else if (f.type === 'country') {
-        ctl = UIx.select(Object.keys(U.COUNTRIES).map(function (c) { return { v: c, n: U.COUNTRIES[c].n }; }), r[f.k], function (v) { A.update(r.id, { country: v }); });
-      } else {
-        var i = el('input', { value: r[f.k] || '', spellcheck: 'false', onchange: function () { A.update(r.id, (function () { var o = {}; o[f.k] = i.value.trim().toUpperCase(); return o; })()); } });
-        ctl = i;
-      }
-      fields.appendChild(UIx.field(f.n, ctl));
-    });
-    fields.appendChild(UIx.field('Cooldown (h)', UIx.number(r.cooldownH || 12, function (v) { A.update(r.id, { cooldownH: v }); }, { min: 1, max: 168, step: 1 })));
-    wrap.appendChild(fields);
-    wrap.appendChild(el('p', { class: 'note small', text: spec.d }));
-    if (r.lastFired) wrap.appendChild(el('div', { class: 'rule-last', text: 'last fired ' + F.ago(r.lastFired) + ' ago' }));
-    return wrap;
-  }
-
-  UIx.register('signals', { mount: mount });
+  global.SEC_BACKTEST = {
+    state: st, configure: configure, render: renderInto,
+    importCSV: importCSV, clearCSV: clearCSV, opts: opts, importedName: importedName,
+    recompute: function (world) { recompute(world); }
+  };
 })(window);
 
 
@@ -8266,31 +8433,28 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
   var st = { tab: 'costs', country: 'AU', playbook: 'flood', day: 7 };
   var bodyEl = null;
 
-  function mount(world, params) {
-    if (params.playbook) { st.playbook = params.playbook; st.tab = 'disaster'; }
-    if (params.country) st.country = params.country;
-    if (params.tab) st.tab = params.tab;
-    var root = el('div', { class: 'ms' });
-    root.appendChild(controls(world));
-    bodyEl = el('div', { id: 'ms-body' });
-    root.appendChild(bodyEl);
-    render(world);
-    return root;
+  function configure(p) {
+    if (!p) return;
+    if (p.playbook) { st.playbook = p.playbook; st.tab = 'disaster'; }
+    if (p.country) st.country = p.country;
+    if (p.tab) st.tab = p.tab;
   }
-
-  function controls(world) {
-    return UIx.panel('Main Street', {
-      icon: '🏘', class: 'p-msset',
-      actions: [UIx.toggleRow([
-        { v: 'costs', n: 'Cost of living' }, { v: 'disaster', n: 'Disaster response' }
-      ], st.tab, function (v) { st.tab = v; render(world); })]
-    }, [
-      el('div', { class: 'ms-ctl' }, [
-        UIx.field('Market', UIx.toggleRow([
-          { v: 'AU', n: 'Australia' }, { v: 'US', n: 'United States' }
-        ], st.country, function (v) { st.country = v; render(world); }),
-          'Picks resolve to the companies listed in that market. Australia is covered in depth because the building-materials and insurance chain there is unusually concentrated in a few listed names.')
-      ])
+  function renderInto(host, world, tab) {
+    if (tab) st.tab = tab;
+    bodyEl = host;
+    L.clear(host);
+    host.appendChild(marketPicker(world));
+    var body = el('div', {});
+    host.appendChild(body);
+    bodyEl = body;
+    render(world);
+  }
+  function marketPicker(world) {
+    return el('div', { class: 'ms-ctl' }, [
+      UIx.field('Market', UIx.toggleRow([
+        { v: 'AU', n: 'Australia' }, { v: 'US', n: 'United States' }
+      ], st.country, function (v) { st.country = v; render(world); }),
+        'Picks resolve to the companies listed in that market. Australia is covered in depth because the building-materials and insurance chain there is unusually concentrated in a few listed names.')
     ]);
   }
 
@@ -8513,7 +8677,7 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
     return f(d[0]) + ' – ' + f(d[1]);
   }
 
-  UIx.register('mainstreet', { mount: mount });
+  global.SEC_MAINSTREET = { state: st, configure: configure, render: renderInto };
 })(window);
 
 
@@ -8526,26 +8690,26 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
   var st = { hours: 24, chain: 'ALL', kind: 'ALL', asset: null, tab: 'onchain' };
   var bodyEl = null;
 
-  function mount(world, params) {
-    if (params.asset) st.asset = params.asset;
-    var root = el('div', { class: 'whales' });
-    root.appendChild(UIx.panel('Flows', {
-      icon: '🐋', class: 'p-wtabs',
-      actions: [UIx.toggleRow([{ v: 'onchain', n: 'On-chain' }, { v: 'inst', n: 'Institutional' }, { v: 'wallets', n: 'Tracked wallets' }], st.tab,
-        function (v) { st.tab = v; render(world); })]
-    }, [
-      el('div', { class: 'w-filters' }, [
-        UIx.toggleRow([{ v: 24, n: '24h' }, { v: 72, n: '3d' }, { v: 168, n: '7d' }, { v: 720, n: '30d' }], st.hours, function (v) { st.hours = +v; render(world); }),
-        UIx.toggleRow([{ v: 'ALL', n: 'all chains' }].concat(W.CHAINS.map(function (c) { return { v: c, n: c }; })), st.chain, function (v) { st.chain = v; render(world); }),
-        UIx.toggleRow([{ v: 'ALL', n: 'all flows' }, { v: 'inflow', n: 'to exchange' }, { v: 'outflow', n: 'off exchange' }, { v: 'transfer', n: 'wallet↔wallet' }], st.kind,
-          function (v) { st.kind = v; render(world); }),
-        st.asset ? el('button', { class: 'chip on', text: st.asset + ' ✕', onclick: function () { st.asset = null; render(world); } }) : null
-      ])
+  function configure(p) {
+    if (!p) return;
+    if (p.asset) st.asset = p.asset;
+    if (p.tab) st.tab = p.tab;
+  }
+  function renderInto(host, world, tab) {
+    if (tab) st.tab = tab;
+    L.clear(host);
+    host.appendChild(el('div', { class: 'w-filters' }, [
+      UIx.toggleRow([{ v: 24, n: '24h' }, { v: 72, n: '3d' }, { v: 168, n: '7d' }, { v: 720, n: '30d' }], st.hours,
+        function (v) { st.hours = +v; render(world); }),
+      UIx.toggleRow([{ v: 'ALL', n: 'all chains' }].concat(W.CHAINS.map(function (c) { return { v: c, n: c }; })), st.chain,
+        function (v) { st.chain = v; render(world); }),
+      UIx.toggleRow([{ v: 'ALL', n: 'all flows' }, { v: 'inflow', n: 'to exchange' }, { v: 'outflow', n: 'off exchange' }, { v: 'transfer', n: 'wallet↔wallet' }], st.kind,
+        function (v) { st.kind = v; render(world); }),
+      st.asset ? el('button', { class: 'chip on', text: st.asset + ' ✕', onclick: function () { st.asset = null; render(world); } }) : null
     ]));
     bodyEl = el('div', { id: 'w-body' });
-    root.appendChild(bodyEl);
-    setTimeout(function () { render(world); }, 0);
-    return root;
+    host.appendChild(bodyEl);
+    render(world);
   }
 
   function flows(world) {
@@ -8712,423 +8876,224 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
     ], { class: 'wide' });
   }
 
-  UIx.register('whales', { mount: mount });
+  global.SEC_WHALES = { state: st, configure: configure, render: renderInto };
 })(window);
 
 
-/* ==== assets/js/view-book.js ==== */
-/* Lumen Terminal — Book & Risk: the paper book, its exposure, and what scenarios do to it. */
+/* ==== assets/js/view-analysis.js ==== */
+/* Lumen Terminal — Analysis: behaviour scanning and backtesting on one symbol.
+   Signals and the Backtest Lab were the same question asked twice — "what is this instrument
+   doing" — with two symbol pickers. One setup bar now drives both. */
 (function (global) {
   'use strict';
-  var L = global.Lumen, U = global.UNIVERSE, R = global.RISK, C = global.CASCADE, UIx = global.UI, el = L.el, F = L.F, M = L.M;
+  var L = global.Lumen, UIx = global.UI, el = L.el, B = global.BACKTEST;
 
-  var BKEY = 'lumen.book.v1';
-  var book = load(), bodyEl = null;
+  var st = { sym: 'CL=F', tf: '1d', days: 400, tab: 'read' };
 
-  function load() {
-    try { return JSON.parse(localStorage.getItem(BKEY)) || { positions: [], journal: [] }; }
-    catch (e) { return { positions: [], journal: [] }; }
-  }
-  function save() {
-    try { localStorage.setItem(BKEY, JSON.stringify(book)); } catch (e) { /* private mode */ }
-    global.APP.positions = book.positions;
-  }
+  var TABS = [
+    { v: 'read', n: 'Behaviour', g: 'sig' },
+    { v: 'anomalies', n: 'Anomalies', g: 'sig' },
+    { v: 'events', n: 'Event studies', g: 'sig' },
+    { v: 'alerts', n: 'Alerts', g: 'sig' },
+    { v: 'gaps', n: 'Gaps', g: 'bt' },
+    { v: 'strategy', n: 'Strategy', g: 'bt' },
+    { v: 'periodic', n: 'Periodic', g: 'bt' },
+    { v: 'sweep', n: 'Sweep', g: 'bt' }
+  ];
+  /* the two families want different history lengths, so each keeps its own sensible default */
+  var TF_DEFAULT = { sig: { tf: '1d', days: 400 }, bt: { tf: '15m', days: 90 } };
 
-  function mount(world) {
-    global.APP.positions = book.positions;
-    var root = el('div', { class: 'book' });
-    bodyEl = el('div', { id: 'book-body' });
+  var bodyEl = null;
+
+  function mount(world, params) {
+    params = params || {};
+    if (params.sym) st.sym = params.sym.toUpperCase();
+    if (params.tab) st.tab = params.tab;
+    if (params.tf) st.tf = params.tf;
+    if (params.days) st.days = params.days;
+    if (!params.tf && !params.days) {
+      var d = TF_DEFAULT[groupOf(st.tab)];
+      st.tf = d.tf; st.days = d.days;
+    }
+
+    var root = el('div', { class: 'anl' });
+    root.appendChild(setupPanel(world));
+    bodyEl = el('div', { id: 'anl-body' });
     root.appendChild(bodyEl);
-    setTimeout(function () { render(world); }, 0);
+    render(world);
     return root;
   }
 
-  function marked(world) {
-    return book.positions.map(function (p) {
-      var q = global.MARKET.quote(p.t, world);
-      var px = q ? q.price : p.entry;
-      var dir = p.side === 'short' ? -1 : 1;
-      var pl = (px - p.entry) * p.qty * dir;
-      var e = U.findEntity(p.t);
-      return Object.assign({}, p, {
-        price: px, pl: pl, plPct: p.entry ? (px - p.entry) / p.entry * 100 * dir : 0,
-        notional: px * p.qty, sector: e ? e.sector : null, sectorName: e ? e.sectorName : '—',
-        country: e ? e.c : null
-      });
+  function groupOf(tab) {
+    for (var i = 0; i < TABS.length; i++) if (TABS[i].v === tab) return TABS[i].g;
+    return 'sig';
+  }
+
+  function setupPanel(world) {
+    var symIn = el('input', { class: 'sym-in', value: st.sym, spellcheck: 'false' });
+    symIn.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter') return;
+      st.sym = symIn.value.trim().toUpperCase();
+      global.SEC_BACKTEST.clearCSV();
+      render(world);
     });
+
+    var file = el('input', {
+      type: 'file', accept: '.csv,text/csv', style: { display: 'none' },
+      onchange: function (e) {
+        var f = e.target.files[0];
+        if (!f) return;
+        var rd = new FileReader();
+        rd.onload = function () {
+          try {
+            var bars = B.parseCSV(String(rd.result));
+            global.SEC_BACKTEST.importCSV(bars, f.name);
+            UIx.toast('Loaded ' + bars.length + ' bars from ' + f.name, 'up', 5000);
+            if (groupOf(st.tab) !== 'bt') st.tab = 'gaps';
+            render(world);
+          } catch (err) { UIx.toast(err.message, 'warn', 7000); }
+        };
+        rd.readAsText(f);
+      }
+    });
+    var imported = global.SEC_BACKTEST.importedName();
+
+    var tabRow = el('div', { class: 'anl-tabs' });
+    var lastGroup = null;
+    TABS.forEach(function (t) {
+      if (lastGroup && t.g !== lastGroup) tabRow.appendChild(el('i', { class: 'tab-sep' }));
+      lastGroup = t.g;
+      tabRow.appendChild(el('button', {
+        class: 'anl-tab' + (st.tab === t.v ? ' on' : ''), text: t.n,
+        onclick: function () {
+          var prev = groupOf(st.tab);
+          st.tab = t.v;
+          /* moving between the behaviour and backtest families resets to that family's
+             natural history length rather than leaving 400 daily bars on a 15m scan */
+          if (groupOf(t.v) !== prev) {
+            var d = TF_DEFAULT[groupOf(t.v)];
+            st.tf = d.tf; st.days = d.days;
+          }
+          render(world);
+        }
+      }));
+    });
+
+    return UIx.panel('Analysis', {
+      icon: '🔬', class: 'p-anlset',
+      actions: [
+        el('button', { class: 'btn', text: '⭳ TradingView CSV', onclick: function () { file.click(); } }),
+        file,
+        imported ? el('span', { class: 'imp-name' }, [
+          UIx.badge('CSV: ' + imported, 'up'),
+          el('button', { class: 'mini', text: 'clear', onclick: function () { global.SEC_BACKTEST.clearCSV(); render(world); } })
+        ]) : null
+      ]
+    }, [
+      el('div', { class: 'anl-ctl' }, [
+        UIx.field('Symbol', symIn),
+        UIx.field('Timeframe', UIx.toggleRow(['5m', '15m', '1h', '4h', '1d'], st.tf, function (v) { st.tf = v; render(world); })),
+        UIx.field('History', UIx.toggleRow([
+          { v: 30, n: '1m' }, { v: 90, n: '3m' }, { v: 180, n: '6m' }, { v: 400, n: '13m' }, { v: 730, n: '2y' }
+        ], st.days, function (v) { st.days = +v; render(world); }))
+      ]),
+      el('div', { class: 'presets' }, ['CL=F', 'NVDA', 'SPY', 'GC=F', 'BTC', 'XOM', 'TSLA', 'BKW.AX'].map(function (t) {
+        return el('button', {
+          class: 'chip' + (t === st.sym ? ' on' : ''), text: t,
+          onclick: function () { st.sym = t; symIn.value = t; global.SEC_BACKTEST.clearCSV(); render(world); }
+        });
+      })),
+      tabRow
+    ]);
   }
 
   function render(world) {
-    var host = bodyEl;
-    if (!host) return;
-    L.clear(host);
-    var pos = marked(world);
-    var eq = L.state.settings.account.equity;
-
-    host.appendChild(alpacaPanel());
-    host.appendChild(positionsPanel(pos, world, eq));
-    if (pos.length) {
-      host.appendChild(el('div', { class: 'book-cols' }, [exposurePanel(pos, eq), riskPanel(pos, eq)]));
-      host.appendChild(scenarioPanel(pos, eq, world));
+    var root = L.$('.anl');
+    if (root) {
+      /* rebuild the setup panel so the tab and preset highlighting stay in sync */
+      var old = root.firstChild;
+      root.replaceChild(setupPanel(world), old);
+    }
+    if (!bodyEl) return;
+    L.clear(bodyEl);
+    var g = groupOf(st.tab);
+    if (g === 'sig') {
+      global.SEC_SIGNALS.configure({ sym: st.sym, tf: st.tf, days: st.days });
+      global.SEC_SIGNALS.invalidate();
+      global.SEC_SIGNALS.render(bodyEl, world, st.tab);
     } else {
-      host.appendChild(UIx.panel('Scenario impact', { icon: '⚡' }, [
-        UIx.empty('Add a position to see what each scenario does to the book',
-          'Everything here is local paper — nothing is sent anywhere unless you configure Alpaca.')
-      ]));
+      global.SEC_BACKTEST.configure({ sym: st.sym, tf: st.tf, days: st.days });
+      global.SEC_BACKTEST.render(bodyEl, world, st.tab);
     }
-    host.appendChild(matrixPanel(pos, eq, world));
   }
 
-  /* ---------- Alpaca paper trading ---------- */
-  function alpacaPanel() {
-    var A = global.PROVIDERS.alpaca;
-    var host = el('div', {});
-    var why = A.why();
+  UIx.register('analysis', { mount: mount });
+})(window);
 
-    if (why) {
-      host.appendChild(el('div', { class: 'alp-off' }, [
-        UIx.badge('NOT CONNECTED', 'n'),
-        el('span', { text: why }),
-        el('button', { class: 'mini', text: 'open settings', onclick: function () { global.APP.showSettings(); } })
-      ]));
-      host.appendChild(el('p', { class: 'note small', text: 'Until Alpaca is connected the book above is local paper only: it lives in this browser and no order ever leaves the page. That is the safe default — connect Alpaca when you actually want fills on their paper venue.' }));
-      return UIx.panel('Alpaca paper account', { icon: '🧾', class: 'p-alp' }, [host]);
-    }
 
-    host.appendChild(el('div', { class: 'loading', text: 'Loading Alpaca paper account…' }));
+/* ==== assets/js/view-flows.js ==== */
+/* Lumen Terminal — Money Flows: where household money goes, where rebuild money goes, and
+   where large holders are moving theirs. Main Street and the flow ledger merged into one view,
+   because they answer the same question at different scales. */
+(function (global) {
+  'use strict';
+  var L = global.Lumen, UIx = global.UI, el = L.el;
 
-    var p = UIx.panel('Alpaca paper account', {
-      icon: '🧾', class: 'p-alp',
-      actions: [
-        el('button', { class: 'btn', text: 'Order ticket', onclick: function () { orderTicket(); } }),
-        el('button', { class: 'mini', text: 'refresh', onclick: function () { load(); } })
-      ]
-    }, [host]);
+  var st = { tab: 'costs' };
+  var TABS = [
+    { v: 'costs', n: 'Cost of living', g: 'ms' },
+    { v: 'disaster', n: 'Disaster response', g: 'ms' },
+    { v: 'onchain', n: 'On-chain', g: 'w' },
+    { v: 'inst', n: 'Institutional', g: 'w' },
+    { v: 'wallets', n: 'Tracked wallets', g: 'w' }
+  ];
+  var bodyEl = null;
 
-    function load() {
-      L.clear(host);
-      host.appendChild(el('div', { class: 'loading', text: 'Loading…' }));
-      Promise.all([A.account(), A.positions(), A.orders('open')])
-        .then(function (res) {
-          var acct = res[0], positions = res[1] || [], orders = res[2] || [];
-          L.clear(host);
-          host.appendChild(el('div', { class: 'grid4' }, [
-            UIx.stat('Equity', F.usd(+acct.equity, 0)),
-            UIx.stat('Cash', F.usd(+acct.cash, 0)),
-            UIx.stat('Buying power', F.usd(+acct.buying_power, 0)),
-            UIx.stat('Status', acct.status, { tone: acct.status === 'ACTIVE' ? 'up' : 'warn' })
-          ]));
-          host.appendChild(el('h4', { class: 'sd-sub', text: 'Positions' }));
-          host.appendChild(positions.length
-            ? UIx.table([{ t: 'Sym' }, { t: 'Qty', align: 'r' }, { t: 'Avg', align: 'r' }, { t: 'Mark', align: 'r' }, { t: 'P/L', align: 'r' }, { t: '', align: 'r' }],
-                positions.map(function (x) {
-                  return {
-                    cells: [x.symbol, { t: F.num(+x.qty, 0), align: 'r' },
-                      { t: F.num(+x.avg_entry_price, 2), align: 'r' },
-                      { t: F.num(+x.current_price, 2), align: 'r' },
-                      { node: el('span', { class: +x.unrealized_pl >= 0 ? 'up' : 'down', text: F.usd(+x.unrealized_pl, 0) }), align: 'r' },
-                      { node: el('button', { class: 'mini', text: 'flatten', onclick: function () {
-                        A.submit({ symbol: x.symbol, qty: Math.abs(+x.qty), side: +x.qty > 0 ? 'sell' : 'buy', type: 'market', time_in_force: 'day' })
-                          .then(function () { UIx.toast('Close order sent for ' + x.symbol, 'up'); load(); })
-                          .catch(function (e) { UIx.toast(e.message, 'warn', 7000); });
-                      } }), align: 'r' }]
-                  };
-                }))
-            : UIx.empty('No open positions on the paper account'));
-          if (orders.length) {
-            host.appendChild(el('h4', { class: 'sd-sub', text: 'Open orders' }));
-            host.appendChild(UIx.table([{ t: 'Sym' }, { t: 'Side' }, { t: 'Qty', align: 'r' }, { t: 'Type' }, { t: 'Status' }, { t: '', align: 'r' }],
-              orders.map(function (o) {
-                return {
-                  cells: [o.symbol, o.side, { t: o.qty, align: 'r' }, o.type, o.status,
-                    { node: el('button', { class: 'mini', text: 'cancel', onclick: function () {
-                      A.cancel(o.id).then(function () { UIx.toast('Cancelled', 'n'); load(); })
-                        .catch(function (e) { UIx.toast(e.message, 'warn'); });
-                    } }), align: 'r' }]
-                };
-              })));
-          }
-        })
-        .catch(function (e) {
-          L.clear(host);
-          host.appendChild(el('div', { class: 'alp-off' }, [
-            UIx.badge('ERROR', 'down'),
-            el('span', { text: e.message })
-          ]));
-          host.appendChild(el('p', { class: 'note small', text: 'Check that the proxy is deployed, that ALPACA_KEY and ALPACA_SECRET are set in its environment, and that the key is a paper key.' }));
-        });
-    }
-    load();
-    return p;
+  function groupOf(tab) {
+    for (var i = 0; i < TABS.length; i++) if (TABS[i].v === tab) return TABS[i].g;
+    return 'ms';
   }
 
-  function orderTicket() {
-    var A = global.PROVIDERS.alpaca;
-    var o = { symbol: 'AAPL', qty: 1, side: 'buy', type: 'market', time_in_force: 'day', limit_price: null };
-    var symIn = el('input', { value: o.symbol, spellcheck: 'false', oninput: function () { o.symbol = symIn.value.trim().toUpperCase(); } });
-    var limWrap = el('div', { style: { display: 'none' } }, [
-      UIx.field('Limit price', UIx.number(0, function (v) { o.limit_price = v; }))
-    ]);
-    var m = UIx.modal('Alpaca paper order', [
-      el('p', { class: 'note', text: 'This sends a real order to your Alpaca PAPER account through your proxy. It does not touch a live brokerage account.' }),
-      el('div', { class: 'bt-grid' }, [
-        UIx.field('Symbol', symIn),
-        UIx.field('Side', UIx.toggleRow([{ v: 'buy', n: 'Buy' }, { v: 'sell', n: 'Sell' }], o.side, function (v) { o.side = v; })),
-        UIx.field('Quantity', UIx.number(o.qty, function (v) { o.qty = v; }, { min: 1, step: 1 })),
-        UIx.field('Type', UIx.toggleRow([{ v: 'market', n: 'Market' }, { v: 'limit', n: 'Limit' }], o.type, function (v) {
-          o.type = v; limWrap.style.display = v === 'limit' ? '' : 'none';
-        })),
-        UIx.field('Time in force', UIx.toggleRow([{ v: 'day', n: 'Day' }, { v: 'gtc', n: 'GTC' }], o.time_in_force, function (v) { o.time_in_force = v; }))
-      ]),
-      limWrap
-    ], {
-      footer: [
-        el('button', { class: 'btn', text: 'Cancel', onclick: function () { m.close(); } }),
-        el('button', { class: 'btn primary', text: 'Send paper order', onclick: function () {
-          var payload = { symbol: o.symbol, qty: o.qty, side: o.side, type: o.type, time_in_force: o.time_in_force };
-          if (o.type === 'limit') payload.limit_price = o.limit_price;
-          A.submit(payload)
-            .then(function (r) { UIx.toast('Order ' + r.id + ' accepted (' + r.status + ')', 'up', 6000); m.close(); global.APP.go('book'); })
-            .catch(function (e) { UIx.toast(e.message, 'warn', 8000); });
-        } })
-      ]
-    });
+  function mount(world, params) {
+    params = params || {};
+    if (params.tab) st.tab = params.tab;
+    if (params.playbook) st.tab = 'disaster';
+    if (params.asset) st.tab = 'onchain';
+    global.SEC_MAINSTREET.configure(params);
+    global.SEC_WHALES.configure(params);
+
+    var root = el('div', { class: 'flw' });
+    root.appendChild(header(world));
+    bodyEl = el('div', { id: 'flw-body' });
+    root.appendChild(bodyEl);
+    render(world);
+    return root;
   }
 
-  /* ---------- add / edit ---------- */
-  function addForm(world, onDone) {
-    var f = { t: 'NVDA', side: 'long', qty: 100, entry: 0, stop: 0, note: '' };
-    var q0 = global.MARKET.quote(f.t, world);
-    f.entry = q0 ? +q0.price.toFixed(2) : 0;
-    f.stop = +(f.entry * 0.97).toFixed(2);
-
-    var symIn = el('input', { value: f.t, spellcheck: 'false' });
-    var qtyIn = UIx.number(f.qty, function (v) { f.qty = v; recalc(); }, { min: 0 });
-    var entIn = UIx.number(f.entry, function (v) { f.entry = v; recalc(); });
-    var stpIn = UIx.number(f.stop, function (v) { f.stop = v; recalc(); });
-    var out = el('div', { class: 'size-out' });
-
-    symIn.addEventListener('change', function () {
-      f.t = symIn.value.trim().toUpperCase();
-      var q = global.MARKET.quote(f.t, world);
-      if (q) { f.entry = +q.price.toFixed(2); entIn.value = f.entry; f.stop = +(f.entry * 0.97).toFixed(2); stpIn.value = f.stop; }
-      recalc();
-    });
-
-    function recalc() {
-      L.clear(out);
-      var s = L.state.settings.account;
-      var plan = R.plan({ t: f.t, equity: s.equity, riskPct: s.riskPerTrade, entry: f.entry, stop: f.stop, rr: 2 });
-      if (!plan) { out.appendChild(el('span', { class: 'warn', text: 'Entry and stop must differ' })); return; }
-      out.appendChild(el('div', { class: 'grid4' }, [
-        UIx.stat('Suggested qty', F.num(plan.size.qty, 2), { sub: 'at ' + s.riskPerTrade + '% risk' }),
-        UIx.stat('Risking', F.usd(plan.size.riskAmt, 0), { tone: 'down' }),
-        UIx.stat('Notional', F.usd(f.qty * f.entry, 0)),
-        UIx.stat('Breakeven WR at 2R', F.pctRaw(plan.breakevenWinRate, 0))
-      ]));
-      out.appendChild(el('button', {
-        class: 'mini', text: 'use suggested size',
-        onclick: function () { f.qty = +plan.size.qty.toFixed(2); qtyIn.value = f.qty; recalc(); }
+  function header(world) {
+    var tabRow = el('div', { class: 'anl-tabs' });
+    var lastGroup = null;
+    TABS.forEach(function (t) {
+      if (lastGroup && t.g !== lastGroup) tabRow.appendChild(el('i', { class: 'tab-sep' }));
+      lastGroup = t.g;
+      tabRow.appendChild(el('button', {
+        class: 'anl-tab' + (st.tab === t.v ? ' on' : ''), text: t.n,
+        onclick: function () { st.tab = t.v; render(world); }
       }));
-    }
-    recalc();
-
-    var m = UIx.modal('Add position', [
-      el('div', { class: 'bt-grid' }, [
-        UIx.field('Symbol', symIn),
-        UIx.field('Side', UIx.toggleRow([{ v: 'long', n: 'Long' }, { v: 'short', n: 'Short' }], f.side, function (v) { f.side = v; recalc(); })),
-        UIx.field('Quantity', qtyIn),
-        UIx.field('Entry', entIn),
-        UIx.field('Stop', stpIn)
-      ]),
-      out
-    ], {
-      footer: [
-        el('button', { class: 'btn', text: 'Cancel', onclick: function () { m.close(); } }),
-        el('button', {
-          class: 'btn primary', text: 'Add to book', onclick: function () {
-            if (!f.t || !f.qty || !f.entry) { UIx.toast('Symbol, quantity and entry are required', 'warn'); return; }
-            book.positions.push({ id: L.uid('p'), t: f.t, side: f.side, qty: f.qty, entry: f.entry, stop: f.stop, opened: Date.now() });
-            book.journal.push({ t: Date.now(), a: 'open', s: f.t, qty: f.qty, px: f.entry });
-            save(); m.close(); onDone();
-          }
-        })
-      ]
     });
+    return UIx.panel('Money Flows', { icon: '💰', class: 'p-flwset' }, [tabRow]);
   }
 
-  function positionsPanel(pos, world, eq) {
-    var totalPL = M.sum(pos.map(function (p) { return p.pl; }));
-    var gross = M.sum(pos.map(function (p) { return Math.abs(p.notional); }));
-    return UIx.panel('Paper book', {
-      icon: '📒', class: 'p-book', count: pos.length,
-      actions: [
-        el('button', { class: 'btn', text: '+ position', onclick: function () { addForm(world, function () { render(world); }); } }),
-        pos.length ? el('button', { class: 'mini', text: 'clear book', onclick: function () {
-          if (!confirm('Remove all ' + pos.length + ' positions from the local paper book?')) return;
-          book.positions = []; save(); render(world);
-        } }) : null
-      ]
-    }, [
-      el('div', { class: 'grid4' }, [
-        UIx.stat('Equity setting', F.usd(eq, 0), { sub: 'Settings → Account' }),
-        UIx.stat('Open P/L', F.usd(totalPL, 0), { tone: UIx.tone(totalPL) }),
-        UIx.stat('Gross exposure', F.usd(gross, 0), { sub: F.pctRaw(gross / eq * 100, 0) + ' of equity' }),
-        UIx.stat('Positions', String(pos.length))
-      ]),
-      pos.length ? UIx.table(
-        [{ t: 'Sym' }, { t: 'Side' }, { t: 'Qty', align: 'r' }, { t: 'Entry', align: 'r' }, { t: 'Mark', align: 'r' },
-         { t: 'P/L', align: 'r' }, { t: '%', align: 'r' }, { t: 'Stop', align: 'r' }, { t: 'Industry' }, { t: '', align: 'r' }],
-        pos.map(function (p) {
-          return {
-            cells: [p.t,
-              { node: UIx.badge(p.side.toUpperCase(), p.side === 'long' ? 'up' : 'down') },
-              { t: F.num(p.qty, 2), align: 'r' },
-              { t: F.num(p.entry, 2), align: 'r' },
-              { t: F.num(p.price, 2), align: 'r' },
-              { node: el('span', { class: p.pl >= 0 ? 'up' : 'down', text: F.usd(p.pl, 0) }), align: 'r' },
-              { node: el('span', { class: p.plPct >= 0 ? 'up' : 'down', text: F.pct(p.plPct) }), align: 'r' },
-              { t: p.stop ? F.num(p.stop, 2) : '—', align: 'r' },
-              p.sectorName ? p.sectorName.split(' —')[0] : '—',
-              { node: el('button', { class: 'mini', text: 'close', onclick: function (e) {
-                e.stopPropagation();
-                book.positions = book.positions.filter(function (x) { return x.id !== p.id; });
-                book.journal.push({ t: Date.now(), a: 'close', s: p.t, qty: p.qty, px: p.price, pl: p.pl });
-                save(); render(world);
-              } }), align: 'r' }]
-          };
-        })) : UIx.empty('Book is empty', 'Add a position, or run "risk NVDA 178 172" in the command bar to size one first.')
-    ]);
+  function render(world) {
+    var root = L.$('.flw');
+    if (root) root.replaceChild(header(world), root.firstChild);
+    if (!bodyEl) return;
+    L.clear(bodyEl);
+    if (groupOf(st.tab) === 'ms') global.SEC_MAINSTREET.render(bodyEl, world, st.tab);
+    else global.SEC_WHALES.render(bodyEl, world, st.tab === 'onchain' ? 'onchain' : st.tab);
   }
 
-  function exposurePanel(pos, eq) {
-    var ex = R.portfolioExposure(pos);
-    var secs = Object.keys(ex.bySector).map(function (k) {
-      var ind = U.findIndustry(k);
-      return { k: ind ? ind.n.split(' —')[0] : k, v: ex.bySector[k] / eq * 100, color: ind ? ind.color : null };
-    }).sort(function (a, b) { return Math.abs(b.v) - Math.abs(a.v); });
-    var ctys = Object.keys(ex.byCountry).map(function (k) {
-      return { k: (U.COUNTRIES[k] || {}).n || k, v: ex.byCountry[k] / eq * 100 };
-    }).sort(function (a, b) { return Math.abs(b.v) - Math.abs(a.v); });
-    return UIx.panel('Exposure', { icon: '🧱', class: 'p-expo' }, [
-      el('div', { class: 'grid3' }, [
-        UIx.stat('Gross', F.pctRaw(ex.gross / eq * 100, 0)),
-        UIx.stat('Net', F.pctRaw(ex.net / eq * 100, 0), { tone: UIx.tone(ex.net) }),
-        UIx.stat('Sectors', String(secs.length))
-      ]),
-      el('h4', { class: 'sd-sub', text: 'By industry (% of equity)' }),
-      UIx.canvasBox('', Math.max(50, secs.length * 20 + 8), function (cv) {
-        global.CHART.hbars(cv, secs, { labelW: 118, fmt: function (v) { return v.toFixed(0) + '%'; } });
-      }),
-      ctys.length ? el('h4', { class: 'sd-sub', text: 'By country of domicile' }) : null,
-      ctys.length ? UIx.canvasBox('', Math.max(50, ctys.length * 20 + 8), function (cv) {
-        global.CHART.hbars(cv, ctys, { labelW: 118, fmt: function (v) { return v.toFixed(0) + '%'; } });
-      }) : null
-    ]);
-  }
-
-  function riskPanel(pos, eq) {
-    var lim = { sectorPct: L.state.settings.account.maxSectorPct, namePct: 15, grossPct: 200 };
-    var con = R.concentration(pos, eq, lim);
-    var v1 = R.varEstimate(pos, eq, 0.95, 1);
-    var v5 = R.varEstimate(pos, eq, 0.95, 5);
-    return UIx.panel('Risk', { icon: '🛡', class: 'p-risk' }, [
-      el('div', { class: 'grid4' }, [
-        UIx.stat('1-day VaR 95%', F.usd(v1.var, 0), { tone: 'down', sub: F.pctRaw(v1.pct, 1) + ' of equity' }),
-        UIx.stat('5-day VaR 95%', F.usd(v5.var, 0), { tone: 'down', sub: F.pctRaw(v5.pct, 1) }),
-        UIx.stat('Gross', F.pctRaw(con.grossPct, 0)),
-        UIx.stat('Net', F.pctRaw(con.netPct, 0))
-      ]),
-      con.warnings.length
-        ? el('ul', { class: 'warns' }, con.warnings.map(function (w) {
-            return el('li', { class: 'w-' + w.level }, [UIx.badge(w.k, w.level === 'high' ? 'down' : 'warn'), ' ', w.msg]);
-          }))
-        : el('p', { class: 'ok-note', text: 'No concentration limits breached at the current settings.' }),
-      el('p', { class: 'note small', text: 'VaR is parametric: each position\'s own volatility, combined under a flat ' + Math.round(v1.rho * 100) + '% correlation assumption. It understates the tail — in a real shock correlations go to one, which is exactly what the scenario panel below is for.' })
-    ]);
-  }
-
-  function scenarioPanel(pos, eq, world) {
-    var host = el('div', {});
-    var sel = { seed: (global.APP.scenario && global.APP.scenario.run) ? global.APP.scenario.run.seed : 'me_conflict', sev: 0.7 };
-    function draw() {
-      L.clear(host);
-      var run = C.propagate(sel.seed, sel.sev);
-      var ex = C.expressions(run);
-      var pl = R.scenarioPL(pos, ex, eq);
-      var hedge = R.hedges(ex, pos, eq);
-      host.appendChild(el('div', { class: 'grid3' }, [
-        UIx.stat('Modelled book impact', F.usd(pl.total, 0), { tone: UIx.tone(pl.total) }),
-        UIx.stat('As % of equity', F.pct(pl.pctOfEquity), { tone: UIx.tone(pl.pctOfEquity) }),
-        UIx.stat('Worst position', pl.rows[0] ? pl.rows[0].t + ' ' + F.usd(pl.rows[0].pl, 0) : '—', { tone: 'down' })
-      ]));
-      host.appendChild(UIx.table([{ t: 'Sym' }, { t: 'Industry' }, { t: 'Implied move', align: 'r' }, { t: 'P/L', align: 'r' }],
-        pl.rows.map(function (r) {
-          return [r.t, r.sectorName.split(' —')[0],
-            { node: el('span', { class: r.movePct >= 0 ? 'up' : 'down', text: F.pct(r.movePct, 1) }), align: 'r' },
-            { node: el('span', { class: r.pl >= 0 ? 'up' : 'down', text: F.usd(r.pl, 0) }), align: 'r' }];
-        })));
-      if (hedge.length) {
-        host.appendChild(el('h4', { class: 'sd-sub', text: 'What that suggests' }));
-        host.appendChild(el('ul', { class: 'hedges' }, hedge.map(function (h) {
-          return el('li', { class: 'h-' + h.kind }, [
-            UIx.badge(h.kind, h.kind === 'add' ? 'up' : h.kind === 'reduce' ? 'down' : 'n'),
-            el('b', { text: ' ' + h.sectorName.split(' —')[0] + ': ' }),
-            el('span', { text: h.why + ' ' + h.how })
-          ]);
-        })));
-      }
-    }
-    var p = UIx.panel('Scenario impact on the book', {
-      icon: '⚡', class: 'p-scen',
-      actions: [
-        UIx.select(C.seeds().map(function (n) { return { v: n.id, n: n.n }; }), sel.seed, function (v) { sel.seed = v; draw(); }),
-        UIx.slider(sel.sev, 0.1, 1, 0.05, function (v) { sel.sev = v; draw(); }, function (v) { return Math.round(v * 100) + '%'; })
-      ]
-    }, [host]);
-    draw();
-    return p;
-  }
-
-  function matrixPanel(pos, eq, world) {
-    var runs = C.seeds().map(function (n) {
-      return { p: baseRate(n.id, world), run: C.propagate(n.id, 0.7) };
-    });
-    var mx = R.matrix(runs, pos, eq);
-    return UIx.panel('Probability × impact', { icon: '🎲', class: 'p-matrix' }, [
-      el('p', { class: 'note', text: 'Likelihood on the horizontal axis comes from how much the current wire is already talking about each scenario; impact is the modelled effect on your book (or on sector scores when the book is empty). Top-right is what deserves a plan.' }),
-      UIx.canvasBox('', 260, function (cv) {
-        global.CHART.scatter(cv, mx.map(function (m) {
-          return { x: m.p, y: m.impact, label: m.short || m.name, size: 0.3, color: m.impactPct < 0 ? global.CHART.theme().down : global.CHART.theme().up };
-        }), { maxX: 1 });
-      }),
-      UIx.table([{ t: 'Scenario' }, { t: 'Wire pressure', align: 'r' }, { t: 'Book impact', align: 'r' }, { t: 'Thrives' }, { t: 'Suffers' }, { t: '', align: 'r' }],
-        mx.map(function (m) {
-          return {
-            cells: [m.name,
-              { node: UIx.bar(m.p * 100, m.p > 0.6 ? 'down' : 'n'), align: 'r' },
-              { node: el('span', { class: (m.impactPct || 0) >= 0 ? 'up' : 'down', text: m.impactPct === null ? '—' : F.pct(m.impactPct) }), align: 'r' },
-              m.winners.join(', '), m.losers.join(', '),
-              { node: el('button', { class: 'mini', text: 'open', onclick: function () { global.APP.go('cascade', { seed: m.id, sev: 0.7 }); } }), align: 'r' }]
-          };
-        }))
-    ]);
-  }
-
-  /* how loudly is the wire already carrying this scenario? */
-  function baseRate(seedId, world) {
-    var cutoff = Date.now() - 14 * 86400e3;
-    var hits = 0, tot = 0;
-    world.stories.forEach(function (s) {
-      if (s.t < cutoff) return;
-      tot++;
-      var seeds = C.seedsForStory(s);
-      seeds.forEach(function (sd) { if (sd.id === seedId) hits += sd.w * (s.imp / 5); });
-    });
-    return M.clamp(hits / Math.max(1, tot) * 6, 0.02, 0.95);
-  }
-
-  UIx.register('book', { mount: mount });
+  UIx.register('flows', { mount: mount });
 })(window);
 
 
@@ -9140,11 +9105,11 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
 
   var App = {
     world: null,
-    views: ['desk', 'signals', 'backtest', 'mainstreet', 'whales', 'book'],
+    views: ['desk', 'analysis', 'flows'],
     /* cascade and links are still routable (and reached from a story roll-down or the
        command bar) — they just no longer occupy a slot in the top nav. */
     routable: ['cascade', 'links'],
-    viewNames: { desk: 'Desk', signals: 'Signals', cascade: 'Cascade', backtest: 'Backtest Lab', links: 'Link Analysis', mainstreet: 'Main Street', whales: 'Flows', book: 'Book & Risk' },
+    viewNames: { desk: 'Desk', analysis: 'Analysis', flows: 'Money Flows', cascade: 'Cascade', links: 'Link Analysis' },
     positions: [],
     scenario: null
   };
@@ -9189,7 +9154,7 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
     } catch (e) { console.error('[alerts]', e); }
   }
   function updateAlertBadge() {
-    var b = L.$('.nav-b[data-view="signals"]');
+    var b = L.$('.nav-b[data-view="analysis"]');
     if (!b || !global.ALERTS) return;
     var recent = global.ALERTS.history().filter(function (h) { return Date.now() - h.t < 6 * 3600e3; });
     var dot = b.querySelector('.nav-dot');
@@ -9222,7 +9187,7 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
     switch (cmd.k) {
       case 'link': go('links', { a: cmd.a, b: cmd.b }); break;
       case 'scan': go('links', { scan: cmd.a }); break;
-      case 'backtest': go('backtest', { sym: cmd.sym, tf: cmd.tf, days: cmd.days }); break;
+      case 'backtest': go('analysis', { sym: cmd.sym, tf: cmd.tf, days: cmd.days, tab: 'gaps' }); break;
       case 'cascade': go('cascade', { seed: cmd.seed, sev: cmd.sev }); break;
       case 'map': {
         var ent = global.LINKER.resolve(cmd.q);
@@ -9230,7 +9195,7 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
         else UIx.toast('No country matched "' + cmd.q + '"', 'warn');
         break;
       }
-      case 'chart': go('backtest', { sym: cmd.sym, tf: cmd.tf || '1h', days: 90 }); break;
+      case 'chart': go('analysis', { sym: cmd.sym, tf: cmd.tf || '1h', days: 90, tab: 'gaps' }); break;
       case 'watch': {
         var wl = L.state.settings.watchlist;
         if (wl.indexOf(cmd.sym) < 0) { wl.push(cmd.sym); L.saveSettings(); UIx.toast(cmd.sym + ' added to watchlist', 'up'); L.bus.emit('watchlist'); }
@@ -9243,11 +9208,11 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
         break;
       }
       case 'sector': go('desk', { sector: cmd.id }); break;
-      case 'signals': go('signals', { sym: cmd.sym, tab: cmd.tab }); break;
-      case 'rebuild': go('mainstreet', { tab: 'disaster', playbook: cmd.playbook, country: cmd.country }); break;
-      case 'costs': go('mainstreet', { tab: 'costs', country: cmd.country }); break;
-      case 'alerts': go('signals', { tab: 'alerts' }); break;
-      case 'whales': go('whales', { asset: cmd.asset }); break;
+      case 'signals': go('analysis', { sym: cmd.sym, tab: 'read' }); break;
+      case 'rebuild': go('flows', { tab: 'disaster', playbook: cmd.playbook, country: cmd.country }); break;
+      case 'costs': go('flows', { tab: 'costs', country: cmd.country }); break;
+      case 'alerts': go('analysis', { tab: 'alerts' }); break;
+      case 'whales': go('flows', { tab: 'onchain', asset: cmd.asset }); break;
       case 'news': go('desk', { newsQuery: cmd.q }); break;
       case 'goto': go(cmd.view); break;
       case 'risk': showRisk(cmd); break;
@@ -9255,7 +9220,7 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
         if (cmd.ent.type === 'country') go('desk', { focus: cmd.ent.id });
         else if (cmd.ent.type === 'sector') go('desk', { sector: cmd.ent.id });
         else if (cmd.ent.type === 'event') go('cascade', { seed: cmd.ent.id, sev: 0.65 });
-        else go('backtest', { sym: cmd.ent.id, tf: '1h', days: 90 });
+        else go('analysis', { sym: cmd.ent.id, tf: '1h', days: 90, tab: 'gaps' });
         break;
       }
       case 'help': showHelp(); break;
@@ -9404,13 +9369,11 @@ window.WORLD_GEOMETRY = [{"id":"AD","n":"Andorra","r":[[170,4250,145,4244,143,42
             oninput: L.debounce(function () { L.setSetting('proxyBase', i.value.trim()); }, 300)
           });
           return i;
-        })(), 'Alpaca, Marketaux, Etherscan and FMP block direct browser calls. Deploy netlify/functions/proxy.js from this repo, set the keys as environment variables there, and put the function path here.')
+        })(), 'Marketaux, Etherscan and FMP block direct browser calls. Deploy netlify/functions/proxy.js from this repo, set the keys as environment variables there, and put the function path here. Finnhub and the GDELT archive work without it.')
       ]),
       el('div', { class: 'set-sec' }, [
         el('h4', { text: 'API keys (stored in this browser only)' }),
         keyField('finnhub', 'Finnhub key', 'Quotes + candles. Works without a proxy.'),
-        keyField('alpaca', 'Alpaca key ID', 'Paper trading. Needs the proxy.'),
-        keyField('alpacaSecret', 'Alpaca secret', ''),
         keyField('marketaux', 'Marketaux token', 'Entity-tagged news. Needs the proxy.'),
         keyField('etherscan', 'Etherscan key', 'On-chain balances. Needs the proxy.'),
         keyField('fmp', 'FMP key', '13F and insider data. Needs the proxy.')

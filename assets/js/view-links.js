@@ -202,7 +202,7 @@
           el('h4', { text: TYPES[t] || t }),
           UIx.canvasBox('', Math.min(300, byType[t].slice(0, 12).length * 19 + 8), function (cv) {
             global.CHART.hbars(cv, byType[t].slice(0, 12).map(function (x) { return { k: x.node.n, v: x.w }; }),
-              { labelW: 118, rowH: 18, fmt: function (v) { return v.toFixed(2); } });
+              { labelW: 118, rowH: 18, neutral: true, fmt: function (v) { return v.toFixed(2); } });
           }),
           el('div', { class: 'sd-tags' }, byType[t].slice(0, 6).map(function (x) {
             return el('button', {

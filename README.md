@@ -92,13 +92,23 @@ help                           the full list
 
 ---
 
-## The eight views
+## The views
+
+Top-level navigation is Desk, Signals, Backtest Lab, Main Street, Flows and Book & Risk.
+Cascade and Link Analysis have no nav slot: they open from a story's roll-down on the Desk, or
+from the command bar (`cascade me_conflict 0.8`, `link tsla to crudeoil`).
 
 **Desk** — the world map (Robinson projection over Natural Earth outlines), coloured by where
 the wire is concentrated, pinned with high-impact events and chokepoints, with arcs joining
 countries that appear in the same story. Click a country and the wire, the brief and the map all
 focus on it. The wire carries macro only: trade, capital flows, energy, policy, conflict,
 supply chains. Local crime and civic news is filtered out by design.
+
+Each headline leads with the country of main interest and carries nothing else. Click it and it
+rolls down in place — no modal, no new page — to show what it touches, the cascade it implies
+(the chain with per-link probabilities, plus which industries gain and which get hurt), and how
+its two main entities connect (link strength, channel agreement, correlation and the shortest
+mechanical path). Both blocks have a button through to the full view when you want depth.
 
 **Signals** — the behaviour layer, and the one place where being precise about limits matters
 most. Four things:
@@ -231,12 +241,14 @@ assets/js/
   terminal.js      command parsing and autocomplete
   view-*.js        the eight views
   app.js           shell, routing, settings
+tools/build-world.js  regenerates the country outlines
 netlify/functions/proxy.js
 netlify.toml
 ```
 
 Plain classic scripts on purpose — no bundler, no ES modules — so `index.html` works when
-opened straight off disk.
+opened straight off disk. `node build-single-file.js` inlines everything into one portable
+`lumen-terminal.html`.
 
 ---
 
@@ -268,6 +280,19 @@ opened straight off disk.
   the check to run somewhere that stays up.
 - **Nothing here is investment advice.** Trading goes to Alpaca *paper* accounts. Do not point
   this at a live brokerage without reading the order path in `providers.js` yourself.
+
+## Map geometry
+
+`assets/js/data/world.js` is generated — `node tools/build-world.js` rebuilds it from Natural
+Earth 1:50m via world-atlas. Three things that script has to get right, each of which is a
+visible bug otherwise:
+
+- **Merge on ISO code, don't overwrite.** Several Natural Earth features share a code (Australia
+  and Ashmore & Cartier Islands are both `AU`). Assigning into a map by code means the last one
+  wins, which is how the Australian mainland gets replaced by a one-pixel island.
+- **Split rings at the antimeridian.** Russia and Fiji have vertices at both +179° and −179°.
+  Projected naively, the edge between them draws a line straight across the map.
+- **Keep every ring of a multipolygon**, or island nations lose most of their territory.
 
 Country outlines: [Natural Earth](https://www.naturalearthdata.com/) via
 [world-atlas](https://github.com/topojson/world-atlas), public domain.

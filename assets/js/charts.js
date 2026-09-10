@@ -7,9 +7,10 @@
     var cs = getComputedStyle(document.documentElement);
     function v(n, d) { return (cs.getPropertyValue(n) || '').trim() || d; }
     return {
-      bg: v('--panel', '#0d1117'), grid: v('--grid', '#1c2430'), text: v('--dim', '#7d8896'),
-      up: v('--up', '#31c48d'), down: v('--down', '#f05252'), accent: v('--accent', '#4c9aff'),
-      warn: v('--warn', '#e8a33d'), line: v('--line', '#26303d')
+      bg: v('--panel', '#ffffff'), grid: v('--grid', '#eceef1'), text: v('--dim', '#55595f'),
+      up: v('--up', '#0a7d4f'), down: v('--down', '#c0342b'), accent: v('--accent', '#111318'),
+      warn: v('--warn', '#9a6400'), line: v('--line', '#e3e5e8'),
+      onAccent: v('--on-accent', '#ffffff')
     };
   }
 
@@ -99,11 +100,11 @@
       var x1 = padL + M.clamp(endI + 1, 0, n) * cw;
       if (x1 - x0 < 2) return;
       ctx.fillStyle = g.dir === 1
-        ? (g.filled ? 'rgba(49,196,141,0.09)' : 'rgba(49,196,141,0.16)')
-        : (g.filled ? 'rgba(240,82,82,0.09)' : 'rgba(240,82,82,0.16)');
+        ? (g.filled ? 'rgba(10,125,79,0.07)' : 'rgba(10,125,79,0.15)')
+        : (g.filled ? 'rgba(192,52,43,0.07)' : 'rgba(192,52,43,0.15)');
       ctx.fillRect(x0, y(g.top), Math.max(2, x1 - x0), Math.max(1, y(g.bot) - y(g.top)));
       if (!g.filled) {
-        ctx.strokeStyle = g.dir === 1 ? 'rgba(49,196,141,0.6)' : 'rgba(240,82,82,0.6)';
+        ctx.strokeStyle = g.dir === 1 ? 'rgba(10,125,79,0.55)' : 'rgba(192,52,43,0.55)';
         ctx.setLineDash([3, 3]);
         ctx.strokeRect(x0, y(g.top), Math.max(2, x1 - x0), Math.max(1, y(g.bot) - y(g.top)));
         ctx.setLineDash([]);
@@ -141,9 +142,9 @@
 
     /* flagged bars from the behaviour scan */
     var MK = {
-      sweep: { c: '#e8a33d', g: '🎣' }, climax: { c: '#f05252', g: '📛' },
-      churn: { c: '#8f7fe0', g: '🌀' }, unexplained: { c: '#4c9aff', g: '❓' },
-      absorbed: { c: '#5fb3a1', g: '🧱' }, gapfade: { c: '#c9a0dc', g: '↩' }
+      sweep: { c: '#9a6400' }, climax: { c: '#c0342b' },
+      churn: { c: '#5b4bb5' }, unexplained: { c: '#1f4f8f' },
+      absorbed: { c: '#1d6b78' }, gapfade: { c: '#8a4f9e' }
     };
     (opts.marks || []).forEach(function (m) {
       var mi = m.i - off;
@@ -168,7 +169,7 @@
     var last = view[view.length - 1];
     ctx.fillStyle = last.c >= last.o ? t.up : t.down;
     ctx.fillRect(padL + plotW, y(last.c) - 7, padR, 14);
-    ctx.fillStyle = '#0b0e13'; ctx.font = 'bold 10px ui-monospace, monospace';
+    ctx.fillStyle = t.onAccent; ctx.font = 'bold 10px ui-monospace, monospace';
     ctx.fillText(fmtAxis(last.c), padL + plotW + 5, y(last.c) + 3.5);
 
     return { x: x, y: y, view: view, off: off, padL: padL, plotW: plotW, cw: cw };
@@ -270,7 +271,9 @@
       ctx.fillText(String(it.k).slice(0, 14), padL - 6, y + rowH * 0.68);
       ctx.textAlign = 'left';
       var w = (Math.abs(it.v) / max) * (s.w - padL - padR);
-      ctx.fillStyle = it.color || (it.v >= 0 ? t.up : t.down);
+      /* counts are not directional — colouring them green reads as "good" when it only means
+         "more". Directional series keep the up/down encoding. */
+      ctx.fillStyle = it.color || (opts.neutral ? t.accent : (it.v >= 0 ? t.up : t.down));
       ctx.fillRect(padL, y + 2, Math.max(1, w), rowH - 6);
       ctx.fillStyle = t.text;
       ctx.fillText(opts.fmt ? opts.fmt(it.v) : fmtAxis(it.v), padL + w + 5, y + rowH * 0.68);

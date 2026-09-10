@@ -200,11 +200,11 @@
       ]),
       el('h4', { class: 'sd-sub', text: 'Gap size distribution (× ATR)' }),
       UIx.canvasBox('', 100, function (cv) {
-        global.CHART.hbars(cv, histogram(sizes, 6, function (v) { return v.toFixed(1); }), { labelW: 70, rowH: 15, fmt: function (v) { return String(v); } });
+        global.CHART.hbars(cv, histogram(sizes, 6, function (v) { return v.toFixed(1); }), { labelW: 70, rowH: 15, neutral: true, fmt: function (v) { return String(v); } });
       }),
       ttf.length ? el('h4', { class: 'sd-sub', text: 'Bars until mitigation' }) : null,
       ttf.length ? UIx.canvasBox('', 100, function (cv) {
-        global.CHART.hbars(cv, histogram(ttf, 6, function (v) { return v.toFixed(0); }), { labelW: 70, rowH: 15, fmt: function (v) { return String(v); } });
+        global.CHART.hbars(cv, histogram(ttf, 6, function (v) { return v.toFixed(0); }), { labelW: 70, rowH: 15, neutral: true, fmt: function (v) { return String(v); } });
       }) : null
     ]);
   }
@@ -246,11 +246,11 @@
         : 'Gap formation is fairly evenly spread across event and quiet days in this window — the calendar is not adding much here.' }),
       el('h4', { class: 'sd-sub', text: 'By weekday (gaps per session)' }),
       UIx.canvasBox('', dow.length * 20 + 10, function (cv) {
-        global.CHART.hbars(cv, dow, { labelW: 44, fmt: function (v) { return v.toFixed(2); } });
+        global.CHART.hbars(cv, dow, { labelW: 44, neutral: true, fmt: function (v) { return v.toFixed(2); } });
       }),
       el('h4', { class: 'sd-sub', text: 'By hour (UTC)' }),
       UIx.canvasBox('', Math.min(280, hours.length * 16 + 10), function (cv) {
-        global.CHART.hbars(cv, hours, { labelW: 56, rowH: 15, fmt: function (v) { return String(v); } });
+        global.CHART.hbars(cv, hours, { labelW: 56, rowH: 15, neutral: true, fmt: function (v) { return String(v); } });
       }),
       el('h4', { class: 'sd-sub', text: 'Daily density — outlined cells are scheduled-event days' }),
       UIx.canvasBox('', 110, function (cv) { global.CHART.calendar(cv, cal); }),

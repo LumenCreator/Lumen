@@ -3,7 +3,7 @@
   'use strict';
   var L = global.Lumen, U = global.UNIVERSE, UIx = global.UI, el = L.el, F = L.F, M = L.M;
 
-  var state = { hours: 72, kind: 'ALL', region: 'ALL', minImp: 2, focus: null, overlay: 'news', query: '' };
+  var state = { hours: 72, kind: 'ALL', region: 'ALL', minImp: 1, focus: null, overlay: 'news', query: '', open: {} };
   var map = null;
 
   function mount(world, params) {
@@ -54,13 +54,6 @@
     var listHost = el('div', { class: 'wire' });
     var countEl = el('span', { class: 'pnl-n' });
 
-    var kinds = [
-      { v: 'ALL', n: 'All' }, { v: 'conflict', n: 'Conflict' }, { v: 'energy', n: 'Energy' },
-      { v: 'monetary', n: 'Rates' }, { v: 'trade', n: 'Trade' }, { v: 'supplychain', n: 'Supply' },
-      { v: 'policy', n: 'Policy' }, { v: 'flows', n: 'Flows' }, { v: 'sovereign', n: 'Sovereign' },
-      { v: 'corporate', n: 'Corporate' }, { v: 'climate', n: 'Climate' }
-    ];
-
     function render() {
       var items = filtered(world);
       countEl.textContent = items.length;
@@ -78,18 +71,8 @@
     var filters = el('div', { class: 'wire-f' }, [
       UIx.toggleRow([{ v: 24, n: '24h' }, { v: 72, n: '3d' }, { v: 168, n: '7d' }, { v: 720, n: '30d' }], state.hours, function (v) {
         state.hours = +v; refreshAll(world);
-      }),
-      UIx.toggleRow([{ v: 1, n: 'all' }, { v: 3, n: '3+' }, { v: 4, n: '4+' }, { v: 5, n: '5' }], state.minImp, function (v) {
-        state.minImp = +v; refreshAll(world);
       })
     ]);
-    var kindRow = el('div', { class: 'wire-k' });
-    kinds.forEach(function (k) {
-      kindRow.appendChild(el('button', {
-        class: 'chip k' + (state.kind === k.v ? ' on' : ''), text: k.n,
-        onclick: function () { state.kind = k.v; refreshAll(world); }
-      }));
-    });
     var search = el('input', {
       class: 'wire-s', type: 'search', placeholder: 'filter the wire…', value: state.query,
       oninput: L.debounce(function (e) { state.query = e.target.value; render(); }, 200)
@@ -100,7 +83,7 @@
       actions: [
         el('button', { class: 'mini', text: 'clear focus', onclick: function () { state.focus = null; refreshAll(world); } })
       ]
-    }, [filters, kindRow, search, listHost]);
+    }, [filters, search, listHost]);
     p.querySelector('.pnl-t').appendChild(countEl);
     p._render = render;
     render();
@@ -109,32 +92,190 @@
 
   function storyRow(s, world) {
     var row = el('article', { class: 'st k-' + s.k + (s.imp >= 5 ? ' hot' : '') });
-    row.appendChild(el('div', { class: 'st-top' }, [
-      UIx.impactDots(s.imp),
-      el('span', { class: 'st-k', text: s.k }),
+    var primary = (s.countries || [])[0];
+    var cname = U.COUNTRIES[primary] ? U.COUNTRIES[primary].n : null;
+
+    var head = el('div', { class: 'st-line' }, [
+      /* the country of main interest leads the headline rather than sitting in a chip below it */
+      cname ? el('span', { class: 'st-ctry', text: cname }) : null,
+      el('h4', { class: 'st-h', text: s.h })
+    ]);
+    row.appendChild(head);
+    row.appendChild(el('div', { class: 'st-foot' }, [
       el('span', { class: 'st-src', text: s.src }),
       UIx.simBadge(s),
-      el('span', { class: 'st-ago', text: F.ago(s.t) })
+      el('span', { class: 'st-ago', text: F.ago(s.t) }),
+      el('i', { class: 'st-caret', text: '▾' })
     ]));
-    row.appendChild(el('h4', { class: 'st-h', text: s.h }));
+
+    var panel = el('div', { class: 'st-roll' });
+    row.appendChild(panel);
+
+    row.addEventListener('click', function (e) {
+      if (e.target.closest('.chip') || e.target.closest('button') || e.target.closest('a')) return;
+      var isOpen = row.classList.toggle('open');
+      state.open[s.id] = isOpen;
+      if (isOpen && !panel.childNodes.length) buildRoll(panel, s, world);
+      if (isOpen) {
+        map && map.highlight((s.countries || []).filter(function (c) { return U.COUNTRIES[c]; }));
+      }
+    });
+    if (state.open[s.id]) {
+      row.classList.add('open');
+      buildRoll(panel, s, world);
+    }
+    return row;
+  }
+
+  /* Everything about a story lives in the roll-down: what it touches, the cascade it implies,
+     and what it connects to. Nothing opens a separate window. */
+  function buildRoll(panel, s, world) {
+    L.clear(panel);
+
+    /* --- what it touches --- */
     var tags = el('div', { class: 'st-tags' });
-    (s.countries || []).slice(0, 3).forEach(function (c) {
+    (s.countries || []).forEach(function (c) {
+      if (!U.COUNTRIES[c]) return;
       tags.appendChild(UIx.countryChip(c, function (iso) { setFocus(iso, world); }));
     });
-    (s.sectors || []).slice(0, 2).forEach(function (sec) {
+    (s.sectors || []).forEach(function (sec) {
       var chip = UIx.sectorChip(sec, function (id) { showSector(id, world); });
       if (chip) tags.appendChild(chip);
+    });
+    (s.tickers || []).slice(0, 4).forEach(function (t) {
+      tags.appendChild(UIx.tickerChip(t, function (x) { global.APP.execute('chart ' + x); }));
     });
     if (s.choke) {
       var cp = U.CHOKEPOINTS.filter(function (x) { return x.id === s.choke; })[0];
       if (cp) tags.appendChild(el('span', { class: 'chip choke', text: '⚓ ' + cp.n, title: cp.flow }));
     }
-    row.appendChild(tags);
-    row.addEventListener('click', function (e) {
-      if (e.target.closest('.chip')) return;
-      showStory(s, world);
-    });
-    return row;
+    panel.appendChild(el('div', { class: 'roll-meta' }, [
+      el('span', { class: 'st-k', text: s.k }),
+      el('span', { text: 'impact ' + s.imp + '/5' }),
+      el('span', { text: new Date(s.t).toISOString().slice(0, 16).replace('T', ' ') + 'Z' })
+    ]));
+    panel.appendChild(tags);
+    if (s.summary) panel.appendChild(el('p', { class: 'roll-sum', text: s.summary }));
+
+    /* --- cascade, simplified --- */
+    panel.appendChild(cascadeBlock(s, world));
+
+    /* --- links, simplified --- */
+    panel.appendChild(linkBlock(s, world));
+
+    if (s.url) {
+      panel.appendChild(el('div', { class: 'roll-src' }, [
+        s.sim
+          ? el('span', { text: 'Generated story — no article to open. Source template: ' })
+          : el('span', { text: 'Source: ' }),
+        el('a', { href: s.url, target: '_blank', rel: 'noopener noreferrer', text: s.src })
+      ]));
+    }
+  }
+
+  function cascadeBlock(s, world) {
+    var C = global.CASCADE;
+    var seeds = C.seedsForStory(s);
+    var seedId = seeds[0] ? seeds[0].id : null;
+    if (!seedId) return el('div');
+    var sev = M.clamp(0.35 + (s.imp / 5) * 0.5, 0.2, 0.95);
+    var run = C.propagate(seedId, sev, { maxDepth: 5, minP: 0.12 });
+    var ex = C.expressions(run);
+
+    /* the strongest consumer-facing route, as a compact chain */
+    var prefer = ['s_energy', 'pump_prices', 'cpi_up', 'cost_of_living', 'discretionary_down',
+      'rates_higher', 'elec_bills', 'battery_demand', 's_battery', 's_semis', 's_defense', 's_mining'];
+    var target = null;
+    for (var i = prefer.length - 1; i >= 0; i--) if (run.byId[prefer[i]]) { target = prefer[i]; break; }
+    if (!target) {
+      var deep = run.nodes.filter(function (n) { return n.depth > 0; }).sort(function (a, b) { return b.depth - a.depth; })[0];
+      target = deep ? deep.id : seedId;
+    }
+    var chain = C.chainTo(run, target);
+
+    var wrap = el('section', { class: 'roll-sec' });
+    wrap.appendChild(el('h5', {}, [
+      'If this runs',
+      el('button', { class: 'mini', text: 'full cascade →', onclick: function (e) {
+        e.stopPropagation(); global.APP.go('cascade', { seed: seedId, sev: sev });
+      } })
+    ]));
+    wrap.appendChild(el('div', { class: 'mini-chain' }, chain.map(function (c, i) {
+      return el('span', { class: 'mc-seg', title: c.edge ? c.edge.why : '' }, [
+        el('b', { text: c.n }),
+        i > 0 ? el('i', { text: Math.round(c.stepP * 100) + '%' }) : null,
+        i < chain.length - 1 ? el('u', { text: '→' }) : null
+      ]);
+    })));
+    var w = ex.winners.slice(0, 3), l = ex.losers.slice(0, 3);
+    wrap.appendChild(el('div', { class: 'mini-wl' }, [
+      w.length ? el('div', { class: 'mw up' }, [
+        el('span', { class: 'mw-l', text: 'Gains' }),
+        el('div', {}, w.map(function (x) {
+          return el('span', { class: 'mw-s', title: x.n }, [
+            el('b', { text: x.n.split(' —')[0] }),
+            el('em', { text: x.leaders.slice(0, 3).map(function (y) { return y.t; }).join(' ') })
+          ]);
+        }))
+      ]) : null,
+      l.length ? el('div', { class: 'mw down' }, [
+        el('span', { class: 'mw-l', text: 'Hurts' }),
+        el('div', {}, l.map(function (x) {
+          return el('span', { class: 'mw-s', title: x.n }, [
+            el('b', { text: x.n.split(' —')[0] }),
+            el('em', { text: x.leaders.slice(0, 3).map(function (y) { return y.t; }).join(' ') })
+          ]);
+        }))
+      ]) : null
+    ]));
+    return wrap;
+  }
+
+  function linkBlock(s, world) {
+    var LK = global.LINKER;
+    /* pick the two things this story is really about */
+    var a = (s.tickers || [])[0];
+    if (!a && (s.sectors || []).length) {
+      var ind = U.findIndustry(s.sectors[0]);
+      if (ind) a = ind.leaders[0].t;
+    }
+    var b = (s.countries || [])[0];
+    if (a && b && (s.tickers || []).length > 1 && U.findEntity(s.tickers[1])) {
+      /* if the story names two instruments, that pair is more interesting than name↔country */
+      b = s.tickers[1];
+    }
+    if (!a || !b) return el('div');
+
+    var r;
+    try { r = LK.analyse(a, b, { world: world, days: 90 }); } catch (e) { r = null; }
+    if (!r || r.error) return el('div');
+
+    var wrap = el('section', { class: 'roll-sec' });
+    wrap.appendChild(el('h5', {}, [
+      'How these connect',
+      el('button', { class: 'mini', text: 'full analysis →', onclick: function (e) {
+        e.stopPropagation(); global.APP.go('links', { a: a, b: b });
+      } })
+    ]));
+    var tone = r.strength >= 62 ? 'up' : r.strength >= 38 ? 'warn' : 'n';
+    wrap.appendChild(el('div', { class: 'mini-link' }, [
+      el('span', { class: 'ml-score t-' + tone, text: String(r.strength) }),
+      el('div', { class: 'ml-b' }, [
+        el('b', { text: r.a.n + ' ↔ ' + r.b.n }),
+        el('span', { text: r.verdict.toLowerCase() + ' · ' + r.agreement + '/3 channels agree' +
+          (r.stats ? ' · 90d correlation ' + r.stats.corr.toFixed(2) : '') })
+      ])
+    ]));
+    if (r.paths[0]) {
+      wrap.appendChild(el('div', { class: 'mini-path' }, r.paths[0].nodes.map(function (n, i) {
+        return el('span', {}, [
+          el('b', { text: n.n }),
+          i < r.paths[0].nodes.length - 1 ? el('u', { text: '→' }) : null
+        ]);
+      })));
+    }
+    if (r.read && r.read[0]) wrap.appendChild(el('p', { class: 'roll-sum', text: r.read[0] }));
+    return wrap;
   }
 
   /* ---------- story detail ---------- */
@@ -238,8 +379,8 @@
     };
     var stories = world.stories.filter(function (s) { return s.imp >= state.minImp; });
     map.setHeat(global.WORLDMAP.heatFromStories(stories, state.hours, kindFilter));
-    map.setPins(global.WORLDMAP.pinsFromStories(stories.filter(function (s) { return !kindFilter || kindFilter(s); }), state.hours, 30));
-    map.setArcs(global.WORLDMAP.arcsFromStories(stories.filter(function (s) { return !kindFilter || kindFilter(s); }), state.hours, 26));
+    map.setPins(global.WORLDMAP.pinsFromStories(stories.filter(function (s) { return !kindFilter || kindFilter(s); }), state.hours, 24));
+    map.setArcs(global.WORLDMAP.arcsFromStories(stories.filter(function (s) { return !kindFilter || kindFilter(s); }), state.hours, 16));
     map.highlight(state.focus ? [state.focus] : null);
     if (state.focus) map.focusCountry(state.focus);
   }
@@ -306,7 +447,7 @@
     wrap.appendChild(el('div', {}, [
       el('h4', { text: 'Where the pressure is' }),
       UIx.canvasBox('', Math.max(60, topC.length * 20 + 8), function (cv) {
-        global.CHART.hbars(cv, topC.map(function (c) { return { k: (U.COUNTRIES[c.k] || {}).n || c.k, v: c.v, color: global.CHART.theme().warn }; }), { labelW: 110, fmt: function (v) { return v.toFixed(0); } });
+        global.CHART.hbars(cv, topC.map(function (c) { return { k: (U.COUNTRIES[c.k] || {}).n || c.k, v: c.v, color: global.CHART.theme().warn }; }), { labelW: 110, neutral: true, fmt: function (v) { return v.toFixed(0); } });
       })
     ]));
     wrap.appendChild(el('div', {}, [
@@ -315,7 +456,7 @@
         global.CHART.hbars(cv, topS.map(function (s) {
           var ind = U.findIndustry(s.k);
           return { k: ind ? ind.n.split(' —')[0] : s.k, v: s.v, color: ind ? ind.color : null };
-        }), { labelW: 110, fmt: function (v) { return v.toFixed(0); } });
+        }), { labelW: 110, neutral: true, fmt: function (v) { return v.toFixed(0); } });
       })
     ]));
     return wrap;

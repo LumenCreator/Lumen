@@ -220,8 +220,8 @@
     });
   };
   function heatColor(v, h) {
-    /* cold slate → amber → red as attention rises */
-    var stops = [[26, 34, 45], [30, 66, 88], [72, 108, 90], [188, 148, 60], [214, 84, 60], [232, 52, 52]];
+    /* pale grey → cool → amber → red as attention rises, tuned for a white ground */
+    var stops = [[226, 229, 233], [214, 221, 230], [226, 209, 176], [226, 158, 96], [205, 76, 58], [163, 28, 20]];
     var t = v * (stops.length - 1), i = Math.min(stops.length - 2, Math.floor(t)), f = t - i;
     var a = stops[i], b = stops[i + 1];
     return 'rgb(' + Math.round(M.lerp(a[0], b[0], f)) + ',' + Math.round(M.lerp(a[1], b[1], f)) + ',' + Math.round(M.lerp(a[2], b[2], f)) + ')';
@@ -327,7 +327,7 @@
       });
     });
     var max = Math.max.apply(null, Object.keys(acc).map(function (k) { return acc[k].raw; }).concat([1]));
-    Object.keys(acc).forEach(function (k) { acc[k].v = Math.pow(acc[k].raw / max, 0.65); });
+    Object.keys(acc).forEach(function (k) { acc[k].v = Math.pow(acc[k].raw / max, 1.35); });
     return acc;
   }
 

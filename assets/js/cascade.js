@@ -25,6 +25,8 @@
       d: 'Failure of a leveraged institution large enough to force counterparty deleveraging.' },
     { id: 'cyber_infra', n: 'Cyberattack on critical infrastructure', short: 'Cyberattack', kind: 'shock', c: ['US', 'DE', 'GB'], seed: true,
       d: 'Pipeline, grid, port or clearing-system outage attributed to a state-linked actor.' },
+    { id: 'nat_disaster', n: 'Major natural disaster', short: 'Disaster', kind: 'shock', c: ['AU', 'US', 'JP', 'IN'], seed: true,
+      d: 'Flood, cyclone, fire or quake large enough to be declared a catastrophe. Destroys capital stock, which is a loss for insurers and a multi-year order book for whoever rebuilds it.' },
 
     /* ---- transmission channels ---- */
     { id: 'hormuz_risk', n: 'Hormuz transit disrupted', kind: 'channel', c: ['IR', 'AE', 'SA', 'QA', 'KW'], choke: 'hormuz' },
@@ -70,6 +72,8 @@
     { id: 'foreign_deals', n: 'New bilateral supply & currency deals', kind: 'policy' },
     { id: 'defense_budgets', n: 'Defence budgets expanded', kind: 'policy' },
     { id: 'health_strain', n: 'Public health & care systems strained', kind: 'social' },
+    { id: 'rebuild_demand', n: 'Reconstruction demand', kind: 'macro' },
+    { id: 'insured_loss', n: 'Insured losses & premium repricing', kind: 'macro' },
     { id: 'capital_controls', n: 'EM stress: FX intervention / controls', kind: 'policy' },
 
     /* ---- sector outcomes ---- */
@@ -223,6 +227,22 @@
     ['china_stimulus', 's_shipping', 0.60, 30, 0.60, 1, 'Dry-bulk demand recovers with restocking.'],
     ['china_stimulus', 's_consumer', 0.50, 60, 0.50, 1, 'Luxury and consumer exposure to China re-rates.'],
     ['china_stimulus', 'oil_spike', 0.40, 30, 0.45, 1, 'Marginal demand supports crude.'],
+
+    /* natural disaster */
+    ['nat_disaster', 'insured_loss', 0.90, 3, 1.00, 1, 'Catastrophe declaration attaches reinsurance and forces provisions in the same quarter.'],
+    ['nat_disaster', 'rebuild_demand', 0.85, 30, 0.95, 1, 'Destroyed capital stock has to be replaced, and the order book runs for years rather than quarters.'],
+    ['nat_disaster', 'power_prices', 0.50, 3, 0.60, 1, 'Generation and network outages force expensive replacement supply.'],
+    ['nat_disaster', 'food_prices', 0.55, 45, 0.65, 1, 'Crop and herd losses remove supply from an already tight market.'],
+    ['nat_disaster', 'health_strain', 0.60, 7, 0.55, 1, 'Injury surge and displacement land on the health system immediately.'],
+    ['nat_disaster', 's_shipping', 0.45, 14, 0.50, 1, 'Port damage and rerouting lift freight rates on the affected lane.'],
+    ['nat_disaster', 'subsidies', 0.65, 45, 0.70, 1, 'Disaster relief is the least politically contested spending there is.'],
+    ['insured_loss', 's_banks', 0.75, 5, 0.70, -1, 'Insurers book the loss first; the premium repricing that follows is two quarters away.'],
+    ['insured_loss', 'cost_of_living', 0.55, 180, 0.55, 1, 'Premiums reset upward across the whole book, not just the damaged part of it.'],
+    ['rebuild_demand', 's_mining', 0.85, 60, 0.85, 1, 'Cement, aggregates, steel and timber demand — the largest single line in any rebuild.'],
+    ['rebuild_demand', 's_consumer', 0.60, 90, 0.55, 1, 'Building-materials retail and fit-out spend.'],
+    ['rebuild_demand', 'cpi_up', 0.50, 120, 0.50, 1, 'Construction cost inflation is labour-constrained and stubborn.'],
+    ['rebuild_demand', 's_autos', 0.50, 60, 0.50, 1, 'Written-off vehicles are replaced in bulk.'],
+    ['rebuild_demand', 's_utilities', 0.55, 120, 0.50, 1, 'Network rebuild is recoverable through the regulated asset base.'],
 
     /* cyber / infrastructure */
     ['cyber_infra', 'power_prices', 0.45, 2, 0.60, 1, 'Outage forces expensive replacement generation.'],
@@ -447,20 +467,50 @@
   function seedsForStory(story) {
     var out = [];
     var f = story.f || {};
-    function add(id, w) { if (w > 0.1) out.push({ id: id, w: w }); }
+    var cs = story.countries || [];
+    var secs = story.sectors || [];
+    function add(id, w) { if (w > 0.1 && NODE_BY_ID[id]) out.push({ id: id, w: w }); }
+    function has(list, arr) { return arr.some(function (x) { return list.indexOf(x) >= 0; }); }
+
     if (story.k === 'conflict') {
-      var cs = story.countries || [];
-      if (cs.some(function (c) { return ['IR', 'IL', 'SA', 'QA', 'AE', 'IQ', 'EG'].indexOf(c) >= 0; })) add('me_conflict', 0.9);
-      if (cs.some(function (c) { return ['TW', 'CN'].indexOf(c) >= 0; })) add('taiwan_crisis', 0.85);
-      if (cs.some(function (c) { return ['RU', 'UA', 'PL'].indexOf(c) >= 0; })) add('russia_escalation', 0.85);
+      if (has(cs, ['IR', 'IL', 'SA', 'QA', 'AE', 'IQ', 'EG', 'KW'])) add('me_conflict', 0.9);
+      if (has(cs, ['TW', 'CN', 'KR', 'JP'])) add('taiwan_crisis', 0.85);
+      if (has(cs, ['RU', 'UA', 'PL', 'TR'])) add('russia_escalation', 0.85);
+      if (!out.length) add('me_conflict', 0.5);
     }
-    if (story.k === 'trade') add('tariff_shock', 0.8);
-    if (story.k === 'monetary' && (f.rates || 0) > 0.2) add('rate_shock', 0.75);
-    if (story.k === 'energy' && (f.oil || 0) > 0.3) add('me_conflict', 0.35);
-    if (story.k === 'supplychain' && (story.countries || []).indexOf('TW') >= 0) add('taiwan_crisis', 0.5);
-    if (story.k === 'sovereign') add('credit_event', 0.35);
-    if (!out.length) add('rate_shock', 0.2);
-    return out;
+    if (story.k === 'energy') add('me_conflict', (f.oil || 0) > 0.4 ? 0.6 : 0.35);
+    if (story.k === 'trade') add('tariff_shock', 0.85);
+    if (story.k === 'supplychain') {
+      /* route by what is actually constrained rather than defaulting to a rates story */
+      if (has(secs, ['semis', 'tech']) || has(cs, ['TW'])) add('taiwan_crisis', 0.7);
+      else if (has(secs, ['mining', 'battery', 'autos'])) add('tariff_shock', 0.6);
+      else add('tariff_shock', 0.45);
+    }
+    if (story.k === 'monetary') add('rate_shock', (f.rates || 0) > 0.2 ? 0.85 : 0.5);
+    if (story.k === 'sovereign') add('credit_event', 0.6);
+    if (story.k === 'flows') add((f.rates || 0) > 0.2 ? 'rate_shock' : 'china_stimulus', 0.4);
+    if (story.k === 'climate') add('nat_disaster', 0.8);
+    if (story.k === 'policy') {
+      if ((f.war || 0) > 0.2) add('me_conflict', 0.45);
+      else if ((f.rates || 0) > 0.2) add('rate_shock', 0.45);
+      else add('tariff_shock', 0.4);
+    }
+    if (story.k === 'corporate') {
+      if (has(secs, ['semis'])) add('taiwan_crisis', 0.35);
+      else if (has(secs, ['energy'])) add('me_conflict', 0.3);
+      else add('tariff_shock', 0.25);
+    }
+    /* anything genuinely unclassifiable lands on whichever factor it moved most */
+    if (!out.length) {
+      var best = null, bv = 0;
+      var map = { oil: 'me_conflict', war: 'me_conflict', rates: 'rate_shock',
+        china: 'china_stimulus', inflation: 'rate_shock', consumer: 'rate_shock', usd: 'rate_shock' };
+      for (var k in f) { if (Math.abs(f[k]) > bv) { bv = Math.abs(f[k]); best = map[k]; } }
+      add(best || 'rate_shock', 0.25);
+    }
+    var seen = {};
+    return out.sort(function (a, b) { return b.w - a.w; })
+      .filter(function (x) { if (seen[x.id]) return false; seen[x.id] = 1; return true; });
   }
 
   global.CASCADE = {

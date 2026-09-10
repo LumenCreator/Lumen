@@ -85,7 +85,7 @@
      china (China demand/supply shock), consumer (consumer spend down), inflation (CPI up) */
   var INDUSTRIES = [
     {
-      id: 'energy', n: 'Energy — Oil & Gas', icon: '⛽', color: '#e8a33d',
+      id: 'energy', n: 'Energy — Oil & Gas', icon: '⛽', color: '#b5761f',
       exp: { oil: 0.90, rates: -0.10, usd: -0.20, war: 0.55, china: 0.30, consumer: 0.05, inflation: 0.45 },
       leaders: [
         { t: 'XOM', n: 'Exxon Mobil', c: 'US', mcap: 5.2e11, note: 'Integrated major; Permian + Guyana' },
@@ -99,7 +99,7 @@
       ]
     },
     {
-      id: 'defense', n: 'Defense & Aerospace', icon: '🛡', color: '#7fa8d9',
+      id: 'defense', n: 'Defense & Aerospace', icon: '🛡', color: '#3d6d9e',
       exp: { oil: 0.10, rates: -0.05, usd: 0.05, war: 0.95, china: 0.25, consumer: -0.05, inflation: 0.10 },
       leaders: [
         { t: 'LMT', n: 'Lockheed Martin', c: 'US', mcap: 1.1e11, note: 'F-35, PAC-3 interceptors' },
@@ -113,7 +113,7 @@
       ]
     },
     {
-      id: 'semis', n: 'Semiconductors', icon: '🔲', color: '#66d9c8',
+      id: 'semis', n: 'Semiconductors', icon: '🔲', color: '#14806e',
       exp: { oil: -0.10, rates: -0.45, usd: -0.15, war: -0.35, china: 0.55, consumer: 0.35, inflation: -0.25 },
       leaders: [
         { t: 'NVDA', n: 'NVIDIA', c: 'US', mcap: 3.0e12, note: 'AI accelerators; TSMC-dependent' },
@@ -127,7 +127,7 @@
       ]
     },
     {
-      id: 'tech', n: 'Software & Platforms', icon: '💻', color: '#8f7fe0',
+      id: 'tech', n: 'Software & Platforms', icon: '💻', color: '#5b4bb5',
       exp: { oil: -0.10, rates: -0.55, usd: -0.10, war: -0.20, china: 0.20, consumer: 0.40, inflation: -0.30 },
       leaders: [
         { t: 'MSFT', n: 'Microsoft', c: 'US', mcap: 3.1e12, note: 'Cloud + AI capex anchor' },
@@ -141,7 +141,7 @@
       ]
     },
     {
-      id: 'banks', n: 'Banks & Financials', icon: '🏦', color: '#5fb3a1',
+      id: 'banks', n: 'Banks & Financials', icon: '🏦', color: '#1d6b78',
       exp: { oil: 0.05, rates: 0.55, usd: 0.10, war: -0.35, china: 0.15, consumer: 0.45, inflation: 0.10 },
       leaders: [
         { t: 'JPM', n: 'JPMorgan Chase', c: 'US', mcap: 6.5e11, note: 'Systemic bellwether' },
@@ -155,7 +155,7 @@
       ]
     },
     {
-      id: 'autos', n: 'Autos & EV', icon: '🚗', color: '#e07f9a',
+      id: 'autos', n: 'Autos & EV', icon: '🚗', color: '#b5527a',
       exp: { oil: -0.30, rates: -0.50, usd: -0.10, war: -0.25, china: 0.60, consumer: 0.70, inflation: -0.35 },
       leaders: [
         { t: 'TSLA', n: 'Tesla', c: 'US', mcap: 8.0e11, note: 'EV + battery + energy storage' },
@@ -169,7 +169,7 @@
       ]
     },
     {
-      id: 'battery', n: 'Batteries, Solar & Grid', icon: '🔋', color: '#7fd97f',
+      id: 'battery', n: 'Batteries, Solar & Grid', icon: '🔋', color: '#2e7d32',
       exp: { oil: 0.35, rates: -0.55, usd: -0.20, war: 0.10, china: 0.65, consumer: 0.25, inflation: -0.10 },
       leaders: [
         { t: '300750.SZ', n: 'CATL', c: 'CN', mcap: 1.5e11, note: '~35% global battery share' },
@@ -183,7 +183,7 @@
       ]
     },
     {
-      id: 'mining', n: 'Mining & Materials', icon: '⛏', color: '#c69a6d',
+      id: 'mining', n: 'Mining & Materials', icon: '⛏', color: '#8a6134',
       exp: { oil: 0.35, rates: -0.25, usd: -0.45, war: 0.30, china: 0.80, consumer: 0.20, inflation: 0.55 },
       leaders: [
         { t: 'BHP', n: 'BHP', c: 'AU', mcap: 1.4e11, note: 'Iron ore = China construction' },
@@ -197,7 +197,7 @@
       ]
     },
     {
-      id: 'shipping', n: 'Shipping & Logistics', icon: '🚢', color: '#6da3c9',
+      id: 'shipping', n: 'Shipping & Logistics', icon: '🚢', color: '#2a6b8f',
       exp: { oil: -0.35, rates: -0.25, usd: 0.05, war: 0.55, china: 0.65, consumer: 0.45, inflation: 0.25 },
       leaders: [
         { t: 'MAERSK-B.CO', n: 'A.P. Moller-Maersk', c: 'DK', mcap: 2.5e10, note: 'Container rates = chokepoint proxy' },
@@ -211,7 +211,7 @@
       ]
     },
     {
-      id: 'health', n: 'Healthcare & Pharma', icon: '⚕', color: '#e0b0d0',
+      id: 'health', n: 'Healthcare & Pharma', icon: '⚕', color: '#9c4f86',
       exp: { oil: -0.05, rates: -0.20, usd: -0.05, war: 0.05, china: 0.10, consumer: 0.10, inflation: -0.10 },
       leaders: [
         { t: 'LLY', n: 'Eli Lilly', c: 'US', mcap: 7.5e11, note: 'GLP-1 franchise' },
@@ -225,7 +225,7 @@
       ]
     },
     {
-      id: 'agri', n: 'Agriculture & Food', icon: '🌾', color: '#d9c86d',
+      id: 'agri', n: 'Agriculture & Food', icon: '🌾', color: '#8a7a12',
       exp: { oil: 0.45, rates: -0.15, usd: -0.30, war: 0.60, china: 0.45, consumer: 0.20, inflation: 0.70 },
       leaders: [
         { t: 'ADM', n: 'Archer-Daniels-Midland', c: 'US', mcap: 3.0e10, note: 'Grain crush margins' },
@@ -239,7 +239,7 @@
       ]
     },
     {
-      id: 'utilities', n: 'Utilities & Power', icon: '⚡', color: '#9fd3e0',
+      id: 'utilities', n: 'Utilities & Power', icon: '⚡', color: '#2c7c91',
       exp: { oil: 0.25, rates: -0.60, usd: 0.00, war: 0.15, china: 0.10, consumer: -0.10, inflation: 0.35 },
       leaders: [
         { t: 'NEE', n: 'NextEra Energy', c: 'US', mcap: 1.5e11, note: 'Regulated + renewables' },
@@ -253,7 +253,7 @@
       ]
     },
     {
-      id: 'airlines', n: 'Airlines & Travel', icon: '✈', color: '#c9a0dc',
+      id: 'airlines', n: 'Airlines & Travel', icon: '✈', color: '#7a4a96',
       exp: { oil: -0.85, rates: -0.35, usd: 0.10, war: -0.55, china: 0.30, consumer: 0.80, inflation: -0.45 },
       leaders: [
         { t: 'DAL', n: 'Delta Air Lines', c: 'US', mcap: 3.5e10, note: 'Jet fuel = 25% of opex' },
@@ -267,7 +267,7 @@
       ]
     },
     {
-      id: 'consumer', n: 'Consumer & Retail', icon: '🛒', color: '#e0a878',
+      id: 'consumer', n: 'Consumer & Retail', icon: '🛒', color: '#a35d1f',
       exp: { oil: -0.40, rates: -0.40, usd: 0.10, war: -0.25, china: 0.35, consumer: 0.95, inflation: -0.55 },
       leaders: [
         { t: 'WMT', n: 'Walmart', c: 'US', mcap: 7.0e11, note: 'Trade-down beneficiary' },
@@ -281,7 +281,7 @@
       ]
     },
     {
-      id: 'crypto', n: 'Digital Assets', icon: '₿', color: '#f0a848',
+      id: 'crypto', n: 'Digital Assets', icon: '₿', color: '#a86a00',
       exp: { oil: 0.05, rates: -0.70, usd: -0.55, war: 0.20, china: 0.10, consumer: 0.35, inflation: 0.30 },
       leaders: [
         { t: 'BTC', n: 'Bitcoin', c: 'US', mcap: 1.3e12, note: 'Liquidity/debasement proxy' },

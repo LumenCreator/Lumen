@@ -5,7 +5,10 @@
 
   var App = {
     world: null,
-    views: ['desk', 'signals', 'cascade', 'backtest', 'links', 'mainstreet', 'whales', 'book'],
+    views: ['desk', 'signals', 'backtest', 'mainstreet', 'whales', 'book'],
+    /* cascade and links are still routable (and reached from a story roll-down or the
+       command bar) — they just no longer occupy a slot in the top nav. */
+    routable: ['cascade', 'links'],
     viewNames: { desk: 'Desk', signals: 'Signals', cascade: 'Cascade', backtest: 'Backtest Lab', links: 'Link Analysis', mainstreet: 'Main Street', whales: 'Flows', book: 'Book & Risk' },
     positions: [],
     scenario: null
@@ -64,7 +67,7 @@
 
   /* ---------- routing ---------- */
   function go(view, params) {
-    if (App.views.indexOf(view) < 0) view = 'desk';
+    if (App.views.indexOf(view) < 0 && App.routable.indexOf(view) < 0) view = 'desk';
     L.state.view = view;
     L.$$('.nav-b').forEach(function (b) { b.classList.toggle('on', b.dataset.view === view); });
     var host = L.$('#view');
@@ -207,53 +210,7 @@
     });
   }
 
-  /* ---------- status strip ---------- */
-  function marketSessions() {
-    var now = new Date();
-    var h = now.getUTCHours() + now.getUTCMinutes() / 60, d = now.getUTCDay();
-    var wd = d >= 1 && d <= 5;
-    return [
-      { n: 'TOKYO', open: wd && h >= 0 && h < 6 },
-      { n: 'LONDON', open: wd && h >= 7 && h < 15.5 },
-      { n: 'NEW YORK', open: wd && h >= 13.5 && h < 20 },
-      { n: 'CRYPTO', open: true }
-    ];
-  }
-
-  function renderStatus() {
-    var strip = L.$('#status');
-    L.clear(strip);
-    var s = L.state.settings;
-    strip.appendChild(el('div', { class: 'st-clock' }, [
-      el('b', { text: new Date().toISOString().slice(11, 19) + 'Z' }),
-      el('span', { text: F.date(new Date()) })
-    ]));
-    var sess = el('div', { class: 'st-sess' });
-    marketSessions().forEach(function (m) {
-      sess.appendChild(el('span', { class: 'sess' + (m.open ? ' on' : ''), text: m.n }));
-    });
-    strip.appendChild(sess);
-
-    /* live macro ticker */
-    var tick = el('div', { class: 'st-tick' });
-    ['CL=F', 'GC=F', 'US10Y', 'DXY', 'VIX', 'BTC', 'SPY'].forEach(function (t) {
-      var q = global.MARKET.quote(t, App.world);
-      if (!q) return;
-      tick.appendChild(el('span', { class: 'tk', onclick: function () { execute('chart ' + t); } }, [
-        el('b', { text: t }),
-        el('i', { text: F.num(q.price, q.price > 1000 ? 0 : 2) }),
-        el('u', { class: q.chgPct >= 0 ? 'up' : 'down', text: F.pct(q.chgPct) })
-      ]));
-    });
-    strip.appendChild(tick);
-
-    var regime = riskRegime();
-    strip.appendChild(el('div', { class: 'st-right' }, [
-      el('span', { class: 'regime r-' + regime.k, title: regime.why }, [regime.label]),
-      el('span', { class: 'mode m-' + s.mode, title: s.mode === 'demo' ? 'Demo world — simulated data' : 'Live providers', text: s.mode.toUpperCase() })
-    ]));
-  }
-
+  /* ---------- risk regime ---------- */
   function riskRegime() {
     var w = App.world;
     if (!w) return { k: 'calm', label: 'RISK: —', why: '' };
@@ -296,7 +253,6 @@
         ], s.mode, function (v) {
           L.setSetting('mode', v);
           UIx.toast('Mode: ' + v.toUpperCase() + (v === 'live' ? ' — providers will be used where keys and CORS allow' : ''), 'i', 5000);
-          renderStatus();
         }),
         el('p', { class: 'note' }, [
           'DEMO runs a deterministic simulated world: every story, price and flow is generated, and is labelled ',
@@ -381,11 +337,8 @@
       refreshWorld('demo-' + Math.random().toString(36).slice(2, 8));
       UIx.toast('Regenerated the demo world with a new seed', 'i');
       go(L.state.view);
-      renderStatus();
     });
     mountCommandBar();
-    renderStatus();
-    setInterval(renderStatus, 15000);
     setInterval(runAlerts, 180000);
     L.bus.on('alerts', updateAlertBadge);
 

@@ -78,12 +78,20 @@
 
   function canvasBox(cls, height, draw) {
     var cv = el('canvas', { class: 'cv ' + (cls || ''), style: { height: (height || 200) + 'px' } });
-    var run = function () { try { draw(cv); } catch (e) { console.error(e); } };
-    setTimeout(run, 0);
     var ro = null;
+    /* A panel redraw detaches the canvas while its observer is still queued, so every draw has
+       to confirm the node is still in the document before touching layout. */
+    var run = function () {
+      if (!cv.isConnected) {
+        if (ro) { ro.disconnect(); ro = null; }
+        return;
+      }
+      try { draw(cv); } catch (e) { console.error(e); }
+    };
+    setTimeout(run, 0);
     if (window.ResizeObserver) {
       ro = new ResizeObserver(L.debounce(run, 90));
-      setTimeout(function () { if (cv.parentNode) ro.observe(cv.parentNode); }, 0);
+      setTimeout(function () { if (ro && cv.parentNode) ro.observe(cv.parentNode); }, 0);
     }
     cv._redraw = run;
     return cv;

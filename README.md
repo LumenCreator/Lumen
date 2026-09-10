@@ -71,6 +71,11 @@ Press `/` or `⌘K`. It takes terse commands and rough english.
 ```
 link tsla to crudeoil          correlation + mechanism + narrative between two entities
 scan hormuz                    everything most tightly wired to one entity
+signals cl=f                   behaviour scan: exhaustion, crowding, flagged bars
+exhaustion nvda                is this level late in its own range?
+rebuild cyclone au             disaster response playbook and its phased buy list
+costs au                       household cost pressure and who collects each bill
+alerts                         alert rules and history
 bt nvda 15m 3m                 FVG statistics and strategy over three months of 15-minute bars
 fvg cl=f 1h 6m                 same thing
 cascade me_conflict 0.8        propagate a shock at 80% severity
@@ -87,13 +92,62 @@ help                           the full list
 
 ---
 
-## The six views
+## The eight views
 
 **Desk** — the world map (Robinson projection over Natural Earth outlines), coloured by where
 the wire is concentrated, pinned with high-impact events and chokepoints, with arcs joining
 countries that appear in the same story. Click a country and the wire, the brief and the map all
 focus on it. The wire carries macro only: trade, capital flows, energy, policy, conflict,
 supply chains. Local crime and civic news is filtered out by design.
+
+**Signals** — the behaviour layer, and the one place where being precise about limits matters
+most. Four things:
+
+*Exhaustion* answers the "who is left to buy" question directly. Given where price sits in its
+own distribution and how long it has been stretched, it pulls every historical instance from a
+comparable percentile and reports what actually happened next — hit rate, median, the gain when
+right against the loss when wrong, and critically the **unconditional** rate beside it. Oil at
+the 95th percentile of its range, extended 23 bars, showing that from comparable levels price
+was lower 58% of the time over the next ten bars against a 55% base rate, is a −13 point edge on
+71 overlapping windows: real, small, and worth sizing down into rather than up on. That framing
+is the whole point — a level with no edge over the base rate is told to you plainly rather than
+dressed up.
+
+*Anomalies* flags bar patterns consistent with liquidity sweeps, climax distribution, churn,
+unexplained volume, absorbed catalysts and gap-fades, plus round-number pinning across the
+series.
+
+*Event studies* is the honest version of "after X happens, people buy". Pick a catalyst class —
+oil shock, conflict escalation, hawkish surprise, tariff action, chokepoint threat — and it
+measures what the instrument actually did after every instance in the window, against its
+unconditional behaviour, with n and a t-statistic shown. Most of the time the answer is "no
+measurable reaction", and it says so.
+
+*Alerts* turns any of the above into a rule that fires before a level rather than at it. Rules
+run whenever the world refreshes and every few minutes while the tab is open, with per-rule
+cooldowns. Browser notifications are opt-in.
+
+**A hard limit worth stating up front:** OHLCV bars carry no order book, no cancellations and no
+counterparty identity. Spoofing, layering, wash trading and marking the close are defined by
+*intent* and by order-level behaviour that is simply not in this data. Everything in the anomaly
+scanner flags a *pattern consistent with* those behaviours, and most of those patterns also
+occur for entirely ordinary reasons — an index rebalance, a large hedger, a scheduled roll.
+Treat every flag as "look at this", never "this happened". Genuine market surveillance needs
+full order-book and participant data that no retail API sells. The app says this in the view
+itself, not just here.
+
+**Main Street** — the household layer. A cost-of-living basket (mortgage, energy, fuel,
+groceries, insurance, repairs, health, telco, vehicle, discretionary) ranked by how hard each
+line is squeezing right now, each with the listed companies on the receiving end and the ones
+paying for it.
+
+Alongside it, disaster response playbooks. A catastrophe is not one trade, it is a sequence:
+emergency response, then claims, then materials, then vehicles, then infrastructure — each phase
+with different companies and a different window. Five hazard types (flood, cyclone, bushfire,
+earthquake/tsunami, drought) across Australian and US listings, with a timeline slider: move it
+and the generated stock list reorders, because the trade in week one is not the trade in month
+nine. The Australian chain is covered in depth because it is unusually concentrated — roof tiles
+run through one listed name, catastrophe restoration through another.
 
 **Cascade** — pick a shock, set severity, and the engine propagates it through a causal graph of
 ~60 nodes and ~130 edges. Every edge carries a conditional probability, a lag in days, a
@@ -116,6 +170,14 @@ heatmap, and event-days versus quiet days. On top of that sits a configurable st
 entry at the zone, stop beyond the far edge, R-multiple target — with an equity curve, expectancy,
 profit factor, drawdown, a trade blotter and a one-parameter-at-a-time sweep so a curve fit is
 visible as one.
+
+It also runs **anchored periodic backtests**: restart the strategy at the beginning of every
+day, week, month, quarter or year with the same capital and an empty book, so no period inherits
+the one before it. Each period is measured against simply buying at the period open and holding.
+This is what makes a lucky run visible — a single continuous equity curve hides the fact that
+all the profit came from one quarter, and the panel reports exactly what share of the total came
+from the best single period. Above 60% and it tells you plainly that you are looking at one good
+run wearing a costume.
 
 **On TradingView**: TradingView has no public API for running backtests, so nothing here can
 drive it remotely — any tool claiming otherwise is scraping. What this does instead is
@@ -152,9 +214,12 @@ assets/js/
   core.js          store, seeded RNG, formatting, DOM helpers, event bus
   data/world.js    241 country outlines (Natural Earth 1:50m, simplified)
   data/universe.js countries, chokepoints, 15 industries with global leaders, macro instruments
+  data/household.js household cost basket, disaster playbooks, AU/US regional companies
   data/feed.js     the demo news/event generator
   data/market.js   the price engine — factor-driven, with a shared market and sector factor
   cascade.js       the causal graph and propagation
+  microstructure.js exhaustion, anomaly detection, crowding, event studies
+  alerts.js        alert rules, evaluation and history
   linker.js        entity resolution, structural graph, path search, correlation, co-occurrence
   backtest.js      FVG detection, statistics, strategy, sweep, TradingView CSV parser
   whales.js        wallets, flows, filings
@@ -164,7 +229,7 @@ assets/js/
   map.js           Robinson projection, SVG map, heat/pins/arcs
   ui.js            shared components and the view registry
   terminal.js      command parsing and autocomplete
-  view-*.js        the six views
+  view-*.js        the eight views
   app.js           shell, routing, settings
 netlify/functions/proxy.js
 netlify.toml
@@ -189,6 +254,18 @@ opened straight off disk.
   precisely why the scenario panel exists next to it.
 - **13F data is filed up to 45 days late.** It tells you where money went, not where it is going.
 - **Exchange flow is a heuristic.** An inflow can equally be a market maker rebalancing.
+- **The anomaly scanner cannot detect manipulation**, only patterns consistent with it. See the
+  Signals section above — this is the most important limit in the app.
+- **Conditional base rates use overlapping windows** from a single price path. Fifty windows are
+  not fifty independent observations, so every t-statistic here overstates its confidence. The
+  app reports n everywhere so you can see when a number is too thin to lean on.
+- **Disaster buy lists are a research starting point, not a portfolio.** The chain says who is
+  structurally exposed to a rebuild; it says nothing about whether that exposure is already in
+  the price, which after a widely reported catastrophe it usually partly is.
+- **Household budget shares are approximations** of the shape of expenditure surveys, not a
+  specific ABS/ONS/BLS release. They order the categories sensibly; do not quote them.
+- **Alerts only run while the tab is open.** There is no server. Overnight alerting would need
+  the check to run somewhere that stays up.
 - **Nothing here is investment advice.** Trading goes to Alpaca *paper* accounts. Do not point
   this at a live brokerage without reading the order path in `providers.js` yourself.
 

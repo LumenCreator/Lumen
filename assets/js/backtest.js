@@ -304,6 +304,98 @@
     };
   }
 
+  /* ---------- anchored periodic backtest ----------
+     Instead of one continuous run, restart the strategy at the start of every period with a
+     fresh book. This is what shows whether a result is a strategy or one good month: a single
+     equity curve hides the fact that all of the profit came from one quarter, and running each
+     period independently makes that impossible to hide.
+
+     Each period also gets a buy-and-hold control from the same period open, because "beat
+     doing nothing" is the only comparison that matters. */
+
+  var PERIODS = {
+    day: { n: 'Day', key: function (d) { return d.toISOString().slice(0, 10); } },
+    week: { n: 'Week', key: function (d) {
+      var t = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+      t.setUTCDate(t.getUTCDate() - ((t.getUTCDay() + 6) % 7));      /* Monday anchor */
+      return t.toISOString().slice(0, 10);
+    } },
+    month: { n: 'Month', key: function (d) { return d.toISOString().slice(0, 7); } },
+    quarter: { n: 'Quarter', key: function (d) { return d.getUTCFullYear() + '-Q' + (Math.floor(d.getUTCMonth() / 3) + 1); } },
+    year: { n: 'Year', key: function (d) { return String(d.getUTCFullYear()); } }
+  };
+
+  function splitByPeriod(bars, period) {
+    var spec = PERIODS[period] || PERIODS.month;
+    var buckets = {}, order = [];
+    bars.forEach(function (b) {
+      var k = spec.key(new Date(b.t));
+      if (!buckets[k]) { buckets[k] = []; order.push(k); }
+      buckets[k].push(b);
+    });
+    return order.map(function (k) { return { key: k, bars: buckets[k] }; });
+  }
+
+  function runPeriodic(bars, opts, period, equityStart) {
+    var o = Object.assign({}, DEFAULTS, opts || {});
+    var eq = equityStart || 100000;
+    var groups = splitByPeriod(bars, period).filter(function (g) { return g.bars.length >= 25; });
+    if (!groups.length) {
+      return { period: period, periodName: (PERIODS[period] || PERIODS.month).n, rows: [], summary: null,
+        note: 'No period in this range has enough bars to run the strategy independently. Use a shorter timeframe or a longer period.' };
+    }
+
+    var rows = groups.map(function (g) {
+      /* Each period starts flat with the same capital — no compounding between periods, so
+         no period gets credit for the one before it. */
+      var res = run(g.bars, o, eq);
+      var first = g.bars[0], last = g.bars[g.bars.length - 1];
+      var hold = (last.c - first.o) / first.o * 100;
+      return {
+        key: g.key, bars: g.bars.length,
+        from: first.t, to: last.t,
+        n: res.stats.n, winRate: res.stats.winRate,
+        totalR: res.stats.totalR, expectancyR: res.stats.expectancyR,
+        pl: res.stats.pl, plPct: res.stats.plPct,
+        maxDD: res.stats.maxDD, pf: res.stats.profitFactor,
+        hold: hold,                                  /* buy and hold the same period */
+        vsHold: res.stats.plPct - hold,
+        gaps: res.gaps.length,
+        res: res
+      };
+    });
+
+    var traded = rows.filter(function (r) { return r.n > 0; });
+    var wins = traded.filter(function (r) { return r.totalR > 0; });
+    var beat = traded.filter(function (r) { return r.vsHold > 0; });
+    var Rs = traded.map(function (r) { return r.totalR; });
+    var best = traded.slice().sort(function (a, b) { return b.totalR - a.totalR; })[0] || null;
+    var worst = traded.slice().sort(function (a, b) { return a.totalR - b.totalR; })[0] || null;
+
+    /* How much of the whole result came from the single best period. If one period carries
+       most of the total R, the strategy is really one trade wearing a costume. */
+    var totalR = M.sum(Rs);
+    var concentration = (best && totalR > 0) ? best.totalR / totalR : null;
+
+    return {
+      period: period, periodName: (PERIODS[period] || PERIODS.month).n,
+      rows: rows,
+      summary: {
+        periods: rows.length, tradedPeriods: traded.length,
+        profitablePeriods: wins.length,
+        consistency: traded.length ? wins.length / traded.length * 100 : 0,
+        beatHold: traded.length ? beat.length / traded.length * 100 : 0,
+        totalR: totalR, meanR: M.mean(Rs), medianR: M.median(Rs), sdR: M.stdev(Rs),
+        best: best, worst: worst,
+        concentration: concentration,
+        totalTrades: M.sum(traded.map(function (r) { return r.n; })),
+        avgTrades: M.mean(traded.map(function (r) { return r.n; })),
+        meanHold: M.mean(rows.map(function (r) { return r.hold; })),
+        meanStrat: M.mean(rows.map(function (r) { return r.plPct; }))
+      }
+    };
+  }
+
   /* ---------- parameter sweep ---------- */
   function sweep(bars, base, param, values) {
     return values.map(function (v) {
@@ -348,7 +440,8 @@
   }
 
   global.BACKTEST = {
-    DEFAULTS: DEFAULTS, atr: atr, ema: ema,
-    detect: detect, stats: stats, run: run, sweep: sweep, parseCSV: parseCSV
+    DEFAULTS: DEFAULTS, PERIODS: PERIODS, atr: atr, ema: ema,
+    detect: detect, stats: stats, run: run, sweep: sweep, parseCSV: parseCSV,
+    splitByPeriod: splitByPeriod, runPeriodic: runPeriodic
   };
 })(window);

@@ -338,14 +338,38 @@
     ind.leaders.forEach(function (l) { SECTOR_BY_TICKER[l.t] = ind.id; });
   });
 
+  /* Secondary registry: regional and domestic names (ASX builders, insurers, repairers...)
+     that belong to an existing industry but are not among its global leaders. They resolve
+     for charts, quotes and link analysis exactly like a leader does. */
+  var EXTRA = [];
+  var EXTRA_BY_T = {};
+  function registerCompanies(list) {
+    (list || []).forEach(function (c) {
+      if (!c || !c.t || EXTRA_BY_T[c.t.toUpperCase()] || SECTOR_BY_TICKER[c.t]) return;
+      var ind = findIndustry(c.sector);
+      var rec = {
+        t: c.t, n: c.n, c: c.c, mcap: c.mcap || 0, note: c.note || '',
+        sector: c.sector, sectorName: ind ? ind.n : c.sector,
+        color: ind ? ind.color : '#7d8896', extra: true
+      };
+      EXTRA.push(rec);
+      EXTRA_BY_T[c.t.toUpperCase()] = rec;
+      SECTOR_BY_TICKER[c.t] = c.sector;
+    });
+    _leaderCache = null;
+  }
+
+  var _leaderCache = null;
   function allLeaders() {
+    if (_leaderCache) return _leaderCache;
     var out = [];
     INDUSTRIES.forEach(function (ind) {
       ind.leaders.forEach(function (l) {
         out.push({ t: l.t, n: l.n, c: l.c, mcap: l.mcap, note: l.note, sector: ind.id, sectorName: ind.n, color: ind.color });
       });
     });
-    return out;
+    _leaderCache = out.concat(EXTRA);
+    return _leaderCache;
   }
   function findIndustry(id) {
     for (var i = 0; i < INDUSTRIES.length; i++) if (INDUSTRIES[i].id === id) return INDUSTRIES[i];
@@ -353,6 +377,7 @@
   }
   function findEntity(sym) {
     var s = String(sym || '').toUpperCase();
+    if (EXTRA_BY_T[s]) return EXTRA_BY_T[s];
     var L = allLeaders();
     for (var i = 0; i < L.length; i++) if (L[i].t.toUpperCase() === s) return L[i];
     for (var j = 0; j < MACRO.length; j++) if (MACRO[j].t.toUpperCase() === s) {
@@ -365,6 +390,7 @@
     REGIONS: REGIONS, COUNTRIES: COUNTRIES, CHOKEPOINTS: CHOKEPOINTS,
     INDUSTRIES: INDUSTRIES, MACRO: MACRO, ACTORS: ACTORS,
     SECTOR_BY_TICKER: SECTOR_BY_TICKER,
-    allLeaders: allLeaders, findIndustry: findIndustry, findEntity: findEntity
+    allLeaders: allLeaders, findIndustry: findIndustry, findEntity: findEntity,
+    registerCompanies: registerCompanies, extras: function () { return EXTRA.slice(); }
   };
 })(window);

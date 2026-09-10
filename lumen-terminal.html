@@ -476,6 +476,96 @@ input[type=range] { width:100%; accent-color:var(--accent); }
 .toast.out { opacity:0; transform:translateX(16px); transition:.35s; }
 @keyframes slidein { from{ opacity:0; transform:translateX(20px);} to{ opacity:1; transform:none;} }
 
+/* ---------- signals ---------- */
+.sig-ctl { display:grid; grid-template-columns:130px auto auto auto; gap:14px; align-items:end; }
+@media (max-width:1100px){ .sig-ctl { grid-template-columns:1fr; } }
+.nav-dot {
+  display:inline-block; margin-left:5px; min-width:15px; height:15px; line-height:15px;
+  border-radius:8px; background:var(--down); color:#0b0e13; font-size:9px; font-style:normal;
+  text-align:center; padding:0 4px; font-weight:700; vertical-align:middle;
+}
+.exh-head { display:flex; gap:14px; align-items:center; margin-bottom:12px; flex-wrap:wrap; }
+.exh-gauge {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:7px 14px; border-radius:5px; border:1px solid var(--line); background:var(--panel2); min-width:110px;
+}
+.exh-gauge b { font-family:var(--mono); font-size:26px; line-height:1; }
+.exh-gauge span { color:var(--dim2); font-size:9px; text-transform:uppercase; letter-spacing:.05em; margin-top:3px; }
+.exh-gauge.t-normal b { color:var(--up); }
+.exh-gauge.t-elevated b { color:var(--warn); }
+.exh-gauge.t-high b { color:var(--down); }
+.exh-t h3 { font-size:16px; text-transform:none; letter-spacing:normal; display:flex; gap:9px; align-items:baseline; }
+.exh-px { font-family:var(--mono); font-style:normal; color:var(--dim); font-size:14px; }
+.exh-t > div { display:flex; gap:5px; flex-wrap:wrap; }
+.range-bar { margin:12px 0 22px; }
+.rb-track { position:relative; height:7px; background:#151d27; border-radius:4px; }
+.rb-fill { display:block; height:100%; border-radius:4px; background:linear-gradient(90deg,#1e4258,#486c5a,#bc943c,#d6543c); }
+.rb-mark { position:absolute; top:-4px; width:2px; height:15px; background:var(--txt); transform:translateX(-1px); }
+.rb-now { position:absolute; top:14px; transform:translateX(-50%); font-family:var(--mono); font-size:11px; color:var(--txt); white-space:nowrap; }
+.rb-lbl { display:flex; justify-content:space-between; margin-top:4px; font-family:var(--mono); font-size:10px; color:var(--dim2); }
+.rb-lbl b { color:var(--txt); }
+.tbl td.thin { color:var(--dim2); }
+.det-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:9px; }
+.det { border:1px solid var(--line); border-radius:var(--r); padding:8px; background:var(--panel2); opacity:.6; }
+.det.hit { opacity:1; border-color:#33404f; }
+.det-h { display:flex; gap:6px; align-items:center; margin-bottom:4px; }
+.det-h b { font-size:11.5px; flex:1; }
+.det-i { font-size:13px; }
+.det-n { color:var(--dim2); font-size:9.5px; font-family:var(--mono); }
+.det p { margin:0; color:var(--dim); font-size:10.5px; line-height:1.5; }
+.pin-note { margin-top:10px; padding:8px; border:1px solid #4a3a1a; background:#1c160c; border-radius:var(--r); font-size:11px; }
+.rules { display:flex; flex-direction:column; gap:9px; margin-top:9px; }
+.rule { border:1px solid var(--line); border-radius:var(--r); padding:9px; background:var(--panel2); }
+.rule.off { opacity:.48; }
+.rule-h { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+.rule-h b { flex:1; font-size:11.5px; }
+.sw-t { display:flex; gap:4px; align-items:center; font-size:10px; color:var(--dim2); cursor:pointer; }
+.rule-f { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:9px; }
+.rule-last { margin-top:6px; font-size:9.5px; color:var(--dim2); font-family:var(--mono); }
+.alog { display:flex; flex-direction:column; }
+.al { padding:8px 0; border-bottom:1px solid #131a24; cursor:pointer; border-left:2px solid transparent; padding-left:8px; }
+.al:hover { background:#101722; }
+.al.t-down { border-left-color:var(--down); }
+.al.t-warn { border-left-color:var(--warn); }
+.al.t-i { border-left-color:var(--accent); }
+.al-h { display:flex; gap:8px; align-items:baseline; }
+.al-h b { font-size:11.5px; flex:1; }
+.al-h span { color:var(--dim2); font-size:9.5px; font-family:var(--mono); }
+.al p { margin:3px 0 0; color:var(--dim); font-size:10.5px; line-height:1.5; }
+
+/* ---------- main street ---------- */
+.ms-ctl { display:flex; gap:14px; flex-wrap:wrap; }
+.basket { display:grid; grid-template-columns:repeat(auto-fit,minmax(330px,1fr)); gap:10px; }
+.bcard { border:1px solid var(--line); border-radius:var(--r); padding:10px; background:var(--panel2); }
+.bc-h { display:flex; gap:7px; align-items:center; margin-bottom:7px; flex-wrap:wrap; }
+.bc-h b { flex:1; font-size:12px; }
+.bc-i { font-size:15px; }
+.bc-h span:last-child { font-family:var(--mono); font-size:10.5px; }
+.bc-pain { color:var(--dim); font-size:10.5px; line-height:1.5; margin:8px 0; }
+.bc-sec { margin-top:8px; }
+.bc-sec h5 { margin:0 0 4px; font-size:9.5px; color:var(--dim2); text-transform:uppercase; letter-spacing:.05em; font-weight:500; }
+.bc-row { display:grid; grid-template-columns:64px 1fr auto 46px; gap:7px; align-items:baseline; padding:3px 0; cursor:pointer; border-bottom:1px solid #131a24; }
+.bc-row:hover { background:#101722; }
+.bc-row code { color:var(--accent); font-size:10px; }
+.bc-n { font-size:10.5px; }
+.bc-w { color:var(--dim2); font-size:9.5px; text-align:right; }
+.bc-row b { font-family:var(--mono); font-size:10px; text-align:right; }
+@media (max-width:620px){ .bc-row { grid-template-columns:60px 1fr 46px; } .bc-w { display:none; } }
+
+.phase { padding:10px 0; border-bottom:1px solid #131a24; opacity:.62; }
+.phase.on { opacity:1; }
+.phase.done { opacity:.44; }
+.ph-h { display:flex; gap:7px; align-items:center; margin-bottom:6px; flex-wrap:wrap; }
+.ph-h b { font-size:12px; }
+.ph-track { position:relative; height:6px; background:#151d27; border-radius:3px; margin:7px 0; }
+.ph-track i { position:absolute; height:100%; background:var(--accent2); border-radius:3px; }
+.phase.on .ph-track i { background:var(--warn); }
+.ph-track u { position:absolute; top:-4px; width:2px; height:14px; background:var(--txt); }
+.ph-what { color:var(--dim); font-size:10.5px; line-height:1.55; margin:5px 0; }
+.ph-caution { color:var(--warn); font-size:10.5px; line-height:1.55; margin:5px 0; }
+.ph-picks { display:flex; gap:4px; flex-wrap:wrap; margin-top:6px; }
+.tbl tr.muted td { color:var(--dim2); }
+
 </style>
 </head>
 <body>
@@ -492,7 +582,7 @@ input[type=range] { width:100%; accent-color:var(--accent); }
   <div class="cmd-wrap">
     <span class="cmd-p">›</span>
     <input id="cmd" type="text" autocomplete="off" spellcheck="false"
-           placeholder="link tsla to crudeoil · bt nvda 15m 3m · what if iran closes hormuz · map iran   (press /)">
+           placeholder="link tsla to crudeoil · signals cl=f · rebuild flood au · bt nvda 15m 3m · what if iran closes hormuz   (press /)">
     <div id="cmd-drop" class="cmd-drop"></div>
   </div>
 
@@ -1127,14 +1217,38 @@ window.WORLD_GEOMETRY = [{"id":"ZW","n":"Zimbabwe","r":[[3129,-2240,2936,-2219,2
     ind.leaders.forEach(function (l) { SECTOR_BY_TICKER[l.t] = ind.id; });
   });
 
+  /* Secondary registry: regional and domestic names (ASX builders, insurers, repairers...)
+     that belong to an existing industry but are not among its global leaders. They resolve
+     for charts, quotes and link analysis exactly like a leader does. */
+  var EXTRA = [];
+  var EXTRA_BY_T = {};
+  function registerCompanies(list) {
+    (list || []).forEach(function (c) {
+      if (!c || !c.t || EXTRA_BY_T[c.t.toUpperCase()] || SECTOR_BY_TICKER[c.t]) return;
+      var ind = findIndustry(c.sector);
+      var rec = {
+        t: c.t, n: c.n, c: c.c, mcap: c.mcap || 0, note: c.note || '',
+        sector: c.sector, sectorName: ind ? ind.n : c.sector,
+        color: ind ? ind.color : '#7d8896', extra: true
+      };
+      EXTRA.push(rec);
+      EXTRA_BY_T[c.t.toUpperCase()] = rec;
+      SECTOR_BY_TICKER[c.t] = c.sector;
+    });
+    _leaderCache = null;
+  }
+
+  var _leaderCache = null;
   function allLeaders() {
+    if (_leaderCache) return _leaderCache;
     var out = [];
     INDUSTRIES.forEach(function (ind) {
       ind.leaders.forEach(function (l) {
         out.push({ t: l.t, n: l.n, c: l.c, mcap: l.mcap, note: l.note, sector: ind.id, sectorName: ind.n, color: ind.color });
       });
     });
-    return out;
+    _leaderCache = out.concat(EXTRA);
+    return _leaderCache;
   }
   function findIndustry(id) {
     for (var i = 0; i < INDUSTRIES.length; i++) if (INDUSTRIES[i].id === id) return INDUSTRIES[i];
@@ -1142,6 +1256,7 @@ window.WORLD_GEOMETRY = [{"id":"ZW","n":"Zimbabwe","r":[[3129,-2240,2936,-2219,2
   }
   function findEntity(sym) {
     var s = String(sym || '').toUpperCase();
+    if (EXTRA_BY_T[s]) return EXTRA_BY_T[s];
     var L = allLeaders();
     for (var i = 0; i < L.length; i++) if (L[i].t.toUpperCase() === s) return L[i];
     for (var j = 0; j < MACRO.length; j++) if (MACRO[j].t.toUpperCase() === s) {
@@ -1154,8 +1269,332 @@ window.WORLD_GEOMETRY = [{"id":"ZW","n":"Zimbabwe","r":[[3129,-2240,2936,-2219,2
     REGIONS: REGIONS, COUNTRIES: COUNTRIES, CHOKEPOINTS: CHOKEPOINTS,
     INDUSTRIES: INDUSTRIES, MACRO: MACRO, ACTORS: ACTORS,
     SECTOR_BY_TICKER: SECTOR_BY_TICKER,
-    allLeaders: allLeaders, findIndustry: findIndustry, findEntity: findEntity
+    allLeaders: allLeaders, findIndustry: findIndustry, findEntity: findEntity,
+    registerCompanies: registerCompanies, extras: function () { return EXTRA.slice(); }
   };
+})(window);
+
+
+/* ==== assets/js/data/household.js ==== */
+/* Lumen Terminal — Main Street: what households actually spend money on, and who gets paid.
+ *
+ * Two datasets:
+ *   BASKET    — household cost categories, their share of spend, and the listed companies on
+ *               the receiving end of each. This is the "what are ordinary people worried
+ *               about" layer, and it is what turns a cost-of-living headline into a ticker.
+ *   PLAYBOOKS — disaster response chains. A catastrophe is not one trade, it is a sequence:
+ *               emergency response, then claims, then materials, then vehicles, then
+ *               infrastructure — each phase with a different set of companies and a different
+ *               window. The phase timings are how these events have typically unfolded, not
+ *               guarantees.
+ *
+ * Cost shares are approximate, drawn from the shape of ABS/ONS/BLS household expenditure
+ * surveys rather than any single release. They are here to order the categories sensibly, not
+ * to be quoted as statistics.
+ */
+(function (global) {
+  'use strict';
+
+  /* ---------- regional companies referenced below ---------- */
+  /* Registered into UNIVERSE so they chart, quote and link like any other name. */
+  var COMPANIES = [
+    /* Australia — building materials and construction */
+    { t: 'JHX.AX', n: 'James Hardie', c: 'AU', sector: 'mining', mcap: 2.2e10, note: 'Fibre cement cladding — the dominant exterior wall product in AU rebuilds' },
+    { t: 'BLD.AX', n: 'Boral', c: 'AU', sector: 'mining', mcap: 7.0e9, note: 'Concrete, aggregates, asphalt' },
+    { t: 'ABC.AX', n: 'Adbri', n2: 'Adbri (cement)', c: 'AU', sector: 'mining', mcap: 2.0e9, note: 'Cement and lime — the input under every slab' },
+    { t: 'BKW.AX', n: 'Brickworks', c: 'AU', sector: 'mining', mcap: 4.5e9, note: 'Bricks and Bristile Roofing — roof tiles specifically' },
+    { t: 'CSR.AX', n: 'CSR', c: 'AU', sector: 'mining', mcap: 4.0e9, note: 'Gyprock plasterboard, insulation — every internal wall' },
+    { t: 'BSL.AX', n: 'BlueScope Steel', c: 'AU', sector: 'mining', mcap: 1.0e10, note: 'Colorbond roofing steel — the other half of AU roofs' },
+    { t: 'JLG.AX', n: 'Johns Lyng Group', c: 'AU', sector: 'shipping', mcap: 1.5e9, note: 'Insurance building and restoration — the contractor that mobilises first after a catastrophe' },
+    { t: 'REH.AX', n: 'Reece', c: 'AU', sector: 'consumer', mcap: 1.6e10, note: 'Plumbing and bathroom supply' },
+    { t: 'RWC.AX', n: 'Reliance Worldwide', c: 'AU', sector: 'mining', mcap: 3.5e9, note: 'Plumbing fittings (SharkBite)' },
+    { t: 'GWA.AX', n: 'GWA Group', c: 'AU', sector: 'consumer', mcap: 6.0e8, note: 'Bathroom and kitchen fixtures' },
+    { t: 'WES.AX', n: 'Wesfarmers', c: 'AU', sector: 'consumer', mcap: 8.0e10, note: 'Bunnings — where owner-rebuilders and trades actually buy' },
+    { t: 'FBU.AX', n: 'Fletcher Building', c: 'NZ', sector: 'mining', mcap: 2.0e9, note: 'NZ/AU materials and construction' },
+    { t: 'WGN.AX', n: 'Wagners', c: 'AU', sector: 'mining', mcap: 3.0e8, note: 'Cement, composite fibre infrastructure' },
+    /* Australia — insurance, the phase that pays for it */
+    { t: 'IAG.AX', n: 'Insurance Australia Group', c: 'AU', sector: 'banks', mcap: 1.8e10, note: 'NRMA/CGU — largest AU home insurer; catastrophe losses land here first' },
+    { t: 'SUN.AX', n: 'Suncorp', c: 'AU', sector: 'banks', mcap: 2.2e10, note: 'AAMI/GIO — home and motor exposure to natural hazard' },
+    { t: 'QBE.AX', n: 'QBE Insurance', c: 'AU', sector: 'banks', mcap: 2.6e10, note: 'Global commercial lines and reinsurance recoveries' },
+    /* Australia — banks, energy, retail, telco, healthcare */
+    { t: 'CBA.AX', n: 'Commonwealth Bank', c: 'AU', sector: 'banks', mcap: 1.9e11, note: 'Largest mortgage book in the country — the rent/mortgage line' },
+    { t: 'WBC.AX', n: 'Westpac', c: 'AU', sector: 'banks', mcap: 1.1e11, note: 'Mortgages and business lending' },
+    { t: 'AGL.AX', n: 'AGL Energy', c: 'AU', sector: 'utilities', mcap: 7.0e9, note: 'Retail electricity and gas — the power bill' },
+    { t: 'ORG.AX', n: 'Origin Energy', c: 'AU', sector: 'utilities', mcap: 1.7e10, note: 'Energy retail plus LNG' },
+    { t: 'ALD.AX', n: 'Ampol', c: 'AU', sector: 'energy', mcap: 6.0e9, note: 'Fuel refining and retail — the price on the forecourt sign' },
+    { t: 'WOW.AX', n: 'Woolworths', c: 'AU', sector: 'consumer', mcap: 4.0e10, note: 'Groceries — the weekly shop' },
+    { t: 'COL.AX', n: 'Coles', c: 'AU', sector: 'consumer', mcap: 2.6e10, note: 'Groceries' },
+    { t: 'TLS.AX', n: 'Telstra', c: 'AU', sector: 'tech', mcap: 4.5e10, note: 'Telecoms — network restoration after disasters' },
+    { t: 'TCL.AX', n: 'Transurban', c: 'AU', sector: 'shipping', mcap: 4.2e10, note: 'Toll roads — transport cost and infrastructure repair' },
+    { t: 'DOW.AX', n: 'Downer EDI', c: 'AU', sector: 'shipping', mcap: 3.0e9, note: 'Infrastructure services and government maintenance contracts' },
+    { t: 'SVW.AX', n: 'Seven Group', c: 'AU', sector: 'mining', mcap: 1.5e10, note: 'Coates hire and Boral stake — equipment for every rebuild' },
+    { t: 'MND.AX', n: 'Monadelphous', c: 'AU', sector: 'shipping', mcap: 1.4e9, note: 'Engineering construction and maintenance' },
+    { t: 'CWY.AX', n: 'Cleanaway', c: 'AU', sector: 'utilities', mcap: 6.0e9, note: 'Waste — debris clearance is the first physical job after a disaster' },
+    { t: 'APE.AX', n: 'Eagers Automotive', c: 'AU', sector: 'autos', mcap: 3.5e9, note: 'Car dealer — replacement vehicles after write-offs' },
+    { t: 'BAP.AX', n: 'Bapcor', c: 'AU', sector: 'autos', mcap: 1.6e9, note: 'Vehicle parts and service' },
+    { t: 'RHC.AX', n: 'Ramsay Health Care', c: 'AU', sector: 'health', mcap: 1.0e10, note: 'Private hospitals — surge demand and staffing costs' },
+    { t: 'MPL.AX', n: 'Medibank', c: 'AU', sector: 'health', mcap: 1.1e10, note: 'Private health insurance premiums' },
+    /* United States / global equivalents so the playbooks work outside AU */
+    { t: 'HD', n: 'Home Depot', c: 'US', sector: 'consumer', mcap: 3.5e11, note: 'US building materials retail' },
+    { t: 'LOW', n: "Lowe's", c: 'US', sector: 'consumer', mcap: 1.4e11, note: 'US home improvement' },
+    { t: 'BLDR', n: 'Builders FirstSource', c: 'US', sector: 'mining', mcap: 1.7e10, note: 'US structural building products' },
+    { t: 'MAS', n: 'Masco', c: 'US', sector: 'consumer', mcap: 1.6e10, note: 'Plumbing and coatings' },
+    { t: 'OC', n: 'Owens Corning', c: 'US', sector: 'mining', mcap: 1.5e10, note: 'Roofing shingles and insulation — the US roof line' },
+    { t: 'VMC', n: 'Vulcan Materials', c: 'US', sector: 'mining', mcap: 3.4e10, note: 'Aggregates for road and infrastructure repair' },
+    { t: 'MLM', n: 'Martin Marietta', c: 'US', sector: 'mining', mcap: 3.2e10, note: 'Aggregates and cement' },
+    { t: 'CRH', n: 'CRH', c: 'IE', sector: 'mining', mcap: 6.0e10, note: 'Global building materials and road infrastructure' },
+    { t: 'PWR', n: 'Quanta Services', c: 'US', sector: 'battery', mcap: 4.5e10, note: 'Grid restoration after storms' },
+    { t: 'GNRC', n: 'Generac', c: 'US', sector: 'battery', mcap: 9.0e9, note: 'Home standby generators — demand spikes on outage events' },
+    { t: 'TT', n: 'Trane Technologies', c: 'US', sector: 'consumer', mcap: 8.0e10, note: 'HVAC — heat events and rebuilds' },
+    { t: 'ALL', n: 'Allstate', c: 'US', sector: 'banks', mcap: 5.0e10, note: 'US home and motor insurer — catastrophe loss exposure' },
+    { t: 'TRV', n: 'Travelers', c: 'US', sector: 'banks', mcap: 5.5e10, note: 'US property casualty' },
+    { t: 'RNR', n: 'RenaissanceRe', c: 'BM', sector: 'banks', mcap: 1.2e10, note: 'Reinsurance — pricing hardens after a large catastrophe year' },
+    { t: 'MUV2.DE', n: 'Munich Re', c: 'DE', sector: 'banks', mcap: 6.5e10, note: 'Global reinsurer; catastrophe pricing bellwether' },
+    { t: 'CPRT', n: 'Copart', c: 'US', sector: 'autos', mcap: 5.0e10, note: 'Salvage auctions — flood write-offs flow through here' },
+    { t: 'WM', n: 'Waste Management', c: 'US', sector: 'utilities', mcap: 8.5e10, note: 'Debris removal at scale' },
+    { t: 'AWK', n: 'American Water Works', c: 'US', sector: 'utilities', mcap: 2.7e10, note: 'Water infrastructure repair' },
+    { t: 'URI', n: 'United Rentals', c: 'US', sector: 'mining', mcap: 5.0e10, note: 'Equipment rental — the fleet every rebuild hires' }
+  ];
+
+  /* ---------- household cost basket ---------- */
+  /* share: rough proportion of a household budget. sens: which macro factor moves this line.
+     dir: +1 means the cost rises when that factor rises. */
+  var BASKET = [
+    {
+      id: 'housing', n: 'Mortgage & rent', icon: '🏠', share: 0.24, sens: 'rates', dir: 1,
+      pain: 'The single largest and most rate-sensitive line. A 1% move in the mortgage rate outweighs almost anything else on this list.',
+      proxy: 'US10Y',
+      winners: [{ t: 'CBA.AX', w: 'Net interest margin widens before arrears catch up' }, { t: 'WBC.AX', w: 'Same mechanism' }, { t: 'JPM', w: 'US equivalent' }],
+      losers: [{ t: 'HD', w: 'Renovation spend is credit financed' }, { t: 'WES.AX', w: 'Bunnings discretionary DIY slows' }]
+    },
+    {
+      id: 'energy', n: 'Electricity & gas', icon: '⚡', share: 0.05, sens: 'oil', dir: 1,
+      pain: 'The most visible bill and the fastest to become political. Wholesale power follows gas, and retail resets lag it by two or three quarters.',
+      proxy: 'NG=F',
+      winners: [{ t: 'AGL.AX', w: 'Generation margin expands when wholesale rises' }, { t: 'ORG.AX', w: 'Integrated retail plus LNG' }, { t: 'VST', w: 'US merchant power' }],
+      losers: [{ t: 'AA', w: 'Aluminium smelting is a power price in disguise' }, { t: 'CSR.AX', w: 'Energy-intensive materials manufacture' }]
+    },
+    {
+      id: 'fuel', n: 'Petrol & transport', icon: '⛽', share: 0.11, sens: 'oil', dir: 1,
+      pain: 'Non-discretionary for anyone who commutes. The forecourt price is where an oil shock stops being abstract.',
+      proxy: 'CL=F',
+      winners: [{ t: 'ALD.AX', w: 'Refining and retail margin' }, { t: 'XOM', w: 'Integrated producer' }, { t: 'TCL.AX', w: 'Toll volumes are resilient' }],
+      losers: [{ t: 'DAL', w: 'Jet fuel is a quarter of airline opex' }, { t: 'APE.AX', w: 'Large-vehicle demand falls' }]
+    },
+    {
+      id: 'groceries', n: 'Groceries', icon: '🛒', share: 0.17, sens: 'inflation', dir: 1,
+      pain: 'Where inflation is felt weekly. Supermarkets keep margin through private label while volumes trade down.',
+      proxy: 'ZW=F',
+      winners: [{ t: 'WOW.AX', w: 'Scale and private label protect margin' }, { t: 'COL.AX', w: 'Same' }, { t: 'COST', w: 'Trade-down beneficiary' }],
+      losers: [{ t: 'MCD', w: 'Input costs before pricing catches up' }, { t: 'TSN', w: 'Feed costs squeeze protein margins' }]
+    },
+    {
+      id: 'insurance', n: 'Home & car insurance', icon: '📋', share: 0.05, sens: 'war', dir: 1,
+      pain: 'Premiums are repriced after every catastrophe season, and in hazard-exposed areas cover is becoming unavailable at any price.',
+      proxy: 'GC=F',
+      winners: [{ t: 'IAG.AX', w: 'Premium rate increases stick after a loss year' }, { t: 'SUN.AX', w: 'Same' }, { t: 'MUV2.DE', w: 'Reinsurance pricing hardens' }],
+      losers: [{ t: 'QBE.AX', w: 'Until repricing catches up, claims land first' }, { t: 'ALL', w: 'US catastrophe exposure' }]
+    },
+    {
+      id: 'repairs', n: 'Home repairs & materials', icon: '🧱', share: 0.06, sens: 'inflation', dir: 1,
+      pain: 'Roofing, plumbing and trades. Costs are labour-constrained more than material-constrained — a shortage of tradespeople sets the price.',
+      proxy: 'HG=F',
+      winners: [{ t: 'BKW.AX', w: 'Bricks and roof tiles' }, { t: 'JHX.AX', w: 'Cladding' }, { t: 'REH.AX', w: 'Plumbing supply' }, { t: 'OC', w: 'US roofing' }],
+      losers: [{ t: 'CBA.AX', w: 'Renovation lending slows when quotes blow out' }]
+    },
+    {
+      id: 'health', n: 'Health & care', icon: '⚕', share: 0.06, sens: 'consumer', dir: -1,
+      pain: 'Gap fees and premium rises. The first thing households downgrade and the last thing they can afford to.',
+      proxy: 'SPY',
+      winners: [{ t: 'MPL.AX', w: 'Premium increases are regulated but granted' }, { t: 'RHC.AX', w: 'Private surgical demand' }, { t: 'UNH', w: 'US equivalent' }],
+      losers: []
+    },
+    {
+      id: 'telco', n: 'Phone & internet', icon: '📶', share: 0.03, sens: 'consumer', dir: -1,
+      pain: 'Small in dollars, but one of the few bills a household can actually switch, so it is a good early read on stress.',
+      proxy: 'SPY',
+      winners: [{ t: 'TLS.AX', w: 'Pricing power on the incumbent network' }],
+      losers: []
+    },
+    {
+      id: 'vehicle', n: 'Car purchase & servicing', icon: '🚗', share: 0.09, sens: 'rates', dir: 1,
+      pain: 'Almost entirely credit financed. New-vehicle demand is a direct read on how households feel about the next three years.',
+      proxy: 'US10Y',
+      winners: [{ t: 'BAP.AX', w: 'People service the old car instead of replacing it' }, { t: 'CPRT', w: 'Salvage volumes' }],
+      losers: [{ t: 'APE.AX', w: 'New vehicle finance dries up' }, { t: 'F', w: 'Same' }, { t: 'GM', w: 'Same' }]
+    },
+    {
+      id: 'discretionary', n: 'Eating out, travel, leisure', icon: '🍽', share: 0.14, sens: 'consumer', dir: -1,
+      pain: 'The shock absorber. This is the line that gets cut first, which is why it leads the consumer cycle rather than following it.',
+      proxy: 'SPY',
+      winners: [{ t: 'WOW.AX', w: 'Spend shifts from restaurant to retail' }],
+      losers: [{ t: 'BKNG', w: 'Discretionary travel is cancelled first' }, { t: 'CCL', w: 'Same' }, { t: 'MCD', w: 'Volume, though trade-down partly offsets' }]
+    }
+  ];
+
+  /* ---------- disaster response playbooks ---------- */
+  /* Phases run in sequence. `days` is the window each phase typically dominates. */
+  var PLAYBOOKS = [
+    {
+      id: 'flood', n: 'Flood / storm surge', icon: '🌊',
+      regions: ['AU', 'US', 'GB', 'DE', 'CN', 'IN'],
+      note: 'The most expensive natural hazard in Australia by insured loss. Water damage writes off contents and vehicles far more readily than structures, which shifts the rebuild mix toward interiors and motor.',
+      phases: [
+        { id: 'p0', n: 'Emergency response', days: [0, 14],
+          what: 'Evacuation, pumping, power and network restoration, debris clearance, temporary accommodation.',
+          picks: { AU: ['JLG.AX', 'CWY.AX', 'TLS.AX', 'ALD.AX'], US: ['WM', 'PWR', 'GNRC', 'AWK'] } },
+        { id: 'p1', n: 'Claims & assessment', days: [7, 90],
+          what: 'Loss adjusters mobilise, insurers book catastrophe provisions, reinsurance attaches. Insurer share prices usually fall on the loss and recover on the repricing.',
+          picks: { AU: ['IAG.AX', 'SUN.AX', 'QBE.AX', 'JLG.AX'], US: ['ALL', 'TRV', 'RNR', 'MUV2.DE'] },
+          caution: 'Insurers are a loss in this phase and a beneficiary two quarters later. Direction depends entirely on where you are in that arc.' },
+        { id: 'p2', n: 'Interior rebuild & materials', days: [30, 540],
+          what: 'Plasterboard, flooring, electrical, plumbing, kitchens. Water damage concentrates spend inside the envelope rather than on the roof.',
+          picks: { AU: ['CSR.AX', 'REH.AX', 'RWC.AX', 'GWA.AX', 'WES.AX', 'JHX.AX'], US: ['BLDR', 'MAS', 'HD', 'LOW'] } },
+        { id: 'p3', n: 'Vehicle replacement', days: [21, 270],
+          what: 'Flooded vehicles are written off almost without exception. Salvage volumes spike, then replacement demand follows.',
+          picks: { AU: ['APE.AX', 'BAP.AX'], US: ['CPRT', 'F', 'GM'] } },
+        { id: 'p4', n: 'Infrastructure & mitigation', days: [180, 1800],
+          what: 'Roads, bridges, levees, drainage. Government funded, slow to award, multi-year revenue once it lands.',
+          picks: { AU: ['DOW.AX', 'MND.AX', 'SVW.AX', 'WGN.AX', 'TCL.AX'], US: ['VMC', 'MLM', 'CRH', 'URI', 'PWR'] } }
+      ]
+    },
+    {
+      id: 'cyclone', n: 'Cyclone / hurricane', icon: '🌀',
+      regions: ['AU', 'US', 'JP', 'PH', 'MX'],
+      note: 'Wind damage attacks the roof and building envelope first. That makes it the classic roofing and cladding event — and roofing is exactly where a small number of listed suppliers dominate.',
+      phases: [
+        { id: 'p0', n: 'Emergency response', days: [0, 14],
+          what: 'Power restoration is the binding constraint. Generators, line crews, tarping, emergency make-safe.',
+          picks: { AU: ['JLG.AX', 'TLS.AX', 'CWY.AX'], US: ['PWR', 'GNRC', 'WM'] } },
+        { id: 'p1', n: 'Claims & assessment', days: [7, 90],
+          what: 'Catastrophe declared, reinsurance attaches, make-safe contractors are appointed before permanent repair.',
+          picks: { AU: ['IAG.AX', 'SUN.AX', 'JLG.AX'], US: ['ALL', 'TRV', 'RNR'] },
+          caution: 'Same insurer arc as flood: loss now, pricing power later.' },
+        { id: 'p2', n: 'Roof & envelope rebuild', days: [30, 720],
+          what: 'Roof tiles, roofing steel, cladding, insulation, guttering. The highest-value phase and the most supply-constrained.',
+          picks: { AU: ['BKW.AX', 'BSL.AX', 'JHX.AX', 'CSR.AX', 'WES.AX'], US: ['OC', 'BLDR', 'HD'] },
+          key: true },
+        { id: 'p3', n: 'Vehicle & contents', days: [21, 270],
+          what: 'Hail and debris write-offs, contents replacement.',
+          picks: { AU: ['APE.AX', 'BAP.AX', 'WES.AX'], US: ['CPRT', 'HD'] } },
+        { id: 'p4', n: 'Infrastructure hardening', days: [180, 1800],
+          what: 'Undergrounding, grid hardening, building code upgrades, coastal works.',
+          picks: { AU: ['DOW.AX', 'SVW.AX', 'MND.AX'], US: ['PWR', 'VMC', 'MLM', 'URI'] } }
+      ]
+    },
+    {
+      id: 'bushfire', n: 'Bushfire / wildfire', icon: '🔥',
+      regions: ['AU', 'US', 'CA', 'ES', 'GR'],
+      note: 'Total losses rather than partial damage. That means full structural rebuilds from the slab up, so the spend runs across every material category at once — and it runs for years, not months.',
+      phases: [
+        { id: 'p0', n: 'Emergency response', days: [0, 21],
+          what: 'Aerial firefighting, evacuation, power and telecom restoration, air quality and health response.',
+          picks: { AU: ['JLG.AX', 'TLS.AX', 'RHC.AX', 'CWY.AX'], US: ['PWR', 'GNRC', 'WM'] } },
+        { id: 'p1', n: 'Claims & total-loss assessment', days: [14, 120],
+          what: 'Total losses settle faster than partial damage but at much larger individual sums.',
+          picks: { AU: ['IAG.AX', 'SUN.AX', 'QBE.AX'], US: ['ALL', 'TRV', 'MUV2.DE'] },
+          caution: 'Utilities can carry ignition liability. Check whether the network operator is implicated before treating power as a beneficiary.' },
+        { id: 'p2', n: 'Full structural rebuild', days: [90, 1440],
+          what: 'Slab, frame, roof, cladding, fit-out. Every category at once, constrained by trade availability rather than materials.',
+          picks: { AU: ['BKW.AX', 'JHX.AX', 'CSR.AX', 'BLD.AX', 'ABC.AX', 'BSL.AX', 'WES.AX', 'REH.AX'], US: ['BLDR', 'OC', 'MAS', 'HD', 'VMC'] },
+          key: true },
+        { id: 'p3', n: 'Equipment & labour capacity', days: [60, 900],
+          what: 'Plant hire, scaffolding, site services — the bottleneck resource in any large rebuild.',
+          picks: { AU: ['SVW.AX', 'MND.AX'], US: ['URI'] } },
+        { id: 'p4', n: 'Resilience & land use', days: [365, 2160],
+          what: 'Building code changes, buy-backs, vegetation management, grid undergrounding.',
+          picks: { AU: ['DOW.AX', 'WGN.AX'], US: ['PWR', 'CRH'] } }
+      ]
+    },
+    {
+      id: 'quake', n: 'Earthquake / tsunami', icon: '🌐',
+      regions: ['JP', 'NZ', 'ID', 'TR', 'CL', 'US'],
+      note: 'Structural rather than cosmetic. Insurance penetration varies enormously by country, and where it is low the rebuild is government funded and much slower to start.',
+      phases: [
+        { id: 'p0', n: 'Search, rescue & utilities', days: [0, 21],
+          what: 'Water, power and telecom restoration, temporary shelter, medical surge.',
+          picks: { AU: ['JLG.AX', 'CWY.AX', 'RHC.AX'], US: ['PWR', 'AWK', 'GNRC', 'WM'] } },
+        { id: 'p1', n: 'Structural assessment', days: [14, 180],
+          what: 'Engineering assessment, demolition orders, cordons. Slower than wind or water events because condemnation decisions take time.',
+          picks: { AU: ['DOW.AX', 'MND.AX', 'IAG.AX'], US: ['TRV', 'RNR', 'MUV2.DE'] } },
+        { id: 'p2', n: 'Demolition & structural rebuild', days: [180, 2160],
+          what: 'Cement, aggregates, structural steel, seismic retrofit. The longest and most capital-intensive rebuild of any hazard type.',
+          picks: { AU: ['ABC.AX', 'BLD.AX', 'BSL.AX', 'FBU.AX', 'SVW.AX'], US: ['VMC', 'MLM', 'CRH', 'URI'] },
+          key: true },
+        { id: 'p3', n: 'Infrastructure reconstruction', days: [365, 3600],
+          what: 'Ports, rail, roads, water. Sovereign-funded programmes that run for a decade.',
+          picks: { AU: ['DOW.AX', 'MND.AX', 'WGN.AX', 'TCL.AX'], US: ['VMC', 'MLM', 'PWR', 'CRH'] } }
+      ]
+    },
+    {
+      id: 'drought', n: 'Drought / heatwave', icon: '☀',
+      regions: ['AU', 'US', 'IN', 'BR', 'ES'],
+      note: 'Slow onset, so there is no single event date to trade around. It shows up as agricultural downgrades, power demand records and water restrictions months before it is called a disaster.',
+      phases: [
+        { id: 'p0', n: 'Grid & water stress', days: [0, 120],
+          what: 'Record power demand, grid alerts, water restrictions, cooling equipment demand.',
+          picks: { AU: ['AGL.AX', 'ORG.AX'], US: ['VST', 'CEG', 'GNRC', 'TT', 'AWK'] } },
+        { id: 'p1', n: 'Agricultural downgrade', days: [30, 365],
+          what: 'Yield forecasts cut, herd liquidation, feed costs rise, fertiliser demand falls.',
+          picks: { AU: ['WOW.AX', 'COL.AX'], US: ['ADM', 'BG', 'TSN', 'CF'] },
+          caution: 'Growers and processors move in opposite directions here. A yield cut lifts grain prices and squeezes anyone who buys grain.' },
+        { id: 'p2', n: 'Food price pass-through', days: [90, 540],
+          what: 'Retail food inflation, then political response — price monitoring, subsidies, export restrictions.',
+          picks: { AU: ['WOW.AX', 'COL.AX'], US: ['COST', 'WMT'] } },
+        { id: 'p3', n: 'Water infrastructure', days: [365, 2160],
+          what: 'Desalination, pipelines, storage, irrigation efficiency.',
+          picks: { AU: ['DOW.AX', 'MND.AX'], US: ['AWK', 'VMC'] } }
+      ]
+    }
+  ];
+
+  function playbook(id) {
+    for (var i = 0; i < PLAYBOOKS.length; i++) if (PLAYBOOKS[i].id === id) return PLAYBOOKS[i];
+    return null;
+  }
+  function basketItem(id) {
+    for (var i = 0; i < BASKET.length; i++) if (BASKET[i].id === id) return BASKET[i];
+    return null;
+  }
+
+  /* Build a ranked buy list for one playbook, for a country, at a point in the timeline. */
+  function buildList(pbId, country, dayOffset) {
+    var pb = playbook(pbId);
+    if (!pb) return null;
+    var day = dayOffset === undefined ? 7 : dayOffset;
+    var region = country === 'AU' || country === 'NZ' ? 'AU' : 'US';
+    var rows = [], seen = {};
+    pb.phases.forEach(function (ph) {
+      var picks = ph.picks[region] || ph.picks.US || [];
+      /* how live is this phase right now */
+      var active = day >= ph.days[0] && day <= ph.days[1];
+      var upcoming = day < ph.days[0];
+      var timing = active ? 1 : upcoming ? Math.max(0.15, 1 - (ph.days[0] - day) / 365) : Math.max(0.05, 1 - (day - ph.days[1]) / 540);
+      picks.forEach(function (t, i) {
+        var key = t;
+        var rank = (ph.key ? 1.25 : 1) * timing * (1 - i * 0.06);
+        if (seen[key]) {
+          if (rank > seen[key].score) { seen[key].score = rank; seen[key].phase = ph; seen[key].active = active; }
+          seen[key].phases.push(ph.n);
+          return;
+        }
+        var rec = { t: t, score: rank, phase: ph, active: active, upcoming: upcoming, phases: [ph.n] };
+        seen[key] = rec;
+        rows.push(rec);
+      });
+    });
+    rows.sort(function (a, b) { return b.score - a.score; });
+    return { playbook: pb, region: region, day: day, rows: rows };
+  }
+
+  global.HOUSEHOLD = {
+    COMPANIES: COMPANIES, BASKET: BASKET, PLAYBOOKS: PLAYBOOKS,
+    playbook: playbook, basketItem: basketItem, buildList: buildList
+  };
+
+  if (global.UNIVERSE && global.UNIVERSE.registerCompanies) {
+    global.UNIVERSE.registerCompanies(COMPANIES);
+  }
 })(window);
 
 
@@ -2998,6 +3437,98 @@ window.WORLD_GEOMETRY = [{"id":"ZW","n":"Zimbabwe","r":[[3129,-2240,2936,-2219,2
     };
   }
 
+  /* ---------- anchored periodic backtest ----------
+     Instead of one continuous run, restart the strategy at the start of every period with a
+     fresh book. This is what shows whether a result is a strategy or one good month: a single
+     equity curve hides the fact that all of the profit came from one quarter, and running each
+     period independently makes that impossible to hide.
+
+     Each period also gets a buy-and-hold control from the same period open, because "beat
+     doing nothing" is the only comparison that matters. */
+
+  var PERIODS = {
+    day: { n: 'Day', key: function (d) { return d.toISOString().slice(0, 10); } },
+    week: { n: 'Week', key: function (d) {
+      var t = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+      t.setUTCDate(t.getUTCDate() - ((t.getUTCDay() + 6) % 7));      /* Monday anchor */
+      return t.toISOString().slice(0, 10);
+    } },
+    month: { n: 'Month', key: function (d) { return d.toISOString().slice(0, 7); } },
+    quarter: { n: 'Quarter', key: function (d) { return d.getUTCFullYear() + '-Q' + (Math.floor(d.getUTCMonth() / 3) + 1); } },
+    year: { n: 'Year', key: function (d) { return String(d.getUTCFullYear()); } }
+  };
+
+  function splitByPeriod(bars, period) {
+    var spec = PERIODS[period] || PERIODS.month;
+    var buckets = {}, order = [];
+    bars.forEach(function (b) {
+      var k = spec.key(new Date(b.t));
+      if (!buckets[k]) { buckets[k] = []; order.push(k); }
+      buckets[k].push(b);
+    });
+    return order.map(function (k) { return { key: k, bars: buckets[k] }; });
+  }
+
+  function runPeriodic(bars, opts, period, equityStart) {
+    var o = Object.assign({}, DEFAULTS, opts || {});
+    var eq = equityStart || 100000;
+    var groups = splitByPeriod(bars, period).filter(function (g) { return g.bars.length >= 25; });
+    if (!groups.length) {
+      return { period: period, periodName: (PERIODS[period] || PERIODS.month).n, rows: [], summary: null,
+        note: 'No period in this range has enough bars to run the strategy independently. Use a shorter timeframe or a longer period.' };
+    }
+
+    var rows = groups.map(function (g) {
+      /* Each period starts flat with the same capital — no compounding between periods, so
+         no period gets credit for the one before it. */
+      var res = run(g.bars, o, eq);
+      var first = g.bars[0], last = g.bars[g.bars.length - 1];
+      var hold = (last.c - first.o) / first.o * 100;
+      return {
+        key: g.key, bars: g.bars.length,
+        from: first.t, to: last.t,
+        n: res.stats.n, winRate: res.stats.winRate,
+        totalR: res.stats.totalR, expectancyR: res.stats.expectancyR,
+        pl: res.stats.pl, plPct: res.stats.plPct,
+        maxDD: res.stats.maxDD, pf: res.stats.profitFactor,
+        hold: hold,                                  /* buy and hold the same period */
+        vsHold: res.stats.plPct - hold,
+        gaps: res.gaps.length,
+        res: res
+      };
+    });
+
+    var traded = rows.filter(function (r) { return r.n > 0; });
+    var wins = traded.filter(function (r) { return r.totalR > 0; });
+    var beat = traded.filter(function (r) { return r.vsHold > 0; });
+    var Rs = traded.map(function (r) { return r.totalR; });
+    var best = traded.slice().sort(function (a, b) { return b.totalR - a.totalR; })[0] || null;
+    var worst = traded.slice().sort(function (a, b) { return a.totalR - b.totalR; })[0] || null;
+
+    /* How much of the whole result came from the single best period. If one period carries
+       most of the total R, the strategy is really one trade wearing a costume. */
+    var totalR = M.sum(Rs);
+    var concentration = (best && totalR > 0) ? best.totalR / totalR : null;
+
+    return {
+      period: period, periodName: (PERIODS[period] || PERIODS.month).n,
+      rows: rows,
+      summary: {
+        periods: rows.length, tradedPeriods: traded.length,
+        profitablePeriods: wins.length,
+        consistency: traded.length ? wins.length / traded.length * 100 : 0,
+        beatHold: traded.length ? beat.length / traded.length * 100 : 0,
+        totalR: totalR, meanR: M.mean(Rs), medianR: M.median(Rs), sdR: M.stdev(Rs),
+        best: best, worst: worst,
+        concentration: concentration,
+        totalTrades: M.sum(traded.map(function (r) { return r.n; })),
+        avgTrades: M.mean(traded.map(function (r) { return r.n; })),
+        meanHold: M.mean(rows.map(function (r) { return r.hold; })),
+        meanStrat: M.mean(rows.map(function (r) { return r.plPct; }))
+      }
+    };
+  }
+
   /* ---------- parameter sweep ---------- */
   function sweep(bars, base, param, values) {
     return values.map(function (v) {
@@ -3042,8 +3573,823 @@ window.WORLD_GEOMETRY = [{"id":"ZW","n":"Zimbabwe","r":[[3129,-2240,2936,-2219,2
   }
 
   global.BACKTEST = {
-    DEFAULTS: DEFAULTS, atr: atr, ema: ema,
-    detect: detect, stats: stats, run: run, sweep: sweep, parseCSV: parseCSV
+    DEFAULTS: DEFAULTS, PERIODS: PERIODS, atr: atr, ema: ema,
+    detect: detect, stats: stats, run: run, sweep: sweep, parseCSV: parseCSV,
+    splitByPeriod: splitByPeriod, runPeriodic: runPeriodic
+  };
+})(window);
+
+
+/* ==== assets/js/microstructure.js ==== */
+/* Lumen Terminal — market behaviour engine.
+ *
+ * Four things, all computed from OHLCV plus the news corpus:
+ *
+ *   ANOMALIES   — bar patterns consistent with stop runs, distribution, churn and unexplained
+ *                 participation.
+ *   EXHAUSTION  — where price sits in its own history, how long it has been extended, and what
+ *                 has historically happened from comparable levels. This is the "oil is at $110,
+ *                 who is left to buy it" question, answered as a conditional base rate.
+ *   CROWDING    — a positioning read: is the move being pushed by people already in it.
+ *   EVENT STUDY — after catalysts of a given class, what did this instrument actually do, and
+ *                 was that different from its unconditional behaviour.
+ *
+ * WHAT THIS CANNOT DO, stated plainly because the alternative is a tool that misleads:
+ * OHLCV bars carry no identity, no order book, no cancellations and no counterparty. Spoofing,
+ * layering, wash trading and marking the close are defined by *intent* and by order-level
+ * behaviour that is simply not present in this data. Everything below flags a PATTERN that is
+ * CONSISTENT WITH those behaviours; a pattern is not proof, and most of these patterns also
+ * occur for entirely ordinary reasons (an index rebalance, a large hedger, a scheduled roll).
+ * Treat every flag as "look at this", never as "this happened". Real surveillance requires
+ * full order-book and participant data that no retail API provides.
+ *
+ * The base rates are honest but small-sample: a conditional statistic drawn from a few dozen
+ * historical instances has wide error bars, and every function reports its sample size so you
+ * can see when the number is too thin to lean on.
+ */
+(function (global) {
+  'use strict';
+  var L = global.Lumen, M = L.M, B = global.BACKTEST;
+
+  /* ---------- helpers ---------- */
+  function rets(bars) {
+    var out = [];
+    for (var i = 1; i < bars.length; i++) out.push((bars[i].c - bars[i - 1].c) / bars[i - 1].c);
+    return out;
+  }
+  function rollMean(v, i, n) {
+    var s = 0, c = 0;
+    for (var j = Math.max(0, i - n + 1); j <= i; j++) { s += v[j]; c++; }
+    return c ? s / c : 0;
+  }
+  function rollStd(v, i, n) {
+    var m = rollMean(v, i, n), s = 0, c = 0;
+    for (var j = Math.max(0, i - n + 1); j <= i; j++) { s += (v[j] - m) * (v[j] - m); c++; }
+    return c > 1 ? Math.sqrt(s / (c - 1)) : 0;
+  }
+  function zscore(v, i, n) {
+    var sd = rollStd(v, i, n);
+    return sd ? (v[i] - rollMean(v, i, n)) / sd : 0;
+  }
+  function pctRank(arr, v) {
+    if (!arr.length) return 0.5;
+    var below = 0;
+    for (var i = 0; i < arr.length; i++) if (arr[i] <= v) below++;
+    return below / arr.length;
+  }
+  function rsi(bars, n) {
+    n = n || 14;
+    var out = new Array(bars.length).fill(50), g = 0, l = 0;
+    for (var i = 1; i < bars.length; i++) {
+      var d = bars[i].c - bars[i - 1].c;
+      var up = d > 0 ? d : 0, dn = d < 0 ? -d : 0;
+      if (i <= n) { g += up / n; l += dn / n; }
+      else { g = (g * (n - 1) + up) / n; l = (l * (n - 1) + dn) / n; }
+      out[i] = l === 0 ? 100 : 100 - 100 / (1 + g / l);
+    }
+    return out;
+  }
+
+  /* ---------- 1. anomaly detection ---------- */
+  var DETECTORS = {
+    sweep: {
+      n: 'Liquidity sweep', icon: '🎣',
+      d: 'Price pushed through an obvious prior high or low on raised volume, then closed back inside the range. This is the shape left behind when resting stop orders are triggered and the move does not follow through. It is also the shape of an ordinary failed breakout.'
+    },
+    climax: {
+      n: 'Climax & distribution', icon: '📛',
+      d: 'A large, fast, high-volume advance that closes weakly. Consistent with supply meeting an extended move — the point where whoever was accumulating starts selling into strength. Also consistent with a plain exhaustion top.'
+    },
+    churn: {
+      n: 'Churn', icon: '🌀',
+      d: 'Heavy volume with almost no price progress. Consistent with inventory being shuffled or with wash-like activity in thin names. Also what happens when a large buyer and a large seller meet.'
+    },
+    unexplained: {
+      n: 'Unexplained participation', icon: '❓',
+      d: 'Volume far above normal on a day with nothing in the wire touching this name or its sector. Someone is acting on information the feed does not carry yet — which may be a pending announcement, a fund reallocation, or an index event.'
+    },
+    absorbed: {
+      n: 'Absorbed catalyst', icon: '🧱',
+      d: 'A high-impact story landed and the price barely moved. Either it was already priced, or size is deliberately taking the other side. The second case usually resolves violently.'
+    },
+    gapfade: {
+      n: 'Gap and fade', icon: '↩',
+      d: 'Opened well away from the prior close and gave the whole move back within the session. Repeated instances suggest the open is being set away from where the day actually trades.'
+    },
+    pin: {
+      n: 'Round-number pinning', icon: '🎯',
+      d: 'Closes cluster near round numbers more than chance would produce. Typical near large option strikes into expiry.'
+    }
+  };
+
+  function anomalies(bars, sym, world, opts) {
+    opts = opts || {};
+    if (!bars || bars.length < 40) return [];
+    var out = [];
+    var A = B.atr(bars, 14);
+    var vols = bars.map(function (b) { return b.v || 0; });
+    var rr = rets(bars);
+    var sens = opts.sensitivity === undefined ? 1 : opts.sensitivity;   // 0.6 strict … 1.4 loose
+
+    /* map day -> stories touching this symbol or its sector */
+    var ent = global.UNIVERSE.findEntity(sym);
+    var sector = ent ? ent.sector : null;
+    var storiesByDay = {};
+    ((world && world.stories) || []).forEach(function (s) {
+      var hit = (s.tickers || []).indexOf(sym) >= 0 || (sector && (s.sectors || []).indexOf(sector) >= 0);
+      if (!hit) return;
+      var k = L.F.date(new Date(s.t));
+      (storiesByDay[k] || (storiesByDay[k] = [])).push(s);
+    });
+
+    for (var i = 25; i < bars.length; i++) {
+      var b = bars[i], a = A[i] || 1e-9;
+      var vz = zscore(vols, i, 20);
+      var day = L.F.date(new Date(b.t));
+      var news = storiesByDay[day] || [];
+      var maxImp = news.reduce(function (m, s) { return Math.max(m, s.imp); }, 0);
+      var range = b.h - b.l;
+      var body = Math.abs(b.c - b.o);
+      var retSigma = rollStd(rr, i - 1, 20);
+      var barRet = i > 0 ? (b.c - bars[i - 1].c) / bars[i - 1].c : 0;
+
+      /* prior swing over the previous 20 bars, excluding this one */
+      var sh = -Infinity, sl = Infinity;
+      for (var j = i - 20; j < i; j++) { sh = Math.max(sh, bars[j].h); sl = Math.min(sl, bars[j].l); }
+
+      /* --- liquidity sweep --- */
+      var overshootUp = (b.h - sh) / a, overshootDn = (sl - b.l) / a;
+      if (overshootUp > 0.12 / sens && b.c < sh && (b.h - Math.max(b.o, b.c)) > 0.45 * range && vz > 0.9 / sens) {
+        out.push(mk(i, b, 'sweep', -1, M.clamp(overshootUp * 0.5 + vz * 0.18, 0.2, 1),
+          'Took out the 20-bar high by ' + overshootUp.toFixed(2) + ' ATR on ' + vz.toFixed(1) + 'σ volume, then closed back below it.',
+          { overshootAtr: overshootUp, volZ: vz, level: sh }));
+      }
+      if (overshootDn > 0.12 / sens && b.c > sl && (Math.min(b.o, b.c) - b.l) > 0.45 * range && vz > 0.9 / sens) {
+        out.push(mk(i, b, 'sweep', 1, M.clamp(overshootDn * 0.5 + vz * 0.18, 0.2, 1),
+          'Took out the 20-bar low by ' + overshootDn.toFixed(2) + ' ATR on ' + vz.toFixed(1) + 'σ volume, then closed back above it.',
+          { overshootAtr: overshootDn, volZ: vz, level: sl }));
+      }
+
+      /* --- climax / distribution --- */
+      if (i >= 30) {
+        var run5 = (b.c - bars[i - 5].c) / bars[i - 5].c;
+        var runSig = retSigma ? run5 / (retSigma * Math.sqrt(5)) : 0;
+        var closePos = range ? (b.c - b.l) / range : 0.5;
+        if (runSig > 2.0 / sens && vz > 1.2 / sens && closePos < 0.36) {
+          out.push(mk(i, b, 'climax', -1, M.clamp(runSig * 0.22 + vz * 0.15, 0.25, 1),
+            'Advanced ' + (run5 * 100).toFixed(1) + '% over five bars (' + runSig.toFixed(1) + 'σ) on ' + vz.toFixed(1) + 'σ volume, then closed in the bottom third of the bar.',
+            { run5: run5, sigma: runSig, volZ: vz }));
+        }
+        if (runSig < -2.0 / sens && vz > 1.2 / sens && closePos > 0.64) {
+          out.push(mk(i, b, 'climax', 1, M.clamp(-runSig * 0.22 + vz * 0.15, 0.25, 1),
+            'Fell ' + (run5 * 100).toFixed(1) + '% over five bars on ' + vz.toFixed(1) + 'σ volume, then closed in the top third — capitulation shape.',
+            { run5: run5, sigma: runSig, volZ: vz }));
+        }
+      }
+
+      /* --- churn --- */
+      if (vz > 1.8 / sens && range < 0.55 * a) {
+        out.push(mk(i, b, 'churn', 0, M.clamp(vz * 0.2, 0.2, 0.9),
+          vz.toFixed(1) + 'σ volume inside a range of only ' + (range / a).toFixed(2) + ' ATR — heavy participation, no progress.',
+          { volZ: vz, rangeAtr: range / a }));
+      }
+
+      /* --- unexplained participation --- */
+      if (vz > 2.3 / sens && !news.length && Math.abs(barRet) > retSigma * 1.2) {
+        out.push(mk(i, b, 'unexplained', Math.sign(barRet), M.clamp(vz * 0.22, 0.3, 1),
+          vz.toFixed(1) + 'σ volume and a ' + (barRet * 100).toFixed(1) + '% move with nothing in the wire on this name or sector.',
+          { volZ: vz, ret: barRet }));
+      }
+
+      /* --- absorbed catalyst --- */
+      if (maxImp >= 5 && retSigma && Math.abs(barRet) < retSigma * 0.3 && vz > 1.0 / sens) {
+        out.push(mk(i, b, 'absorbed', 0, M.clamp(maxImp * 0.14 + vz * 0.14, 0.2, 0.9),
+          'Impact-' + maxImp + ' story landed; the bar moved only ' + (barRet * 100).toFixed(2) + '% on above-average volume.',
+          { impact: maxImp, ret: barRet, volZ: vz, headline: news[0] ? news[0].h : '' }));
+      }
+
+      /* --- gap and fade --- */
+      if (i > 0) {
+        var gap = (b.o - bars[i - 1].c) / bars[i - 1].c;
+        if (Math.abs(gap) > retSigma * 1.4 && retSigma) {
+          var faded = gap > 0 ? (b.c <= bars[i - 1].c) : (b.c >= bars[i - 1].c);
+          if (faded) {
+            out.push(mk(i, b, 'gapfade', -Math.sign(gap), M.clamp(Math.abs(gap) / (retSigma * 3), 0.2, 0.9),
+              'Opened ' + (gap * 100).toFixed(1) + '% away from the prior close and closed all the way back through it.',
+              { gap: gap }));
+          }
+        }
+      }
+    }
+
+    /* --- round-number pinning: a property of the series, not one bar --- */
+    var scale = Math.pow(10, Math.floor(Math.log10(bars[bars.length - 1].c)) - 1);
+    var near = 0;
+    bars.forEach(function (b) {
+      var d = Math.abs(b.c - Math.round(b.c / scale) * scale) / b.c;
+      if (d < 0.0015) near++;
+    });
+    var expected = bars.length * (0.003 / (scale / bars[bars.length - 1].c));
+    var pinRatio = expected > 0 ? near / expected : 0;
+    var pin = null;
+    if (pinRatio > 1.6 && near >= 6) {
+      pin = {
+        kind: 'pin', n: DETECTORS.pin.n, icon: DETECTORS.pin.icon,
+        severity: M.clamp((pinRatio - 1) * 0.5, 0.2, 0.9),
+        note: near + ' of ' + bars.length + ' closes landed within 0.15% of a round number — about ' + pinRatio.toFixed(1) + '× what chance would give.',
+        series: true
+      };
+    }
+
+    out.sort(function (x, y) { return y.t - x.t; });
+    return { events: out, pin: pin };
+
+    function mk(i, b, kind, dir, sev, note, ev) {
+      return {
+        i: i, t: b.t, kind: kind, n: DETECTORS[kind].n, icon: DETECTORS[kind].icon,
+        dir: dir, severity: sev, note: note, evidence: ev, price: b.c
+      };
+    }
+  }
+
+  /* ---------- 2. exhaustion ----------
+     Answers: price is here — historically, who was left to buy, and what happened next? */
+  function exhaustion(bars, opts) {
+    opts = opts || {};
+    if (!bars || bars.length < 60) return null;
+    var horizons = opts.horizons || [5, 10, 20];
+    var closes = bars.map(function (b) { return b.c; });
+    var last = closes[closes.length - 1];
+    var look = Math.min(opts.lookback || closes.length, closes.length);
+    var hist = closes.slice(-look);
+    var rank = pctRank(hist, last);
+
+    /* consecutive bars spent above the 85th percentile — how long has it been stretched */
+    var extThresh = M.quantile(hist, 0.85);
+    var runNow = 0;
+    for (var i = closes.length - 1; i >= 0 && closes[i] >= extThresh; i--) runNow++;
+
+    /* all historical runs above the same threshold, for context on how long they last */
+    var runs = [], cur = 0;
+    for (var j = 0; j < closes.length; j++) {
+      if (closes[j] >= extThresh) cur++;
+      else if (cur) { runs.push(cur); cur = 0; }
+    }
+    var runPct = runs.length ? pctRank(runs, runNow) : 0.5;
+
+    /* conditional forward returns from comparable percentile levels */
+    var band = opts.band === undefined ? 0.06 : opts.band;
+    var byHorizon = horizons.map(function (h) {
+      var cond = [], uncond = [];
+      for (var k = 60; k < closes.length - h; k++) {
+        var r = pctRank(closes.slice(Math.max(0, k - look), k + 1), closes[k]);
+        var fwd = (closes[k + h] - closes[k]) / closes[k];
+        uncond.push(fwd);
+        if (Math.abs(r - rank) <= band) cond.push(fwd);
+      }
+      var up = cond.filter(function (x) { return x > 0; });
+      var dn = cond.filter(function (x) { return x <= 0; });
+      var uncondUp = uncond.filter(function (x) { return x > 0; }).length / Math.max(1, uncond.length);
+      return {
+        h: h, n: cond.length,
+        pUp: cond.length ? up.length / cond.length : null,
+        baseUp: uncondUp,
+        edge: cond.length ? (up.length / cond.length) - uncondUp : null,
+        median: M.median(cond), mean: M.mean(cond),
+        medUp: M.median(up), medDn: M.median(dn),
+        p10: M.quantile(cond, 0.10), p90: M.quantile(cond, 0.90),
+        /* how much you make when right vs lose when wrong, from here */
+        payoff: (up.length && dn.length) ? Math.abs(M.median(up) / M.median(dn)) : null
+      };
+    });
+
+    /* room: is there any precedent above this level at all */
+    var above = hist.filter(function (c) { return c > last; }).length;
+    var mid = byHorizon[Math.min(1, byHorizon.length - 1)];
+
+    return {
+      price: last, rank: rank, lookback: look,
+      high: Math.max.apply(null, hist), low: Math.min.apply(null, hist),
+      barsAbove: above, virgin: above === 0,
+      extendedBars: runNow, extendedPct: runPct, medianRun: M.median(runs), runs: runs.length,
+      horizons: byHorizon,
+      /* asymmetry: >1 means the historical payoff from here favours the upside */
+      asymmetry: mid && mid.payoff !== null && mid.pUp !== null
+        ? (mid.payoff * mid.pUp) / Math.max(0.01, (1 - mid.pUp))
+        : null,
+      read: exhaustionRead(rank, runNow, runPct, above, mid)
+    };
+  }
+
+  function exhaustionRead(rank, runNow, runPct, above, mid) {
+    var lines = [];
+    var pct = (rank * 100).toFixed(0);
+    if (above === 0) {
+      lines.push('Price is at the top of its entire lookback — there is no historical trade above here to reference. Every buyer is in profit and no overhead supply is trapped, which cuts both ways: nothing to stop it, and nothing to catch it.');
+    } else if (rank > 0.92) {
+      lines.push('At the ' + pct + 'th percentile of its own range, only ' + (100 - +pct) + '% of the lookback traded higher. The pool of buyers who have not already acted is thin.');
+    } else if (rank > 0.80) {
+      lines.push('At the ' + pct + 'th percentile, price is in the upper part of its range but not at an extreme. There is still overhead supply above, and still buyers who have not acted.');
+    } else if (rank < 0.20 && rank >= 0.08) {
+      lines.push('At the ' + pct + 'th percentile, price is in the lower part of its range without being at an extreme.');
+    } else if (rank < 0.08) {
+      lines.push('At the ' + pct + 'th percentile, this is near the floor of its range — the mirror image: most sellers have already sold.');
+    } else {
+      lines.push('At the ' + pct + 'th percentile of its range, price is inside the zone where it spends most of its time. Nothing about the level itself is stretched.');
+    }
+    /* A one- or two-bar touch of the threshold is not a stretch; don't dress it up as one. */
+    if (runNow >= 3) {
+      var cmp = runPct >= 0.995 ? 'longer than any previous stretch in the window'
+        : runPct >= 0.9 ? 'longer than ' + (runPct * 100).toFixed(0) + '% of previous stretches'
+        : 'about the ' + (runPct * 100).toFixed(0) + 'th percentile of previous stretches';
+      lines.push('It has held above the 85th percentile for ' + runNow + ' bars, ' + cmp +
+        '. The longer a move stays extended, the more of it is being carried by people who are already positioned.');
+    }
+    if (mid && mid.n >= 12 && mid.pUp !== null) {
+      var dirn = mid.pUp > 0.5 ? 'higher' : 'lower';
+      var edgePts = (mid.edge * 100);
+      lines.push('From comparable levels, over the next ' + mid.h + ' bars, price went ' + dirn + ' ' +
+        (Math.max(mid.pUp, 1 - mid.pUp) * 100).toFixed(0) + '% of the time across ' + mid.n + ' instances, median ' +
+        (mid.median * 100).toFixed(1) + '%. Unconditionally it rises ' + (mid.baseUp * 100).toFixed(0) + '% of the time, so the level is worth ' +
+        (edgePts > 0 ? '+' : '') + edgePts.toFixed(0) + ' points against the base rate.');
+      /* The honest caveat: these windows overlap and come from one price path, so n is not
+         n independent observations. Say so in proportion to how thin the sample is. */
+      if (Math.abs(edgePts) < 5) {
+        lines.push('That is inside the noise. The level is not telling you anything here — look elsewhere for the signal.');
+      } else if (mid.n < 25) {
+        lines.push('Before leaning on that: those ' + mid.n + ' windows overlap each other and come from a single price path, so they are nowhere near ' + mid.n + ' independent observations. A gap this size on a sample this thin is suggestive at best — enough to size down into, not enough to size up on.');
+      } else {
+        lines.push('The windows still overlap, so treat the magnitude as approximate — but the direction is consistent across ' + mid.n + ' instances, which is worth respecting.');
+      }
+    } else if (mid) {
+      lines.push('Only ' + mid.n + ' comparable historical instances — too few to draw a base rate from. Treat the level as context, not a signal.');
+    }
+    return lines;
+  }
+
+  /* ---------- 3. crowding / positioning ---------- */
+  function crowding(bars, sym, world) {
+    if (!bars || bars.length < 60) return null;
+    var closes = bars.map(function (b) { return b.c; });
+    var A = B.atr(bars, 14);
+    var e20 = B.ema(closes, 20), e50 = B.ema(closes, 50);
+    var R = rsi(bars, 14);
+    var i = bars.length - 1;
+    var vols = bars.map(function (b) { return b.v || 0; });
+
+    var extension = A[i] ? (closes[i] - e20[i]) / A[i] : 0;
+    var trend = A[i] ? (e20[i] - e50[i]) / A[i] : 0;
+    var volTrend = zscore(vols, i, 30);
+    var rank = pctRank(closes.slice(-Math.min(250, closes.length)), closes[i]);
+    var rsiV = R[i];
+
+    /* news skew over the last week: is the story flow one-sided */
+    var cutoff = bars[i].t - 7 * 86400e3;
+    var ent = global.UNIVERSE.findEntity(sym);
+    var sector = ent ? ent.sector : null;
+    var skew = 0, nStories = 0;
+    ((world && world.stories) || []).forEach(function (s) {
+      if (s.t < cutoff) return;
+      var hit = (s.tickers || []).indexOf(sym) >= 0 || (sector && (s.sectors || []).indexOf(sector) >= 0);
+      if (!hit) return;
+      nStories++;
+      var f = s.f || {};
+      var net = 0;
+      for (var k in f) net += f[k];
+      skew += Math.sign(net) * (s.imp / 5);
+    });
+    skew = nStories ? skew / nStories : 0;
+
+    var score = M.clamp(
+      M.clamp(extension / 2.5, -1, 1) * 0.32 +
+      M.clamp(trend / 1.5, -1, 1) * 0.18 +
+      ((rsiV - 50) / 50) * 0.24 +
+      ((rank - 0.5) * 2) * 0.16 +
+      M.clamp(skew, -1, 1) * 0.10, -1, 1);
+
+    var label = score > 0.55 ? 'Crowded long' : score > 0.2 ? 'Leaning long'
+      : score < -0.55 ? 'Crowded short' : score < -0.2 ? 'Leaning short' : 'Balanced';
+
+    var fuel = M.clamp(1 - Math.abs(score), 0, 1);
+    return {
+      score: score, label: label, fuel: fuel,
+      extension: extension, trend: trend, rsi: rsiV, rank: rank, volTrend: volTrend,
+      newsSkew: skew, newsCount: nStories,
+      read: score > 0.55
+        ? 'Price is ' + extension.toFixed(1) + ' ATR above its 20-bar mean with RSI at ' + rsiV.toFixed(0) + ' and the story flow one-sided. Positioning is doing the work, which means the marginal buyer is arriving late. Continuation is possible; it just needs new money rather than the same money.'
+        : score < -0.55
+          ? 'Price is ' + extension.toFixed(1) + ' ATR below its 20-bar mean with RSI at ' + rsiV.toFixed(0) + '. The selling is concentrated and the marginal seller is late. Squeezes start from here.'
+          : 'Positioning is not stretched in either direction — ' + extension.toFixed(1) + ' ATR from the 20-bar mean, RSI ' + rsiV.toFixed(0) + '. There is room for a move without it being a crowd unwinding.'
+    };
+  }
+
+  /* ---------- 4. event study ----------
+     "After X happens, do people buy?" — measured, with the unconditional rate alongside. */
+  var EVENT_CLASSES = {
+    oilspike: { n: 'Oil / energy shock', test: function (s) { return (s.f && (s.f.oil || 0) > 0.35) && s.imp >= 4; } },
+    conflict: { n: 'Conflict escalation', test: function (s) { return s.k === 'conflict' && s.imp >= 4; } },
+    ratehawk: { n: 'Hawkish rate surprise', test: function (s) { return (s.f && (s.f.rates || 0) > 0.35) && s.imp >= 4; } },
+    tariff: { n: 'Trade / tariff action', test: function (s) { return s.k === 'trade' && s.imp >= 4; } },
+    supply: { n: 'Supply-chain disruption', test: function (s) { return s.k === 'supplychain' && s.imp >= 3; } },
+    inflation: { n: 'Inflation surprise', test: function (s) { return (s.f && (s.f.inflation || 0) > 0.35) && s.imp >= 4; } },
+    chokepoint: { n: 'Chokepoint threatened', test: function (s) { return !!s.choke && s.imp >= 4; } }
+  };
+
+  function eventStudy(bars, world, classId, opts) {
+    opts = opts || {};
+    var cls = EVENT_CLASSES[classId];
+    if (!cls || !bars || bars.length < 40) return null;
+    var horizons = opts.horizons || [1, 3, 5, 10, 20];
+    var closes = bars.map(function (b) { return b.c; });
+    var times = bars.map(function (b) { return b.t; });
+
+    var eventDays = {};
+    ((world && world.stories) || []).forEach(function (s) {
+      if (cls.test(s)) eventDays[L.F.date(new Date(s.t))] = Math.max(eventDays[L.F.date(new Date(s.t))] || 0, s.imp);
+    });
+    var keys = Object.keys(eventDays);
+    if (!keys.length) return { classId: classId, n: 0, name: cls.n, rows: [], events: 0 };
+
+    /* index of the first bar on or after each event day */
+    var idx = [];
+    keys.forEach(function (k) {
+      var t = Date.parse(k + 'T00:00:00Z');
+      for (var i = 0; i < times.length; i++) {
+        if (times[i] >= t) { idx.push(i); break; }
+      }
+    });
+    idx = idx.filter(function (v, i, a) { return a.indexOf(v) === i; }).sort(function (a, b) { return a - b; });
+
+    var rows = horizons.map(function (h) {
+      var cond = [], uncond = [];
+      for (var k = 1; k < closes.length - h; k++) uncond.push((closes[k + h] - closes[k]) / closes[k]);
+      idx.forEach(function (i) {
+        if (i + h >= closes.length) return;
+        cond.push((closes[i + h] - closes[i]) / closes[i]);
+      });
+      var up = cond.filter(function (x) { return x > 0; }).length;
+      var baseUp = uncond.filter(function (x) { return x > 0; }).length / Math.max(1, uncond.length);
+      var sd = M.stdev(cond);
+      return {
+        h: h, n: cond.length,
+        pUp: cond.length ? up / cond.length : null,
+        baseUp: baseUp,
+        edge: cond.length ? up / cond.length - baseUp : null,
+        median: M.median(cond), mean: M.mean(cond),
+        baseMean: M.mean(uncond),
+        /* rough t-stat of the mean difference; small n makes this fragile and it is shown as such */
+        t: (cond.length > 2 && sd) ? (M.mean(cond) - M.mean(uncond)) / (sd / Math.sqrt(cond.length)) : 0,
+        best: cond.length ? Math.max.apply(null, cond) : 0,
+        worst: cond.length ? Math.min.apply(null, cond) : 0
+      };
+    });
+
+    var strong = rows.filter(function (r) { return r.n >= 8 && Math.abs(r.t) > 1.8; });
+    return {
+      classId: classId, name: cls.n, events: idx.length, rows: rows,
+      significant: strong,
+      read: buildEventRead(cls.n, idx.length, rows)
+    };
+  }
+
+  function buildEventRead(name, n, rows) {
+    if (n < 6) return ['Only ' + n + ' events of this class in the window — not enough to say anything. Widen the period or pick a more common catalyst.'];
+    var lines = [];
+    var best = rows.slice().filter(function (r) { return r.n >= 6; }).sort(function (a, b) { return Math.abs(b.t) - Math.abs(a.t); })[0];
+    if (!best) return ['Not enough overlapping bars to measure the response.'];
+    var dir = best.mean > 0 ? 'rose' : 'fell';
+    lines.push('Across ' + n + ' events, the ' + best.h + '-bar response ' + dir + ' a median of ' +
+      (best.median * 100).toFixed(2) + '%, positive ' + ((best.pUp || 0) * 100).toFixed(0) + '% of the time.');
+    lines.push('Unconditionally this instrument is positive ' + (best.baseUp * 100).toFixed(0) + '% of the time over the same horizon, so the catalyst is worth ' +
+      ((best.edge || 0) > 0 ? '+' : '') + ((best.edge || 0) * 100).toFixed(0) + ' percentage points of directional edge.');
+    if (Math.abs(best.t) < 1.8) {
+      lines.push('That difference is inside the noise at this sample size (t = ' + best.t.toFixed(2) + '). Read it as "no measurable reaction", not as a weak one.');
+    } else {
+      lines.push('The difference clears the noise at this sample size (t = ' + best.t.toFixed(2) + '), which is suggestive — but a t-statistic on ' + best.n + ' overlapping windows overstates confidence, so size accordingly.');
+    }
+    return lines;
+  }
+
+  /* ---------- combined read for one symbol ---------- */
+  function assess(sym, bars, world, opts) {
+    var an = anomalies(bars, sym, world, opts);
+    var ex = exhaustion(bars, opts);
+    var cr = crowding(bars, sym, world);
+    var recent = an.events.filter(function (e) { return e.i >= bars.length - 30; });
+
+    /* headline risk score: extension + crowding + recent distribution signals */
+    var risk = 0;
+    if (ex) {
+      risk += M.clamp((ex.rank - 0.75) / 0.25, 0, 1) * 0.30;
+      risk += M.clamp(ex.extendedPct - 0.5, 0, 0.5) * 0.30;
+      if (ex.virgin) risk += 0.12;
+    }
+    if (cr) risk += M.clamp((Math.abs(cr.score) - 0.4) / 0.6, 0, 1) * 0.25;
+    var distSignals = recent.filter(function (e) { return e.kind === 'climax' || e.kind === 'sweep'; }).length;
+    risk += M.clamp(distSignals * 0.08, 0, 0.25);
+    risk = M.clamp(risk, 0, 1);
+
+    return {
+      sym: sym, anomalies: an.events, pin: an.pin, recent: recent,
+      exhaustion: ex, crowding: cr,
+      risk: risk,
+      level: risk > 0.66 ? 'high' : risk > 0.38 ? 'elevated' : 'normal'
+    };
+  }
+
+  global.MICRO = {
+    DETECTORS: DETECTORS, EVENT_CLASSES: EVENT_CLASSES,
+    anomalies: anomalies, exhaustion: exhaustion, crowding: crowding,
+    eventStudy: eventStudy, assess: assess, rsi: rsi, pctRank: pctRank, zscore: zscore
+  };
+})(window);
+
+
+/* ==== assets/js/alerts.js ==== */
+/* Lumen Terminal — alert rules.
+ *
+ * Rules are evaluated against the current world whenever it changes and on a timer. Firing is
+ * rate-limited per rule so a condition that stays true does not spam; a rule re-arms once its
+ * condition has been false for a full cooldown.
+ *
+ * Delivery is in-app by default. Browser notifications are opt-in and only requested when the
+ * user turns them on — never on page load. There is no server, so nothing fires while the tab
+ * is closed; that limitation is stated in the UI rather than papered over.
+ */
+(function (global) {
+  'use strict';
+  var L = global.Lumen, M = L.M, F = L.F;
+
+  var KEY = 'lumen.alerts.v1';
+  var LOGKEY = 'lumen.alertlog.v1';
+
+  var KINDS = {
+    exhaustion: {
+      n: 'Exhaustion / late-stage move', icon: '🔺',
+      d: 'Fires when a symbol is high in its own range AND has been extended for a while. This is the "who is left to buy" warning — it is designed to fire before the level rather than at it.',
+      defaults: { rank: 0.88, extBars: 4 },
+      fields: [
+        { k: 'sym', n: 'Symbol', type: 'sym' },
+        { k: 'rank', n: 'Percentile above', type: 'num', min: 0.5, max: 1, step: 0.01 },
+        { k: 'extBars', n: 'Bars extended', type: 'num', min: 1, max: 60, step: 1 }
+      ]
+    },
+    level: {
+      n: 'Price level', icon: '📏',
+      d: 'A plain price cross, with the historical context attached so you see what that level has meant before.',
+      defaults: { price: 0, dir: 'above' },
+      fields: [
+        { k: 'sym', n: 'Symbol', type: 'sym' },
+        { k: 'price', n: 'Price', type: 'num' },
+        { k: 'dir', n: 'Direction', type: 'pick', opts: ['above', 'below'] }
+      ]
+    },
+    anomaly: {
+      n: 'Behaviour anomaly', icon: '🎣',
+      d: 'Fires on a sweep, climax, churn or unexplained-volume pattern above your severity threshold.',
+      defaults: { severity: 0.5, detector: 'any' },
+      fields: [
+        { k: 'sym', n: 'Symbol', type: 'sym' },
+        { k: 'detector', n: 'Pattern', type: 'pick', opts: ['any', 'sweep', 'climax', 'churn', 'unexplained', 'absorbed', 'gapfade'] },
+        { k: 'severity', n: 'Min severity', type: 'num', min: 0.1, max: 1, step: 0.05 }
+      ]
+    },
+    crowding: {
+      n: 'Crowded positioning', icon: '👥',
+      d: 'Fires when the positioning composite gets stretched in either direction.',
+      defaults: { threshold: 0.6 },
+      fields: [
+        { k: 'sym', n: 'Symbol', type: 'sym' },
+        { k: 'threshold', n: 'Absolute score above', type: 'num', min: 0.2, max: 1, step: 0.05 }
+      ]
+    },
+    news: {
+      n: 'Catalyst in the wire', icon: '📡',
+      d: 'Fires when a story of the chosen class lands at or above an impact threshold.',
+      defaults: { cls: 'conflict', imp: 4 },
+      fields: [
+        { k: 'cls', n: 'Class', type: 'pick', opts: ['any', 'conflict', 'energy', 'monetary', 'trade', 'supplychain', 'policy', 'sovereign', 'climate'] },
+        { k: 'imp', n: 'Min impact', type: 'num', min: 1, max: 5, step: 1 }
+      ]
+    },
+    disaster: {
+      n: 'Disaster response trigger', icon: '🌊',
+      d: 'Fires on a climate or conflict story in a chosen country, and opens the matching response playbook with its buy list.',
+      defaults: { country: 'AU', imp: 4 },
+      fields: [
+        { k: 'country', n: 'Country', type: 'country' },
+        { k: 'imp', n: 'Min impact', type: 'num', min: 1, max: 5, step: 1 }
+      ]
+    }
+  };
+
+  function load() {
+    try {
+      var raw = JSON.parse(localStorage.getItem(KEY));
+      if (raw && raw.length) return raw;
+    } catch (e) { /* fall through to defaults */ }
+    return defaults();
+  }
+  function defaults() {
+    return [
+      { id: L.uid('a'), kind: 'exhaustion', enabled: true, cooldownH: 24, sym: 'CL=F', rank: 0.88, extBars: 4 },
+      { id: L.uid('a'), kind: 'exhaustion', enabled: true, cooldownH: 24, sym: 'NVDA', rank: 0.90, extBars: 5 },
+      { id: L.uid('a'), kind: 'anomaly', enabled: true, cooldownH: 12, sym: 'SPY', detector: 'any', severity: 0.55 },
+      { id: L.uid('a'), kind: 'news', enabled: true, cooldownH: 6, cls: 'conflict', imp: 5 },
+      { id: L.uid('a'), kind: 'disaster', enabled: true, cooldownH: 24, country: 'AU', imp: 4 }
+    ];
+  }
+  var rules = load();
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(rules)); } catch (e) { /* private mode */ } }
+
+  function loadLog() {
+    try { return JSON.parse(localStorage.getItem(LOGKEY)) || []; } catch (e) { return []; }
+  }
+  var log = loadLog();
+  function saveLog() {
+    try { localStorage.setItem(LOGKEY, JSON.stringify(log.slice(0, 120))); } catch (e) { /* private mode */ }
+  }
+
+  function add(kind) {
+    var spec = KINDS[kind];
+    if (!spec) return null;
+    var r = Object.assign({ id: L.uid('a'), kind: kind, enabled: true, cooldownH: 12, sym: 'SPY' }, spec.defaults);
+    rules.push(r); save();
+    return r;
+  }
+  function remove(id) { rules = rules.filter(function (r) { return r.id !== id; }); save(); }
+  function update(id, patch) {
+    rules.forEach(function (r) { if (r.id === id) Object.assign(r, patch); });
+    save();
+  }
+  function all() { return rules; }
+  function history() { return log; }
+  function clearLog() { log = []; saveLog(); L.bus.emit('alerts'); }
+
+  /* ---------- evaluation ---------- */
+  function evaluate(world, opts) {
+    opts = opts || {};
+    var fired = [];
+    var now = Date.now();
+
+    rules.forEach(function (r) {
+      if (!r.enabled) return;
+      var cool = (r.cooldownH || 12) * 3600e3;
+      if (r.lastFired && now - r.lastFired < cool) return;
+      var hit = null;
+      try { hit = testRule(r, world); } catch (e) { hit = null; }
+      if (!hit) return;
+      r.lastFired = now;
+      var entry = {
+        id: L.uid('f'), ruleId: r.id, kind: r.kind, t: now,
+        title: hit.title, body: hit.body, tone: hit.tone || 'warn',
+        sym: r.sym || null, action: hit.action || null, data: hit.data || null
+      };
+      fired.push(entry);
+      log.unshift(entry);
+    });
+
+    if (fired.length) {
+      save(); saveLog();
+      L.bus.emit('alerts', fired);
+      if (!opts.silent) fired.forEach(notify);
+    }
+    return fired;
+  }
+
+  function testRule(r, world) {
+    if (r.kind === 'news' || r.kind === 'disaster') return testStoryRule(r, world);
+
+    var sym = r.sym;
+    if (!sym) return null;
+    var bars = global.MARKET.bars(sym, '1d', 400, world);
+    if (!bars || bars.length < 60) return null;
+    var last = bars[bars.length - 1];
+
+    if (r.kind === 'level') {
+      if (!r.price) return null;
+      var prev = bars[bars.length - 2];
+      var crossedUp = r.dir === 'above' && prev.c < r.price && last.c >= r.price;
+      var crossedDn = r.dir === 'below' && prev.c > r.price && last.c <= r.price;
+      if (!crossedUp && !crossedDn) return null;
+      var ex = global.MICRO.exhaustion(bars);
+      return {
+        title: sym + ' crossed ' + F.num(r.price, 2) + ' (' + r.dir + ')',
+        body: 'Now at the ' + (ex.rank * 100).toFixed(0) + 'th percentile of its ' + ex.lookback + '-bar range. ' + (ex.read[0] || ''),
+        tone: r.dir === 'above' ? 'warn' : 'i',
+        action: { view: 'signals', sym: sym }, data: { rank: ex.rank }
+      };
+    }
+
+    if (r.kind === 'exhaustion') {
+      var e = global.MICRO.exhaustion(bars);
+      if (!e) return null;
+      if (e.rank < (r.rank || 0.88)) return null;
+      if (e.extendedBars < (r.extBars || 4)) return null;
+      var mid = e.horizons[1] || e.horizons[0];
+      return {
+        title: sym + ' is late in its range — potential sell zone',
+        body: F.num(last.c, 2) + ' is the ' + (e.rank * 100).toFixed(0) + 'th percentile, extended ' + e.extendedBars + ' bars. ' +
+          (mid && mid.n >= 12 ? 'From comparable levels it was lower ' + ((1 - mid.pUp) * 100).toFixed(0) + '% of the time over ' + mid.h + ' bars (n=' + mid.n + ').'
+            : 'Too few comparable instances to give a base rate.'),
+        tone: 'warn',
+        action: { view: 'signals', sym: sym }, data: { rank: e.rank, extendedBars: e.extendedBars }
+      };
+    }
+
+    if (r.kind === 'anomaly') {
+      var an = global.MICRO.anomalies(bars, sym, world);
+      var recent = an.events.filter(function (ev) {
+        return ev.i >= bars.length - 3 && ev.severity >= (r.severity || 0.5) &&
+          (r.detector === 'any' || !r.detector || ev.kind === r.detector);
+      });
+      if (!recent.length) return null;
+      var ev = recent[0];
+      return {
+        title: sym + ': ' + ev.n + ' ' + ev.icon,
+        body: ev.note + ' — a pattern consistent with this behaviour, not proof of it.',
+        tone: 'warn',
+        action: { view: 'signals', sym: sym }, data: { kind: ev.kind, severity: ev.severity }
+      };
+    }
+
+    if (r.kind === 'crowding') {
+      var cr = global.MICRO.crowding(bars, sym, world);
+      if (!cr || Math.abs(cr.score) < (r.threshold || 0.6)) return null;
+      return {
+        title: sym + ': ' + cr.label.toLowerCase(),
+        body: cr.read,
+        tone: cr.score > 0 ? 'warn' : 'i',
+        action: { view: 'signals', sym: sym }, data: { score: cr.score }
+      };
+    }
+    return null;
+  }
+
+  function testStoryRule(r, world) {
+    var since = Date.now() - 12 * 3600e3;
+    var stories = ((world && world.stories) || []).filter(function (s) { return s.t >= since; });
+    if (r.kind === 'news') {
+      var m = stories.filter(function (s) {
+        return s.imp >= (r.imp || 4) && (r.cls === 'any' || !r.cls || s.k === r.cls);
+      });
+      if (!m.length) return null;
+      return {
+        title: 'Catalyst: ' + m[0].h,
+        body: m[0].src + ' · impact ' + m[0].imp + '/5' + (m.length > 1 ? ' · ' + (m.length - 1) + ' more in the last 12h' : ''),
+        tone: m[0].imp >= 5 ? 'down' : 'warn',
+        action: { view: 'desk' }, data: { storyId: m[0].id }
+      };
+    }
+    /* disaster */
+    var country = r.country || 'AU';
+    var hit = stories.filter(function (s) {
+      return s.imp >= (r.imp || 4) && (s.countries || []).indexOf(country) >= 0 &&
+        (s.k === 'climate' || s.k === 'conflict');
+    })[0];
+    if (!hit) return null;
+    var pbId = hit.k === 'climate' ? guessDisaster(hit.h) : 'quake';
+    return {
+      title: 'Response trigger — ' + ((global.UNIVERSE.COUNTRIES[country] || {}).n || country),
+      body: hit.h + ' — opening the ' + pbId + ' response playbook and its phased buy list.',
+      tone: 'down',
+      action: { view: 'mainstreet', playbook: pbId, country: country },
+      data: { storyId: hit.id }
+    };
+  }
+
+  function guessDisaster(text) {
+    var t = String(text).toLowerCase();
+    if (/flood|rain|surge|deluge|water level/.test(t)) return 'flood';
+    if (/cyclone|hurricane|typhoon|storm|hail|wind/.test(t)) return 'cyclone';
+    if (/fire|blaze|bushfire|wildfire|burn/.test(t)) return 'bushfire';
+    if (/quake|tsunami|seismic|tremor/.test(t)) return 'quake';
+    if (/drought|heat|dry|water restriction/.test(t)) return 'drought';
+    return 'flood';
+  }
+
+  /* ---------- browser notifications (opt-in) ---------- */
+  var notifyEnabled = false;
+  function setNotify(on) {
+    if (!on) { notifyEnabled = false; return Promise.resolve(false); }
+    if (typeof Notification === 'undefined') return Promise.resolve(false);
+    return Notification.requestPermission().then(function (p) {
+      notifyEnabled = p === 'granted';
+      return notifyEnabled;
+    }).catch(function () { return false; });
+  }
+  function canNotify() { return notifyEnabled && typeof Notification !== 'undefined' && Notification.permission === 'granted'; }
+  function notify(entry) {
+    if (!canNotify()) return;
+    try { new Notification('Lumen — ' + entry.title, { body: entry.body, tag: entry.ruleId }); }
+    catch (e) { /* some browsers require a service worker; in-app alert still shows */ }
+  }
+
+  global.ALERTS = {
+    KINDS: KINDS, all: all, add: add, remove: remove, update: update,
+    evaluate: evaluate, history: history, clearLog: clearLog,
+    setNotify: setNotify, canNotify: canNotify, guessDisaster: guessDisaster,
+    reset: function () { rules = defaults(); save(); }
   };
 })(window);
 
@@ -3703,7 +5049,7 @@ window.WORLD_GEOMETRY = [{"id":"ZW","n":"Zimbabwe","r":[[3129,-2240,2936,-2219,2
 
   function setup(cv) {
     var dpr = window.devicePixelRatio || 1;
-    var w = cv.clientWidth || cv.parentNode.clientWidth || 600;
+    var w = cv.clientWidth || (cv.parentNode && cv.parentNode.clientWidth) || 600;
     var h = cv.clientHeight || 240;
     if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) {
       cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
@@ -3825,6 +5171,31 @@ window.WORLD_GEOMETRY = [{"id":"ZW","n":"Zimbabwe","r":[[3129,-2240,2936,-2219,2
       ctx.lineWidth = 1;
       ctx.fillStyle = tr.dir === 1 ? t.up : t.down;
       ctx.beginPath(); ctx.arc(x(ei), y(tr.entry), 2.6, 0, 6.3); ctx.fill();
+    });
+
+    /* flagged bars from the behaviour scan */
+    var MK = {
+      sweep: { c: '#e8a33d', g: '🎣' }, climax: { c: '#f05252', g: '📛' },
+      churn: { c: '#8f7fe0', g: '🌀' }, unexplained: { c: '#4c9aff', g: '❓' },
+      absorbed: { c: '#5fb3a1', g: '🧱' }, gapfade: { c: '#c9a0dc', g: '↩' }
+    };
+    (opts.marks || []).forEach(function (m) {
+      var mi = m.i - off;
+      if (mi < 0 || mi >= n) return;
+      var spec = MK[m.kind] || { c: t.accent };
+      var b = view[mi];
+      var above = m.dir < 0 || m.kind === 'climax';
+      var yy = above ? y(b.h) - 7 : y(b.l) + 7;
+      ctx.fillStyle = spec.c;
+      ctx.globalAlpha = 0.35 + (m.sev || 0.5) * 0.65;
+      ctx.beginPath();
+      if (above) {
+        ctx.moveTo(x(mi), yy + 5); ctx.lineTo(x(mi) - 4, yy - 2); ctx.lineTo(x(mi) + 4, yy - 2);
+      } else {
+        ctx.moveTo(x(mi), yy - 5); ctx.lineTo(x(mi) - 4, yy + 2); ctx.lineTo(x(mi) + 4, yy + 2);
+      }
+      ctx.closePath(); ctx.fill();
+      ctx.globalAlpha = 1;
     });
 
     /* last price */
@@ -4486,12 +5857,20 @@ window.WORLD_GEOMETRY = [{"id":"ZW","n":"Zimbabwe","r":[[3129,-2240,2936,-2219,2
 
   function canvasBox(cls, height, draw) {
     var cv = el('canvas', { class: 'cv ' + (cls || ''), style: { height: (height || 200) + 'px' } });
-    var run = function () { try { draw(cv); } catch (e) { console.error(e); } };
-    setTimeout(run, 0);
     var ro = null;
+    /* A panel redraw detaches the canvas while its observer is still queued, so every draw has
+       to confirm the node is still in the document before touching layout. */
+    var run = function () {
+      if (!cv.isConnected) {
+        if (ro) { ro.disconnect(); ro = null; }
+        return;
+      }
+      try { draw(cv); } catch (e) { console.error(e); }
+    };
+    setTimeout(run, 0);
     if (window.ResizeObserver) {
       ro = new ResizeObserver(L.debounce(run, 90));
-      setTimeout(function () { if (cv.parentNode) ro.observe(cv.parentNode); }, 0);
+      setTimeout(function () { if (ro && cv.parentNode) ro.observe(cv.parentNode); }, 0);
     }
     cv._redraw = run;
     return cv;
@@ -4638,6 +6017,11 @@ window.WORLD_GEOMETRY = [{"id":"ZW","n":"Zimbabwe","r":[[3129,-2240,2936,-2219,2
     { c: 'watch <sym>', d: 'Add to the watchlist', ex: 'watch lmt' },
     { c: 'unwatch <sym>', d: 'Remove from the watchlist', ex: 'unwatch spy' },
     { c: 'sector <id>', d: 'Show an industry and its global leaders', ex: 'sector defense' },
+    { c: 'signals <sym>', d: 'Behaviour scan: exhaustion, crowding, flagged bars', ex: 'signals cl=f' },
+    { c: 'exhaustion <sym>', d: 'Is this level late in its own range?', ex: 'exhaustion nvda' },
+    { c: 'rebuild <type> [country]', d: 'Disaster response playbook and its buy list', ex: 'rebuild flood au' },
+    { c: 'costs [country]', d: 'Household cost-of-living pressure and who collects', ex: 'costs au' },
+    { c: 'alerts', d: 'Alert rules and history', ex: 'alerts' },
     { c: 'whales [asset]', d: 'Large-holder flow ledger', ex: 'whales btc' },
     { c: 'risk <sym> <entry> <stop>', d: 'Position size from your account risk settings', ex: 'risk nvda 178 172' },
     { c: 'news [country|sector]', d: 'Filter the wire', ex: 'news energy' },
@@ -4692,6 +6076,33 @@ window.WORLD_GEOMETRY = [{"id":"ZW","n":"Zimbabwe","r":[[3129,-2240,2936,-2219,2
       return { k: 'cascade', seed: seed2, sev: sev2 };
     }
 
+    if (cmd === 'signals' || cmd === 'scanbar' || cmd === 'behaviour' || cmd === 'behavior') {
+      return { k: 'signals', sym: parts[1] ? parts[1].toUpperCase() : null, tab: 'read' };
+    }
+    if (cmd === 'exhaustion' || cmd === 'extended') {
+      return { k: 'signals', sym: parts[1] ? parts[1].toUpperCase() : null, tab: 'read' };
+    }
+    if (cmd === 'alerts' || cmd === 'alert') return { k: 'alerts' };
+    if (cmd === 'rebuild' || cmd === 'disaster') {
+      var types = { flood: 'flood', cyclone: 'cyclone', hurricane: 'cyclone', storm: 'cyclone',
+        fire: 'bushfire', bushfire: 'bushfire', wildfire: 'bushfire',
+        quake: 'quake', earthquake: 'quake', tsunami: 'quake', drought: 'drought', heat: 'drought' };
+      var pbId = types[(parts[1] || '').toLowerCase()] || 'flood';
+      var ctry = 'AU';
+      parts.slice(1).forEach(function (p) {
+        var e = global.LINKER.resolve(p);
+        if (e && e.type === 'country') ctry = e.id;
+      });
+      return { k: 'rebuild', playbook: pbId, country: ctry === 'US' ? 'US' : 'AU' };
+    }
+    if (cmd === 'costs' || cmd === 'costofliving' || cmd === 'household') {
+      var c2 = 'AU';
+      if (parts[1]) {
+        var e2 = global.LINKER.resolve(parts[1]);
+        if (e2 && e2.type === 'country') c2 = e2.id === 'US' ? 'US' : 'AU';
+      }
+      return { k: 'costs', country: c2 };
+    }
     if (cmd === 'map' && parts[1]) return { k: 'map', q: parts.slice(1).join(' ') };
     if (cmd === 'chart' && parts[1]) return { k: 'chart', sym: parts[1].toUpperCase(), tf: TFS.indexOf((parts[2] || '').toLowerCase()) >= 0 ? parts[2].toLowerCase() : null };
     if (cmd === 'watch' && parts[1]) return { k: 'watch', sym: parts[1].toUpperCase() };
@@ -5645,7 +7056,7 @@ window.WORLD_GEOMETRY = [{"id":"ZW","n":"Zimbabwe","r":[[3129,-2240,2936,-2219,2
   var st = {
     sym: 'NVDA', tf: '15m', days: 90,
     opts: Object.assign({}, B.DEFAULTS),
-    imported: null, importName: null
+    imported: null, importName: null, period: 'month'
   };
   var cache = { bars: null, gaps: null, stats: null, res: null };
   var bodyEl = null;
@@ -5762,6 +7173,7 @@ window.WORLD_GEOMETRY = [{"id":"ZW","n":"Zimbabwe","r":[[3129,-2240,2936,-2219,2
     host.appendChild(chartPanel(world));
     host.appendChild(el('div', { class: 'bt-cols' }, [gapStatsPanel(), whenPanel()]));
     host.appendChild(strategyPanel(world));
+    host.appendChild(periodicPanel(world));
     host.appendChild(sweepPanel(world));
     host.appendChild(tradesPanel());
   }
@@ -5935,6 +7347,74 @@ window.WORLD_GEOMETRY = [{"id":"ZW","n":"Zimbabwe","r":[[3129,-2240,2936,-2219,2
       ]) : null,
       el('p', { class: 'note small', text: 'The engine fills at the gap edge when price trades into the zone, stops beyond the far edge plus a buffer, and exits at the R target or on the bar limit. Where a bar touches both stop and target it is booked as a loss. There is no slippage or commission modelled — subtract roughly 0.05–0.15R per trade for a realistic net.' })
     ]);
+  }
+
+  /* ---------- anchored periodic runs ---------- */
+  function periodicPanel(world) {
+    var host = el('div', {});
+    function draw() {
+      L.clear(host);
+      var r = B.runPeriodic(cache.bars, st.opts, st.period, L.state.settings.account.equity);
+      if (!r.summary) { host.appendChild(UIx.empty(r.note)); return; }
+      var s = r.summary;
+      host.appendChild(el('p', { class: 'note', text:
+        'The strategy is restarted at the beginning of every ' + r.periodName.toLowerCase() +
+        ' with the same capital and an empty book, so no period inherits the one before it. ' +
+        'Each period is also measured against simply buying at the period open and holding — if the strategy cannot beat that, it is work for nothing.' }));
+
+      host.appendChild(el('div', { class: 'grid6' }, [
+        UIx.stat(r.periodName + 's', String(s.periods), { sub: s.tradedPeriods + ' with trades' }),
+        UIx.stat('Profitable', F.pctRaw(s.consistency, 0), { tone: s.consistency >= 55 ? 'up' : s.consistency >= 45 ? 'n' : 'down', sub: s.profitablePeriods + '/' + s.tradedPeriods }),
+        UIx.stat('Beat buy & hold', F.pctRaw(s.beatHold, 0), { tone: s.beatHold >= 55 ? 'up' : 'down' }),
+        UIx.stat('Mean per ' + r.periodName.toLowerCase(), s.meanR.toFixed(2) + ' R', { tone: UIx.tone(s.meanR) }),
+        UIx.stat('Spread (sd)', s.sdR.toFixed(2) + ' R', { sub: 'period to period' }),
+        UIx.stat('Best period share', s.concentration === null ? 'n/a' : F.pctRaw(s.concentration * 100, 0), {
+          tone: s.concentration !== null && s.concentration > 0.6 ? 'down' : 'n',
+          sub: s.concentration === null ? 'total R is negative' : s.concentration > 0.6 ? 'one period carries it' : 'of total R'
+        })
+      ]));
+
+      if (s.concentration !== null && s.concentration > 0.6) {
+        host.appendChild(el('p', { class: 'bt-warn', text:
+          'One ' + r.periodName.toLowerCase() + ' produced ' + (s.concentration * 100).toFixed(0) +
+          '% of the entire result. Strip it out and there is very little left — that is a single good run, not a repeatable edge.' }));
+      }
+
+      host.appendChild(UIx.canvasBox('', Math.min(420, r.rows.length * 18 + 12), function (cv) {
+        global.CHART.hbars(cv, r.rows.map(function (x) { return { k: x.key, v: x.totalR }; }),
+          { labelW: 74, rowH: 17, fmt: function (v) { return v.toFixed(1) + 'R'; } });
+      }));
+
+      host.appendChild(UIx.table(
+        [{ t: r.periodName }, { t: 'Bars', align: 'r' }, { t: 'Gaps', align: 'r' }, { t: 'Trades', align: 'r' },
+         { t: 'Win %', align: 'r' }, { t: 'Total R', align: 'r' }, { t: 'Strategy %', align: 'r' },
+         { t: 'Buy & hold %', align: 'r' }, { t: 'Difference', align: 'r' }, { t: 'MaxDD %', align: 'r' }],
+        r.rows.map(function (x) {
+          return {
+            _class: x.n === 0 ? 'muted' : x.totalR > 0 ? 'win' : 'loss',
+            cells: [
+              x.key,
+              { t: String(x.bars), align: 'r' },
+              { t: String(x.gaps), align: 'r' },
+              { t: String(x.n), align: 'r' },
+              { t: x.n ? x.winRate.toFixed(0) : '—', align: 'r' },
+              { node: el('span', { class: x.totalR >= 0 ? 'up' : 'down', text: x.totalR.toFixed(1) }), align: 'r' },
+              { node: el('span', { class: x.plPct >= 0 ? 'up' : 'down', text: F.pct(x.plPct) }), align: 'r' },
+              { node: el('span', { class: x.hold >= 0 ? 'up' : 'down', text: F.pct(x.hold) }), align: 'r' },
+              { node: el('span', { class: x.vsHold >= 0 ? 'up' : 'down', text: F.pct(x.vsHold) }), align: 'r' },
+              { t: x.maxDD.toFixed(1), align: 'r' }
+            ]
+          };
+        })));
+    }
+    var p = UIx.panel('Anchored periodic runs', {
+      icon: '🗓', class: 'p-periodic',
+      actions: [UIx.toggleRow(
+        Object.keys(B.PERIODS).map(function (k) { return { v: k, n: B.PERIODS[k].n }; }),
+        st.period, function (v) { st.period = v; draw(); })]
+    }, [host]);
+    draw();
+    return p;
   }
 
   /* ---------- sweep ---------- */
@@ -6228,6 +7708,591 @@ window.WORLD_GEOMETRY = [{"id":"ZW","n":"Zimbabwe","r":[[3129,-2240,2936,-2219,2
   }
 
   UIx.register('links', { mount: mount });
+})(window);
+
+
+/* ==== assets/js/view-signals.js ==== */
+/* Lumen Terminal — Signals: behaviour, exhaustion, positioning, event studies and alerts. */
+(function (global) {
+  'use strict';
+  var L = global.Lumen, U = global.UNIVERSE, MI = global.MICRO, A = global.ALERTS,
+      UIx = global.UI, el = L.el, F = L.F, M = L.M;
+
+  var st = { sym: 'CL=F', tf: '1d', days: 400, eventClass: 'oilspike', tab: 'read' };
+  var bodyEl = null, cache = null;
+
+  function mount(world, params) {
+    if (params.sym) st.sym = params.sym;
+    if (params.tab) st.tab = params.tab;
+    var root = el('div', { class: 'sig' });
+    root.appendChild(controls(world));
+    bodyEl = el('div', { id: 'sig-body' });
+    root.appendChild(bodyEl);
+    recompute(world);
+    return root;
+  }
+
+  function recompute(world) {
+    var bars = global.MARKET.bars(st.sym, st.tf, st.days, world);
+    cache = {
+      bars: bars,
+      assess: MI.assess(st.sym, bars, world),
+      study: MI.eventStudy(bars, world, st.eventClass)
+    };
+    render(world);
+  }
+
+  function controls(world) {
+    var symIn = el('input', { class: 'sym-in', value: st.sym, spellcheck: 'false' });
+    symIn.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { st.sym = symIn.value.trim().toUpperCase(); recompute(world); }
+    });
+    return UIx.panel('Behaviour scan', { icon: '🔍', class: 'p-sigset' }, [
+      el('div', { class: 'sig-ctl' }, [
+        UIx.field('Symbol', symIn),
+        UIx.field('Timeframe', UIx.toggleRow(['15m', '1h', '4h', '1d'], st.tf, function (v) { st.tf = v; recompute(world); })),
+        UIx.field('History', UIx.toggleRow([
+          { v: 120, n: '4m' }, { v: 250, n: '8m' }, { v: 400, n: '13m' }, { v: 730, n: '2y' }
+        ], st.days, function (v) { st.days = +v; recompute(world); })),
+        UIx.field('View', UIx.toggleRow([
+          { v: 'read', n: 'Read' }, { v: 'anomalies', n: 'Anomalies' },
+          { v: 'events', n: 'Event studies' }, { v: 'alerts', n: 'Alerts' }
+        ], st.tab, function (v) { st.tab = v; render(world); }))
+      ]),
+      el('div', { class: 'presets' }, ['CL=F', 'NVDA', 'SPY', 'GC=F', 'BTC', 'XOM', 'TSLA', 'BKW.AX'].map(function (t) {
+        return el('button', { class: 'chip' + (t === st.sym ? ' on' : ''), text: t, onclick: function () { st.sym = t; symIn.value = t; recompute(world); } });
+      }))
+    ]);
+  }
+
+  function render(world) {
+    if (!bodyEl) return;
+    L.clear(bodyEl);
+    bodyEl.appendChild(caveat());
+    if (st.tab === 'read') renderRead(world);
+    else if (st.tab === 'anomalies') renderAnomalies(world);
+    else if (st.tab === 'events') renderEvents(world);
+    else renderAlerts(world);
+  }
+
+  function caveat() {
+    return el('div', { class: 'bt-banner tone-sim' }, [
+      UIx.badge('READ THIS', 'sim'),
+      el('span', {}, [
+        'These are patterns in price and volume. Bars carry no order book, no cancellations and no counterparty identity, so nothing here can establish that manipulation occurred — only that the shape is consistent with it, and most of these shapes also occur for ordinary reasons. Base rates come from overlapping windows on a single price path, so sample sizes overstate confidence. Every number below shows its n for that reason.'
+      ])
+    ]);
+  }
+
+  /* ---------- read ---------- */
+  function renderRead(world) {
+    var a = cache.assess, e = a.exhaustion, c = a.crowding;
+    if (!e) { bodyEl.appendChild(UIx.empty('Not enough history for ' + st.sym)); return; }
+    var q = global.MARKET.quote(st.sym, world);
+
+    bodyEl.appendChild(UIx.panel('Where this is in its own history', { icon: '📍', class: 'p-exh' }, [
+      el('div', { class: 'exh-head' }, [
+        el('div', { class: 'exh-gauge t-' + a.level }, [
+          el('b', { text: (a.risk * 100).toFixed(0) }),
+          el('span', { text: 'late-stage risk' })
+        ]),
+        el('div', { class: 'exh-t' }, [
+          el('h3', {}, [st.sym + ' ', el('i', { class: 'exh-px', text: F.num(e.price, 2) })]),
+          el('div', {}, [
+            UIx.badge((e.rank * 100).toFixed(0) + 'th percentile', e.rank > 0.85 ? 'warn' : 'n'),
+            UIx.badge(c ? c.label : '—', c && Math.abs(c.score) > 0.5 ? 'warn' : 'n'),
+            e.virgin ? UIx.badge('no precedent above', 'down') : null,
+            e.extendedBars >= 3 ? UIx.badge('extended ' + e.extendedBars + ' bars', 'warn') : null
+          ])
+        ])
+      ]),
+      el('div', { class: 'range-bar' }, [
+        el('div', { class: 'rb-track' }, [
+          el('i', { class: 'rb-fill', style: { width: (e.rank * 100) + '%' } }),
+          el('u', { class: 'rb-mark', style: { left: (e.rank * 100) + '%' } }),
+          /* the live price rides the marker so the label always points at where price actually is */
+          el('b', { class: 'rb-now', style: { left: M.clamp(e.rank * 100, 5, 95) + '%' }, text: F.num(e.price, 2) })
+        ]),
+        el('div', { class: 'rb-lbl' }, [
+          el('span', { text: F.num(e.low, 2) + '  low' }),
+          el('span', { text: 'high  ' + F.num(e.high, 2) })
+        ])
+      ]),
+      el('ul', { class: 'vd-read' }, e.read.map(function (line) { return el('li', { text: line }); })),
+      c ? el('p', { class: 'note', text: c.read }) : null
+    ]));
+
+    /* forward base rates */
+    bodyEl.appendChild(UIx.panel('What has happened from levels like this', { icon: '📊', class: 'p-fwd' }, [
+      UIx.table(
+        [{ t: 'Horizon' }, { t: 'n', align: 'r' }, { t: 'Went up', align: 'r' }, { t: 'Base rate', align: 'r' },
+         { t: 'Edge', align: 'r' }, { t: 'Median', align: 'r' }, { t: 'Up when right', align: 'r' }, { t: 'Down when wrong', align: 'r' }, { t: 'Payoff', align: 'r' }],
+        e.horizons.map(function (h) {
+          return [
+            '+' + h.h + ' bars',
+            { t: String(h.n), align: 'r', class: h.n < 15 ? 'thin' : '' },
+            { node: el('span', { class: h.pUp > 0.5 ? 'up' : 'down', text: h.pUp === null ? '—' : (h.pUp * 100).toFixed(0) + '%' }), align: 'r' },
+            { t: (h.baseUp * 100).toFixed(0) + '%', align: 'r' },
+            { node: el('span', { class: (h.edge || 0) > 0 ? 'up' : 'down', text: h.edge === null ? '—' : ((h.edge > 0 ? '+' : '') + (h.edge * 100).toFixed(0) + 'pts') }), align: 'r' },
+            { node: el('span', { class: h.median >= 0 ? 'up' : 'down', text: F.pct(h.median * 100, 2) }), align: 'r' },
+            { t: F.pct(h.medUp * 100, 1), align: 'r' },
+            { t: F.pct(h.medDn * 100, 1), align: 'r' },
+            { t: h.payoff === null ? '—' : h.payoff.toFixed(2) + '×', align: 'r' }
+          ];
+        })),
+      el('p', { class: 'note small', text: 'Rows with a small n are greyed. "Edge" is the conditional hit rate minus the unconditional one — if it is near zero, being at this level tells you nothing that being in this instrument does not already tell you. Payoff is median gain when right divided by median loss when wrong; a high hit rate with a payoff below 1 is still a losing setup.' })
+    ]));
+
+    /* chart with anomalies marked */
+    var marks = a.anomalies.map(function (ev) { return { i: ev.i, kind: ev.kind, dir: ev.dir, sev: ev.severity }; });
+    bodyEl.appendChild(UIx.panel(st.sym + ' with flagged bars', { icon: '📈', class: 'p-sigchart', bodyClass: 'nopad' }, [
+      UIx.canvasBox('big', 320, function (cv) {
+        global.CHART.candles(cv, cache.bars, { window: 200, marks: marks });
+      })
+    ]));
+  }
+
+  /* ---------- anomalies ---------- */
+  function renderAnomalies(world) {
+    var a = cache.assess;
+    var counts = {};
+    a.anomalies.forEach(function (e) { counts[e.kind] = (counts[e.kind] || 0) + 1; });
+
+    bodyEl.appendChild(UIx.panel('Detectors', { icon: '🧬', class: 'p-det' }, [
+      el('div', { class: 'det-grid' }, Object.keys(MI.DETECTORS).map(function (k) {
+        var d = MI.DETECTORS[k];
+        return el('div', { class: 'det' + (counts[k] ? ' hit' : '') }, [
+          el('div', { class: 'det-h' }, [
+            el('span', { class: 'det-i', text: d.icon }),
+            el('b', { text: d.n }),
+            el('span', { class: 'det-n', text: counts[k] ? counts[k] + ' flagged' : 'none' })
+          ]),
+          el('p', { text: d.d })
+        ]);
+      })),
+      a.pin ? el('div', { class: 'pin-note' }, [
+        el('b', { text: a.pin.icon + ' ' + a.pin.n + ': ' }), el('span', { text: a.pin.note })
+      ]) : null
+    ]));
+
+    bodyEl.appendChild(UIx.panel('Flagged bars', { icon: '🚩', class: 'p-flags', count: a.anomalies.length }, [
+      a.anomalies.length
+        ? UIx.table([{ t: 'When' }, { t: 'Pattern' }, { t: 'Bias' }, { t: 'Severity', align: 'r' }, { t: 'Price', align: 'r' }, { t: 'What the bar did' }],
+            a.anomalies.slice(0, 60).map(function (ev) {
+              return {
+                _class: ev.severity > 0.6 ? 'loss' : '',
+                cells: [
+                  new Date(ev.t).toISOString().slice(0, 16).replace('T', ' '),
+                  { node: el('span', {}, [ev.icon + ' ' + ev.n]) },
+                  { node: ev.dir === 0 ? el('span', { text: 'neutral' })
+                      : UIx.badge(ev.dir > 0 ? 'upward' : 'downward', ev.dir > 0 ? 'up' : 'down') },
+                  { node: UIx.bar(ev.severity * 100, ev.severity > 0.6 ? 'down' : 'warn'), align: 'r' },
+                  { t: F.num(ev.price, 2), align: 'r' },
+                  ev.note
+                ]
+              };
+            }))
+        : UIx.empty('Nothing flagged in this window', 'That is a normal result — these patterns are supposed to be rare.')
+    ]));
+  }
+
+  /* ---------- event studies ---------- */
+  function renderEvents(world) {
+    var s = cache.study;
+    var picker = el('div', { class: 'presets' }, Object.keys(MI.EVENT_CLASSES).map(function (k) {
+      return el('button', {
+        class: 'chip' + (k === st.eventClass ? ' on' : ''), text: MI.EVENT_CLASSES[k].n,
+        onclick: function () { st.eventClass = k; recompute(world); }
+      });
+    }));
+
+    bodyEl.appendChild(UIx.panel('After this kind of event, what did ' + st.sym + ' do?', { icon: '⏱', class: 'p-study' }, [
+      picker,
+      !s || !s.events
+        ? UIx.empty('No events of this class in the window')
+        : el('div', {}, [
+            el('div', { class: 'grid4' }, [
+              UIx.stat('Events found', String(s.events)),
+              UIx.stat('Class', s.name),
+              UIx.stat('Window', st.days + ' days'),
+              UIx.stat('Instrument', st.sym)
+            ]),
+            UIx.table([{ t: 'Horizon' }, { t: 'n', align: 'r' }, { t: 'Positive', align: 'r' }, { t: 'Base rate', align: 'r' },
+                       { t: 'Edge', align: 'r' }, { t: 'Median', align: 'r' }, { t: 'Mean', align: 'r' }, { t: 't-stat', align: 'r' },
+                       { t: 'Best', align: 'r' }, { t: 'Worst', align: 'r' }],
+              s.rows.map(function (r) {
+                return [
+                  '+' + r.h + ' bars',
+                  { t: String(r.n), align: 'r', class: r.n < 10 ? 'thin' : '' },
+                  { node: el('span', { class: r.pUp > 0.5 ? 'up' : 'down', text: r.pUp === null ? '—' : (r.pUp * 100).toFixed(0) + '%' }), align: 'r' },
+                  { t: (r.baseUp * 100).toFixed(0) + '%', align: 'r' },
+                  { node: el('span', { class: (r.edge || 0) > 0 ? 'up' : 'down', text: ((r.edge || 0) > 0 ? '+' : '') + ((r.edge || 0) * 100).toFixed(0) + 'pts' }), align: 'r' },
+                  { node: el('span', { class: r.median >= 0 ? 'up' : 'down', text: F.pct(r.median * 100, 2) }), align: 'r' },
+                  { t: F.pct(r.mean * 100, 2), align: 'r' },
+                  { node: el('span', { class: Math.abs(r.t) > 1.8 ? 'warn' : '', text: r.t.toFixed(2) }), align: 'r' },
+                  { t: F.pct(r.best * 100, 1), align: 'r' },
+                  { t: F.pct(r.worst * 100, 1), align: 'r' }
+                ];
+              })),
+            el('ul', { class: 'vd-read' }, (s.read || []).map(function (l) { return el('li', { text: l }); })),
+            el('p', { class: 'note small', text: 'This is the honest version of "people will buy after X". It measures what the instrument actually did after every event of that class in the window, and puts the unconditional rate beside it so a 55% hit rate cannot masquerade as an edge when the instrument rises 54% of the time anyway. The t-statistic assumes independent observations, which overlapping forward windows are not — so treat anything under about 2.5 as noise, not signal.' })
+          ])
+    ]));
+  }
+
+  /* ---------- alerts ---------- */
+  function renderAlerts(world) {
+    var log = A.history();
+
+    var addRow = el('div', { class: 'presets' }, Object.keys(A.KINDS).map(function (k) {
+      return el('button', {
+        class: 'chip', text: '+ ' + A.KINDS[k].n,
+        onclick: function () { A.add(k); render(world); }
+      });
+    }));
+
+    bodyEl.appendChild(UIx.panel('Alert rules', {
+      icon: '🔔', class: 'p-rules', count: A.all().length,
+      actions: [
+        el('button', { class: 'mini', text: A.canNotify() ? 'browser alerts on' : 'enable browser alerts', onclick: function () {
+          A.setNotify(true).then(function (ok) {
+            UIx.toast(ok ? 'Browser notifications enabled' : 'Permission denied — in-app alerts still work', ok ? 'up' : 'warn');
+            render(world);
+          });
+        } }),
+        el('button', { class: 'btn', text: 'Run checks now', onclick: function () {
+          var fired = A.evaluate(world);
+          UIx.toast(fired.length ? fired.length + ' alert(s) fired' : 'Checked every rule — nothing triggered', fired.length ? 'warn' : 'n');
+          render(world);
+        } })
+      ]
+    }, [
+      el('p', { class: 'note', text: 'Rules run whenever the world refreshes and every few minutes while this tab is open. There is no server behind this, so nothing fires while the tab is closed — if you need alerts overnight, the check has to run somewhere that stays up.' }),
+      addRow,
+      el('div', { class: 'rules' }, A.all().map(function (r) { return ruleRow(r, world); }))
+    ]));
+
+    bodyEl.appendChild(UIx.panel('Alert history', {
+      icon: '📜', class: 'p-alog', count: log.length,
+      actions: log.length ? [el('button', { class: 'mini', text: 'clear', onclick: function () { A.clearLog(); render(world); } })] : []
+    }, [
+      log.length
+        ? el('div', { class: 'alog' }, log.slice(0, 40).map(function (e) {
+            return el('div', { class: 'al t-' + e.tone, onclick: function () {
+              if (!e.action) return;
+              if (e.action.view === 'signals' && e.action.sym) { st.sym = e.action.sym; recompute(world); }
+              else if (e.action.view === 'mainstreet') global.APP.go('mainstreet', e.action);
+              else global.APP.go(e.action.view || 'desk');
+            } }, [
+              el('div', { class: 'al-h' }, [
+                el('b', { text: e.title }),
+                el('span', { text: F.ago(e.t) + ' ago' })
+              ]),
+              el('p', { text: e.body })
+            ]);
+          }))
+        : UIx.empty('No alerts yet', 'Hit "Run checks now" to evaluate every rule against the current world.')
+    ]));
+  }
+
+  function ruleRow(r, world) {
+    var spec = A.KINDS[r.kind];
+    var wrap = el('div', { class: 'rule' + (r.enabled ? '' : ' off') });
+    wrap.appendChild(el('div', { class: 'rule-h' }, [
+      el('span', { class: 'det-i', text: spec.icon }),
+      el('b', { text: spec.n }),
+      el('label', { class: 'sw-t' }, [
+        el('input', { type: 'checkbox', checked: r.enabled ? 'checked' : null, onchange: function (e) {
+          A.update(r.id, { enabled: e.target.checked }); wrap.classList.toggle('off', !e.target.checked);
+        } }),
+        el('span', { text: 'on' })
+      ]),
+      el('button', { class: 'mini', text: 'remove', onclick: function () { A.remove(r.id); render(world); } })
+    ]));
+    var fields = el('div', { class: 'rule-f' });
+    spec.fields.forEach(function (f) {
+      var ctl;
+      if (f.type === 'num') {
+        ctl = UIx.number(r[f.k], function (v) { A.update(r.id, (function () { var o = {}; o[f.k] = v; return o; })()); }, { min: f.min, max: f.max, step: f.step });
+      } else if (f.type === 'pick') {
+        ctl = UIx.select(f.opts, r[f.k], function (v) { var o = {}; o[f.k] = v; A.update(r.id, o); });
+      } else if (f.type === 'country') {
+        ctl = UIx.select(Object.keys(U.COUNTRIES).map(function (c) { return { v: c, n: U.COUNTRIES[c].n }; }), r[f.k], function (v) { A.update(r.id, { country: v }); });
+      } else {
+        var i = el('input', { value: r[f.k] || '', spellcheck: 'false', onchange: function () { A.update(r.id, (function () { var o = {}; o[f.k] = i.value.trim().toUpperCase(); return o; })()); } });
+        ctl = i;
+      }
+      fields.appendChild(UIx.field(f.n, ctl));
+    });
+    fields.appendChild(UIx.field('Cooldown (h)', UIx.number(r.cooldownH || 12, function (v) { A.update(r.id, { cooldownH: v }); }, { min: 1, max: 168, step: 1 })));
+    wrap.appendChild(fields);
+    wrap.appendChild(el('p', { class: 'note small', text: spec.d }));
+    if (r.lastFired) wrap.appendChild(el('div', { class: 'rule-last', text: 'last fired ' + F.ago(r.lastFired) + ' ago' }));
+    return wrap;
+  }
+
+  UIx.register('signals', { mount: mount });
+})(window);
+
+
+/* ==== assets/js/view-mainstreet.js ==== */
+/* Lumen Terminal — Main Street: household cost pressure and disaster response chains. */
+(function (global) {
+  'use strict';
+  var L = global.Lumen, U = global.UNIVERSE, H = global.HOUSEHOLD, UIx = global.UI,
+      el = L.el, F = L.F, M = L.M;
+
+  var st = { tab: 'costs', country: 'AU', playbook: 'flood', day: 7 };
+  var bodyEl = null;
+
+  function mount(world, params) {
+    if (params.playbook) { st.playbook = params.playbook; st.tab = 'disaster'; }
+    if (params.country) st.country = params.country;
+    if (params.tab) st.tab = params.tab;
+    var root = el('div', { class: 'ms' });
+    root.appendChild(controls(world));
+    bodyEl = el('div', { id: 'ms-body' });
+    root.appendChild(bodyEl);
+    render(world);
+    return root;
+  }
+
+  function controls(world) {
+    return UIx.panel('Main Street', {
+      icon: '🏘', class: 'p-msset',
+      actions: [UIx.toggleRow([
+        { v: 'costs', n: 'Cost of living' }, { v: 'disaster', n: 'Disaster response' }
+      ], st.tab, function (v) { st.tab = v; render(world); })]
+    }, [
+      el('div', { class: 'ms-ctl' }, [
+        UIx.field('Market', UIx.toggleRow([
+          { v: 'AU', n: 'Australia' }, { v: 'US', n: 'United States' }
+        ], st.country, function (v) { st.country = v; render(world); }),
+          'Picks resolve to the companies listed in that market. Australia is covered in depth because the building-materials and insurance chain there is unusually concentrated in a few listed names.')
+      ])
+    ]);
+  }
+
+  function render(world) {
+    if (!bodyEl) return;
+    L.clear(bodyEl);
+    if (st.tab === 'costs') renderCosts(world);
+    else renderDisaster(world);
+  }
+
+  /* ---------- cost of living ---------- */
+  function renderCosts(world) {
+    var items = H.BASKET.map(function (b) {
+      var q = global.MARKET.quote(b.proxy, world);
+      var proxyChg = q ? q.chgPct : 0;
+      /* pressure: how hard this line is squeezing households right now, from the proxy's
+         recent move in the direction that hurts */
+      var bars = global.MARKET.bars(b.proxy, '1d', 90, world);
+      var chg90 = bars.length > 2 ? (bars[bars.length - 1].c - bars[0].c) / bars[0].c * 100 : 0;
+      var pressure = M.clamp((chg90 * b.dir) / 25, -1, 1);
+      return { b: b, q: q, chg90: chg90, pressure: pressure, contribution: pressure * b.share };
+    });
+    var ranked = items.slice().sort(function (a, b) { return b.contribution - a.contribution; });
+    var netSqueeze = M.sum(items.map(function (i) { return i.contribution; }));
+
+    bodyEl.appendChild(UIx.panel('Where the household budget is being squeezed', { icon: '💸', class: 'p-squeeze' }, [
+      el('div', { class: 'grid4' }, [
+        UIx.stat('Net pressure', (netSqueeze * 100).toFixed(0), {
+          tone: netSqueeze > 0.08 ? 'down' : netSqueeze < -0.08 ? 'up' : 'n',
+          sub: netSqueeze > 0.08 ? 'costs rising faster than relief' : netSqueeze < -0.08 ? 'easing' : 'roughly flat'
+        }),
+        UIx.stat('Worst line', ranked[0] ? ranked[0].b.n : '—', { tone: 'down', sub: ranked[0] ? F.pct(ranked[0].chg90, 1) + ' over 90d' : '' }),
+        UIx.stat('Easing most', ranked[ranked.length - 1] ? ranked[ranked.length - 1].b.n : '—', { tone: 'up' }),
+        UIx.stat('Categories tracked', String(H.BASKET.length))
+      ]),
+      UIx.canvasBox('', H.BASKET.length * 22 + 10, function (cv) {
+        global.CHART.hbars(cv, ranked.map(function (i) {
+          return { k: i.b.n, v: i.contribution * 100 };
+        }), { labelW: 140, fmt: function (v) { return v.toFixed(1); } });
+      }),
+      el('p', { class: 'note small', text: 'Each line is its share of a typical household budget multiplied by how far its price proxy has moved in the direction that hurts, over 90 days. It is a directional read on which bills are doing the damage, not a measured CPI basket — and the shares are approximations of household expenditure survey shapes, not a specific release.' })
+    ]));
+
+    bodyEl.appendChild(UIx.panel('The bills, and who collects them', { icon: '🧾', class: 'p-basket' }, [
+      el('div', { class: 'basket' }, ranked.map(function (i) { return basketCard(i, world); }))
+    ]));
+  }
+
+  function basketCard(item, world) {
+    var b = item.b;
+    var region = st.country;
+    function pickRow(list, tone) {
+      return list.filter(function (p) {
+        var e = U.findEntity(p.t);
+        if (!e) return false;
+        if (region === 'AU') return true;                       /* AU view shows both AU and global */
+        return String(p.t).indexOf('.AX') < 0;                  /* US view hides ASX lines */
+      }).map(function (p) {
+        var e = U.findEntity(p.t);
+        var q = global.MARKET.quote(p.t, world);
+        return el('div', { class: 'bc-row clk', onclick: function () { global.APP.execute('chart ' + p.t); } }, [
+          el('code', { text: p.t }),
+          el('span', { class: 'bc-n', text: e ? e.n : p.t }),
+          el('span', { class: 'bc-w', text: p.w }),
+          el('b', { class: q && q.chgPct >= 0 ? 'up' : 'down', text: q ? F.pct(q.chgPct) : '—' })
+        ]);
+      });
+    }
+    var winners = pickRow(b.winners || []);
+    var losers = pickRow(b.losers || []);
+    return el('div', { class: 'bcard' }, [
+      el('div', { class: 'bc-h' }, [
+        el('span', { class: 'bc-i', text: b.icon }),
+        el('b', { text: b.n }),
+        UIx.badge((b.share * 100).toFixed(0) + '% of budget', 'n'),
+        el('span', { class: item.chg90 >= 0 ? 'down' : 'up', text: F.pct(item.chg90, 1) + ' 90d' })
+      ]),
+      UIx.bar(Math.abs(item.pressure) * 100, item.pressure > 0 ? 'down' : 'up'),
+      el('p', { class: 'bc-pain', text: b.pain }),
+      winners.length ? el('div', { class: 'bc-sec' }, [el('h5', { text: 'Gets paid when this rises' })].concat(winners)) : null,
+      losers.length ? el('div', { class: 'bc-sec' }, [el('h5', { text: 'Pays for it' })].concat(losers)) : null
+    ]);
+  }
+
+  /* ---------- disaster response ---------- */
+  function renderDisaster(world) {
+    var picker = el('div', { class: 'presets' }, H.PLAYBOOKS.map(function (p) {
+      return el('button', {
+        class: 'chip' + (p.id === st.playbook ? ' on' : ''), text: p.icon + ' ' + p.n,
+        onclick: function () { st.playbook = p.id; render(world); }
+      });
+    }));
+    var pb = H.playbook(st.playbook);
+    if (!pb) { bodyEl.appendChild(UIx.empty('Unknown playbook')); return; }
+
+    bodyEl.appendChild(UIx.panel('Response playbook', {
+      icon: pb.icon, class: 'p-pbset',
+      actions: [UIx.field('Days since event', UIx.slider(st.day, 0, 720, 1, function (v) {
+        st.day = v;
+        var t = L.$('#pb-timeline');
+        if (t && t._render) t._render();
+        var l = L.$('#pb-list');
+        if (l && l._render) l._render();
+      }, function (v) { return v < 60 ? v + 'd' : (v / 30).toFixed(0) + 'mo'; }))]
+    }, [
+      picker,
+      el('h3', { text: pb.icon + '  ' + pb.n }),
+      el('p', { class: 'note', text: pb.note })
+    ]));
+
+    /* timeline */
+    var tl = UIx.panel('Phases', { icon: '⏳', class: 'p-timeline' }, []);
+    var tlBody = tl.querySelector('.pnl-b');
+    tl.id = 'pb-timeline';
+    tl._render = function () {
+      L.clear(tlBody);
+      var maxDay = Math.max.apply(null, pb.phases.map(function (p) { return p.days[1]; }));
+      pb.phases.forEach(function (ph) {
+        var active = st.day >= ph.days[0] && st.day <= ph.days[1];
+        var done = st.day > ph.days[1];
+        var picks = ph.picks[st.country] || ph.picks.US || [];
+        tlBody.appendChild(el('div', { class: 'phase' + (active ? ' on' : '') + (done ? ' done' : '') }, [
+          el('div', { class: 'ph-h' }, [
+            el('b', { text: ph.n }),
+            UIx.badge(fmtWindow(ph.days), active ? 'warn' : 'n'),
+            ph.key ? UIx.badge('largest spend', 'up') : null,
+            active ? UIx.badge('live now', 'down') : done ? UIx.badge('passed', 'n') : UIx.badge('ahead', 'i')
+          ]),
+          el('div', { class: 'ph-track' }, [
+            el('i', { style: {
+              left: (ph.days[0] / maxDay * 100) + '%',
+              width: Math.max(2, (ph.days[1] - ph.days[0]) / maxDay * 100) + '%'
+            } }),
+            el('u', { style: { left: M.clamp(st.day / maxDay * 100, 0, 100) + '%' } })
+          ]),
+          el('p', { class: 'ph-what', text: ph.what }),
+          ph.caution ? el('p', { class: 'ph-caution' }, [UIx.badge('watch out', 'warn'), ' ', ph.caution]) : null,
+          el('div', { class: 'ph-picks' }, picks.map(function (t) {
+            var e = U.findEntity(t);
+            return el('button', {
+              class: 'chip tick', title: e ? e.n + ' — ' + (e.note || '') : t,
+              onclick: function () { global.APP.execute('chart ' + t); }, text: t
+            });
+          }))
+        ]));
+      });
+    };
+    tl._render();
+    bodyEl.appendChild(tl);
+
+    /* generated buy list */
+    var lp = UIx.panel('Generated stock list', {
+      icon: '📋', class: 'p-pblist',
+      actions: [el('button', { class: 'mini', text: 'copy tickers', onclick: function () {
+        var lst = H.buildList(st.playbook, st.country, st.day);
+        L.copy(lst.rows.map(function (r) { return r.t; }).join(', '));
+        UIx.toast('Tickers copied', 'up');
+      } })]
+    }, []);
+    var lpBody = lp.querySelector('.pnl-b');
+    lp.id = 'pb-list';
+    lp._render = function () {
+      L.clear(lpBody);
+      var lst = H.buildList(st.playbook, st.country, st.day);
+      lpBody.appendChild(el('p', { class: 'note', text: 'Ranked for day ' + st.day + ' after the event: phases that are live now rank above phases that have passed or have not started. Move the slider and the order changes, because the trade in week one is not the trade in month nine.' }));
+      lpBody.appendChild(UIx.table(
+        [{ t: '#' }, { t: 'Ticker' }, { t: 'Company' }, { t: 'Role in the chain' }, { t: 'Phase' }, { t: 'Timing' }, { t: 'Last', align: 'r' }, { t: 'Chg', align: 'r' }],
+        lst.rows.map(function (r, i) {
+          var e = U.findEntity(r.t);
+          var q = global.MARKET.quote(r.t, world);
+          return {
+            _class: 'clk' + (r.active ? ' win' : ''),
+            _click: function () { global.APP.execute('chart ' + r.t); },
+            cells: [
+              String(i + 1),
+              { node: el('code', { text: r.t }) },
+              e ? e.n : r.t,
+              e ? (e.note || '—') : '—',
+              r.phase.n,
+              { node: r.active ? UIx.badge('live', 'up') : r.upcoming ? UIx.badge('ahead', 'i') : UIx.badge('passed', 'n') },
+              { t: q ? F.num(q.price, 2) : '—', align: 'r' },
+              { node: el('span', { class: q && q.chgPct >= 0 ? 'up' : 'down', text: q ? F.pct(q.chgPct) : '—' }), align: 'r' }
+            ]
+          };
+        })));
+      lpBody.appendChild(el('p', { class: 'note small', text: 'This is a research starting point, not a portfolio. The chain says who is structurally exposed to the rebuild; it says nothing about whether that exposure is already in the price — which after a widely reported disaster it usually partly is. Check the chart and the exhaustion read on each name before acting, and remember that the insurers in the claims phase are a loss first and a beneficiary later.' }));
+    };
+    lp._render();
+    bodyEl.appendChild(lp);
+
+    /* recent stories that could trigger this */
+    var recent = (world.stories || []).filter(function (s) {
+      return s.imp >= 3 && (s.k === 'climate' || s.k === 'conflict') &&
+        (s.countries || []).indexOf(st.country) >= 0;
+    }).slice(0, 6);
+    bodyEl.appendChild(UIx.panel('Live triggers in the wire', { icon: '📡', class: 'p-trig', count: recent.length }, [
+      recent.length
+        ? el('div', { class: 'wire compact' }, recent.map(function (s) {
+            return el('article', { class: 'st k-' + s.k, onclick: function () { global.APP.go('desk'); } }, [
+              el('div', { class: 'st-top' }, [
+                UIx.impactDots(s.imp), el('span', { class: 'st-k', text: s.k }),
+                el('span', { class: 'st-src', text: s.src }), UIx.simBadge(s),
+                el('span', { class: 'st-ago', text: F.ago(s.t) })
+              ]),
+              el('h4', { class: 'st-h', text: s.h }),
+              el('div', { class: 'st-tags' }, [
+                el('button', { class: 'chip', text: 'open ' + global.ALERTS.guessDisaster(s.h) + ' playbook', onclick: function (e) {
+                  e.stopPropagation(); st.playbook = global.ALERTS.guessDisaster(s.h); st.day = 3; render(world);
+                } })
+              ])
+            ]);
+          }))
+        : UIx.empty('Nothing in the wire for ' + ((U.COUNTRIES[st.country] || {}).n || st.country) + ' right now',
+            'Set a disaster alert in Signals → Alerts and this will open automatically when one lands.')
+    ]));
+  }
+
+  function fmtWindow(d) {
+    function f(x) { return x < 60 ? x + 'd' : x < 730 ? (x / 30).toFixed(0) + 'mo' : (x / 365).toFixed(0) + 'y'; }
+    return f(d[0]) + ' – ' + f(d[1]);
+  }
+
+  UIx.register('mainstreet', { mount: mount });
 })(window);
 
 
@@ -6854,8 +8919,8 @@ window.WORLD_GEOMETRY = [{"id":"ZW","n":"Zimbabwe","r":[[3129,-2240,2936,-2219,2
 
   var App = {
     world: null,
-    views: ['desk', 'cascade', 'backtest', 'links', 'whales', 'book'],
-    viewNames: { desk: 'Desk', cascade: 'Cascade', backtest: 'Backtest Lab', links: 'Link Analysis', whales: 'Flows', book: 'Book & Risk' },
+    views: ['desk', 'signals', 'cascade', 'backtest', 'links', 'mainstreet', 'whales', 'book'],
+    viewNames: { desk: 'Desk', signals: 'Signals', cascade: 'Cascade', backtest: 'Backtest Lab', links: 'Link Analysis', mainstreet: 'Main Street', whales: 'Flows', book: 'Book & Risk' },
     positions: [],
     scenario: null
   };
@@ -6884,7 +8949,32 @@ window.WORLD_GEOMETRY = [{"id":"ZW","n":"Zimbabwe","r":[[3129,-2240,2936,-2219,2
     App.world = buildWorld(seed || ('demo-' + Math.floor(Date.now() / 86400000)));
     L.state.world = App.world;
     L.bus.emit('world', App.world);
+    runAlerts();
   }
+
+  /* Alerts are evaluated here rather than inside the Signals view so they keep running
+     whichever view is open. Nothing runs while the tab is closed — there is no server. */
+  function runAlerts() {
+    if (!App.world || !global.ALERTS) return;
+    try {
+      var fired = global.ALERTS.evaluate(App.world);
+      fired.forEach(function (f) {
+        UIx.toast(f.title + ' — ' + f.body, f.tone === 'down' ? 'down' : 'warn', 9000);
+      });
+      updateAlertBadge();
+    } catch (e) { console.error('[alerts]', e); }
+  }
+  function updateAlertBadge() {
+    var b = L.$('.nav-b[data-view="signals"]');
+    if (!b || !global.ALERTS) return;
+    var recent = global.ALERTS.history().filter(function (h) { return Date.now() - h.t < 6 * 3600e3; });
+    var dot = b.querySelector('.nav-dot');
+    if (recent.length) {
+      if (!dot) { dot = el('i', { class: 'nav-dot' }); b.appendChild(dot); }
+      dot.textContent = recent.length > 9 ? '9+' : String(recent.length);
+    } else if (dot) dot.remove();
+  }
+  App.runAlerts = runAlerts;
 
   /* ---------- routing ---------- */
   function go(view, params) {
@@ -6929,6 +9019,10 @@ window.WORLD_GEOMETRY = [{"id":"ZW","n":"Zimbabwe","r":[[3129,-2240,2936,-2219,2
         break;
       }
       case 'sector': go('desk', { sector: cmd.id }); break;
+      case 'signals': go('signals', { sym: cmd.sym, tab: cmd.tab }); break;
+      case 'rebuild': go('mainstreet', { tab: 'disaster', playbook: cmd.playbook, country: cmd.country }); break;
+      case 'costs': go('mainstreet', { tab: 'costs', country: cmd.country }); break;
+      case 'alerts': go('signals', { tab: 'alerts' }); break;
       case 'whales': go('whales', { asset: cmd.asset }); break;
       case 'news': go('desk', { newsQuery: cmd.q }); break;
       case 'goto': go(cmd.view); break;
@@ -7206,6 +9300,8 @@ window.WORLD_GEOMETRY = [{"id":"ZW","n":"Zimbabwe","r":[[3129,-2240,2936,-2219,2
     mountCommandBar();
     renderStatus();
     setInterval(renderStatus, 15000);
+    setInterval(runAlerts, 180000);
+    L.bus.on('alerts', updateAlertBadge);
 
     var initial = (location.hash || '').replace('#', '');
     go(App.views.indexOf(initial) >= 0 ? initial : 'desk');

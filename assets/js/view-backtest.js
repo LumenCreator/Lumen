@@ -6,7 +6,7 @@
   var st = {
     sym: 'NVDA', tf: '15m', days: 90,
     opts: Object.assign({}, B.DEFAULTS),
-    imported: null, importName: null
+    imported: null, importName: null, period: 'month'
   };
   var cache = { bars: null, gaps: null, stats: null, res: null };
   var bodyEl = null;
@@ -123,6 +123,7 @@
     host.appendChild(chartPanel(world));
     host.appendChild(el('div', { class: 'bt-cols' }, [gapStatsPanel(), whenPanel()]));
     host.appendChild(strategyPanel(world));
+    host.appendChild(periodicPanel(world));
     host.appendChild(sweepPanel(world));
     host.appendChild(tradesPanel());
   }
@@ -296,6 +297,74 @@
       ]) : null,
       el('p', { class: 'note small', text: 'The engine fills at the gap edge when price trades into the zone, stops beyond the far edge plus a buffer, and exits at the R target or on the bar limit. Where a bar touches both stop and target it is booked as a loss. There is no slippage or commission modelled — subtract roughly 0.05–0.15R per trade for a realistic net.' })
     ]);
+  }
+
+  /* ---------- anchored periodic runs ---------- */
+  function periodicPanel(world) {
+    var host = el('div', {});
+    function draw() {
+      L.clear(host);
+      var r = B.runPeriodic(cache.bars, st.opts, st.period, L.state.settings.account.equity);
+      if (!r.summary) { host.appendChild(UIx.empty(r.note)); return; }
+      var s = r.summary;
+      host.appendChild(el('p', { class: 'note', text:
+        'The strategy is restarted at the beginning of every ' + r.periodName.toLowerCase() +
+        ' with the same capital and an empty book, so no period inherits the one before it. ' +
+        'Each period is also measured against simply buying at the period open and holding — if the strategy cannot beat that, it is work for nothing.' }));
+
+      host.appendChild(el('div', { class: 'grid6' }, [
+        UIx.stat(r.periodName + 's', String(s.periods), { sub: s.tradedPeriods + ' with trades' }),
+        UIx.stat('Profitable', F.pctRaw(s.consistency, 0), { tone: s.consistency >= 55 ? 'up' : s.consistency >= 45 ? 'n' : 'down', sub: s.profitablePeriods + '/' + s.tradedPeriods }),
+        UIx.stat('Beat buy & hold', F.pctRaw(s.beatHold, 0), { tone: s.beatHold >= 55 ? 'up' : 'down' }),
+        UIx.stat('Mean per ' + r.periodName.toLowerCase(), s.meanR.toFixed(2) + ' R', { tone: UIx.tone(s.meanR) }),
+        UIx.stat('Spread (sd)', s.sdR.toFixed(2) + ' R', { sub: 'period to period' }),
+        UIx.stat('Best period share', s.concentration === null ? 'n/a' : F.pctRaw(s.concentration * 100, 0), {
+          tone: s.concentration !== null && s.concentration > 0.6 ? 'down' : 'n',
+          sub: s.concentration === null ? 'total R is negative' : s.concentration > 0.6 ? 'one period carries it' : 'of total R'
+        })
+      ]));
+
+      if (s.concentration !== null && s.concentration > 0.6) {
+        host.appendChild(el('p', { class: 'bt-warn', text:
+          'One ' + r.periodName.toLowerCase() + ' produced ' + (s.concentration * 100).toFixed(0) +
+          '% of the entire result. Strip it out and there is very little left — that is a single good run, not a repeatable edge.' }));
+      }
+
+      host.appendChild(UIx.canvasBox('', Math.min(420, r.rows.length * 18 + 12), function (cv) {
+        global.CHART.hbars(cv, r.rows.map(function (x) { return { k: x.key, v: x.totalR }; }),
+          { labelW: 74, rowH: 17, fmt: function (v) { return v.toFixed(1) + 'R'; } });
+      }));
+
+      host.appendChild(UIx.table(
+        [{ t: r.periodName }, { t: 'Bars', align: 'r' }, { t: 'Gaps', align: 'r' }, { t: 'Trades', align: 'r' },
+         { t: 'Win %', align: 'r' }, { t: 'Total R', align: 'r' }, { t: 'Strategy %', align: 'r' },
+         { t: 'Buy & hold %', align: 'r' }, { t: 'Difference', align: 'r' }, { t: 'MaxDD %', align: 'r' }],
+        r.rows.map(function (x) {
+          return {
+            _class: x.n === 0 ? 'muted' : x.totalR > 0 ? 'win' : 'loss',
+            cells: [
+              x.key,
+              { t: String(x.bars), align: 'r' },
+              { t: String(x.gaps), align: 'r' },
+              { t: String(x.n), align: 'r' },
+              { t: x.n ? x.winRate.toFixed(0) : '—', align: 'r' },
+              { node: el('span', { class: x.totalR >= 0 ? 'up' : 'down', text: x.totalR.toFixed(1) }), align: 'r' },
+              { node: el('span', { class: x.plPct >= 0 ? 'up' : 'down', text: F.pct(x.plPct) }), align: 'r' },
+              { node: el('span', { class: x.hold >= 0 ? 'up' : 'down', text: F.pct(x.hold) }), align: 'r' },
+              { node: el('span', { class: x.vsHold >= 0 ? 'up' : 'down', text: F.pct(x.vsHold) }), align: 'r' },
+              { t: x.maxDD.toFixed(1), align: 'r' }
+            ]
+          };
+        })));
+    }
+    var p = UIx.panel('Anchored periodic runs', {
+      icon: '🗓', class: 'p-periodic',
+      actions: [UIx.toggleRow(
+        Object.keys(B.PERIODS).map(function (k) { return { v: k, n: B.PERIODS[k].n }; }),
+        st.period, function (v) { st.period = v; draw(); })]
+    }, [host]);
+    draw();
+    return p;
   }
 
   /* ---------- sweep ---------- */

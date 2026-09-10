@@ -15,7 +15,7 @@
 
   function setup(cv) {
     var dpr = window.devicePixelRatio || 1;
-    var w = cv.clientWidth || cv.parentNode.clientWidth || 600;
+    var w = cv.clientWidth || (cv.parentNode && cv.parentNode.clientWidth) || 600;
     var h = cv.clientHeight || 240;
     if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) {
       cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
@@ -137,6 +137,31 @@
       ctx.lineWidth = 1;
       ctx.fillStyle = tr.dir === 1 ? t.up : t.down;
       ctx.beginPath(); ctx.arc(x(ei), y(tr.entry), 2.6, 0, 6.3); ctx.fill();
+    });
+
+    /* flagged bars from the behaviour scan */
+    var MK = {
+      sweep: { c: '#e8a33d', g: '🎣' }, climax: { c: '#f05252', g: '📛' },
+      churn: { c: '#8f7fe0', g: '🌀' }, unexplained: { c: '#4c9aff', g: '❓' },
+      absorbed: { c: '#5fb3a1', g: '🧱' }, gapfade: { c: '#c9a0dc', g: '↩' }
+    };
+    (opts.marks || []).forEach(function (m) {
+      var mi = m.i - off;
+      if (mi < 0 || mi >= n) return;
+      var spec = MK[m.kind] || { c: t.accent };
+      var b = view[mi];
+      var above = m.dir < 0 || m.kind === 'climax';
+      var yy = above ? y(b.h) - 7 : y(b.l) + 7;
+      ctx.fillStyle = spec.c;
+      ctx.globalAlpha = 0.35 + (m.sev || 0.5) * 0.65;
+      ctx.beginPath();
+      if (above) {
+        ctx.moveTo(x(mi), yy + 5); ctx.lineTo(x(mi) - 4, yy - 2); ctx.lineTo(x(mi) + 4, yy - 2);
+      } else {
+        ctx.moveTo(x(mi), yy - 5); ctx.lineTo(x(mi) - 4, yy + 2); ctx.lineTo(x(mi) + 4, yy + 2);
+      }
+      ctx.closePath(); ctx.fill();
+      ctx.globalAlpha = 1;
     });
 
     /* last price */

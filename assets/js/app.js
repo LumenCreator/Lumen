@@ -5,8 +5,8 @@
 
   var App = {
     world: null,
-    views: ['desk', 'cascade', 'backtest', 'links', 'whales', 'book'],
-    viewNames: { desk: 'Desk', cascade: 'Cascade', backtest: 'Backtest Lab', links: 'Link Analysis', whales: 'Flows', book: 'Book & Risk' },
+    views: ['desk', 'signals', 'cascade', 'backtest', 'links', 'mainstreet', 'whales', 'book'],
+    viewNames: { desk: 'Desk', signals: 'Signals', cascade: 'Cascade', backtest: 'Backtest Lab', links: 'Link Analysis', mainstreet: 'Main Street', whales: 'Flows', book: 'Book & Risk' },
     positions: [],
     scenario: null
   };
@@ -35,7 +35,32 @@
     App.world = buildWorld(seed || ('demo-' + Math.floor(Date.now() / 86400000)));
     L.state.world = App.world;
     L.bus.emit('world', App.world);
+    runAlerts();
   }
+
+  /* Alerts are evaluated here rather than inside the Signals view so they keep running
+     whichever view is open. Nothing runs while the tab is closed — there is no server. */
+  function runAlerts() {
+    if (!App.world || !global.ALERTS) return;
+    try {
+      var fired = global.ALERTS.evaluate(App.world);
+      fired.forEach(function (f) {
+        UIx.toast(f.title + ' — ' + f.body, f.tone === 'down' ? 'down' : 'warn', 9000);
+      });
+      updateAlertBadge();
+    } catch (e) { console.error('[alerts]', e); }
+  }
+  function updateAlertBadge() {
+    var b = L.$('.nav-b[data-view="signals"]');
+    if (!b || !global.ALERTS) return;
+    var recent = global.ALERTS.history().filter(function (h) { return Date.now() - h.t < 6 * 3600e3; });
+    var dot = b.querySelector('.nav-dot');
+    if (recent.length) {
+      if (!dot) { dot = el('i', { class: 'nav-dot' }); b.appendChild(dot); }
+      dot.textContent = recent.length > 9 ? '9+' : String(recent.length);
+    } else if (dot) dot.remove();
+  }
+  App.runAlerts = runAlerts;
 
   /* ---------- routing ---------- */
   function go(view, params) {
@@ -80,6 +105,10 @@
         break;
       }
       case 'sector': go('desk', { sector: cmd.id }); break;
+      case 'signals': go('signals', { sym: cmd.sym, tab: cmd.tab }); break;
+      case 'rebuild': go('mainstreet', { tab: 'disaster', playbook: cmd.playbook, country: cmd.country }); break;
+      case 'costs': go('mainstreet', { tab: 'costs', country: cmd.country }); break;
+      case 'alerts': go('signals', { tab: 'alerts' }); break;
       case 'whales': go('whales', { asset: cmd.asset }); break;
       case 'news': go('desk', { newsQuery: cmd.q }); break;
       case 'goto': go(cmd.view); break;
@@ -357,6 +386,8 @@
     mountCommandBar();
     renderStatus();
     setInterval(renderStatus, 15000);
+    setInterval(runAlerts, 180000);
+    L.bus.on('alerts', updateAlertBadge);
 
     var initial = (location.hash || '').replace('#', '');
     go(App.views.indexOf(initial) >= 0 ? initial : 'desk');

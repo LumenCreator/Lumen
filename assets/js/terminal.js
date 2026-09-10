@@ -17,6 +17,11 @@
     { c: 'watch <sym>', d: 'Add to the watchlist', ex: 'watch lmt' },
     { c: 'unwatch <sym>', d: 'Remove from the watchlist', ex: 'unwatch spy' },
     { c: 'sector <id>', d: 'Show an industry and its global leaders', ex: 'sector defense' },
+    { c: 'signals <sym>', d: 'Behaviour scan: exhaustion, crowding, flagged bars', ex: 'signals cl=f' },
+    { c: 'exhaustion <sym>', d: 'Is this level late in its own range?', ex: 'exhaustion nvda' },
+    { c: 'rebuild <type> [country]', d: 'Disaster response playbook and its buy list', ex: 'rebuild flood au' },
+    { c: 'costs [country]', d: 'Household cost-of-living pressure and who collects', ex: 'costs au' },
+    { c: 'alerts', d: 'Alert rules and history', ex: 'alerts' },
     { c: 'whales [asset]', d: 'Large-holder flow ledger', ex: 'whales btc' },
     { c: 'risk <sym> <entry> <stop>', d: 'Position size from your account risk settings', ex: 'risk nvda 178 172' },
     { c: 'news [country|sector]', d: 'Filter the wire', ex: 'news energy' },
@@ -71,6 +76,33 @@
       return { k: 'cascade', seed: seed2, sev: sev2 };
     }
 
+    if (cmd === 'signals' || cmd === 'scanbar' || cmd === 'behaviour' || cmd === 'behavior') {
+      return { k: 'signals', sym: parts[1] ? parts[1].toUpperCase() : null, tab: 'read' };
+    }
+    if (cmd === 'exhaustion' || cmd === 'extended') {
+      return { k: 'signals', sym: parts[1] ? parts[1].toUpperCase() : null, tab: 'read' };
+    }
+    if (cmd === 'alerts' || cmd === 'alert') return { k: 'alerts' };
+    if (cmd === 'rebuild' || cmd === 'disaster') {
+      var types = { flood: 'flood', cyclone: 'cyclone', hurricane: 'cyclone', storm: 'cyclone',
+        fire: 'bushfire', bushfire: 'bushfire', wildfire: 'bushfire',
+        quake: 'quake', earthquake: 'quake', tsunami: 'quake', drought: 'drought', heat: 'drought' };
+      var pbId = types[(parts[1] || '').toLowerCase()] || 'flood';
+      var ctry = 'AU';
+      parts.slice(1).forEach(function (p) {
+        var e = global.LINKER.resolve(p);
+        if (e && e.type === 'country') ctry = e.id;
+      });
+      return { k: 'rebuild', playbook: pbId, country: ctry === 'US' ? 'US' : 'AU' };
+    }
+    if (cmd === 'costs' || cmd === 'costofliving' || cmd === 'household') {
+      var c2 = 'AU';
+      if (parts[1]) {
+        var e2 = global.LINKER.resolve(parts[1]);
+        if (e2 && e2.type === 'country') c2 = e2.id === 'US' ? 'US' : 'AU';
+      }
+      return { k: 'costs', country: c2 };
+    }
     if (cmd === 'map' && parts[1]) return { k: 'map', q: parts.slice(1).join(' ') };
     if (cmd === 'chart' && parts[1]) return { k: 'chart', sym: parts[1].toUpperCase(), tf: TFS.indexOf((parts[2] || '').toLowerCase()) >= 0 ? parts[2].toLowerCase() : null };
     if (cmd === 'watch' && parts[1]) return { k: 'watch', sym: parts[1].toUpperCase() };

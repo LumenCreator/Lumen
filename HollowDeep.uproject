@@ -1,0 +1,18 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "5.8",
+	"Category": "",
+	"Description": "Hollow Deep - vertical slice: the Bright Field, the Underside and the Listening Coil.",
+	"Modules": [
+		{
+			"Name": "HollowDeep",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{ "Name": "Water", "Enabled": true },
+		{ "Name": "Landmass", "Enabled": true },
+		{ "Name": "PCG", "Enabled": true }
+	]
+}

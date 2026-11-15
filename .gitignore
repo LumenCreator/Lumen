@@ -1,0 +1,25 @@
+# Unreal Engine
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+Build/
+.vs/
+.vscode/
+.idea/
+*.sln
+*.suo
+*.xcodeproj
+*.xcworkspace
+*.VC.db
+*.opensdf
+*.sdf
+Plugins/*/Binaries/
+Plugins/*/Intermediate/
+
+# Bought / downloaded asset packs: re-download from Fab instead of committing them.
+# Keep our own work under Content/HollowDeep/.
+Content/Megascans/
+Content/MSPresets/
+Content/Fab/
+Content/StarterContent/
